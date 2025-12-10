@@ -3,6 +3,7 @@ name: Deploy Angular to GitHub Pages
 on:
   push:
     branches:
+      - master
       - main  # or master if you still use master
 
 permissions:
