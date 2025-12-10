@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TravelFinds — All-in-One Travel Deals</title>
+  <meta name="description" content="Search hotels, flights, buses and packages. Affiliate-ready template for GitHub Pages." />
+  <style>
+    :root{--accent:#0b76ef;--muted:#666;--card:#fff;--bg:#f6f8fb;--max:1100px}
+    *{box-sizing:border-box}
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;background:var(--bg);margin:0;color:#111}
+    .wrap{max-width:var(--max);margin:28px auto;padding:20px}
+    header{display:flex;align-items:center;gap:12px}
+    .logo{font-weight:700;color:var(--accent);font-size:20px}
+    .tag{color:var(--muted);font-size:13px}
+    .search{background:#fff;padding:18px;border-radius:10px;box-shadow:0 6px 18px rgba(12,18,28,0.06);margin-top:16px}
+    .tabs{display:flex;gap:8px}
+    .tab{padding:10px 14px;border-radius:8px;cursor:pointer;border:1px solid transparent}
+    .tab.active{background:linear-gradient(90deg,var(--accent),#2aa0ff);color:#fff}
+    .row{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap}
+    input,select{padding:10px;border-radius:8px;border:1px solid #e6e9ef;min-width:150px}
+    .btn{background:var(--accent);color:#fff;padding:10px 16px;border-radius:8px;border:none;cursor:pointer}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:18px}
+    .card{background:var(--card);padding:14px;border-radius:10px;box-shadow:0 6px 14px rgba(12,18,28,0.04)}
+    .card h4{margin:6px 0 4px}
+    .price{font-weight:700;color:var(--accent)}
+    footer{margin-top:28px;color:var(--muted);font-size:13px}
+    .small{font-size:12px;color:#888}
+    /* Responsive tweaks */
+    @media (max-width:640px){.row{flex-direction:column}header{flex-direction:column;align-items:flex-start}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">TravelFinds</div>
+      <div class="tag">All-in-one hotels · flights · buses · packages — Affiliate-ready GitHub Pages template</div>
+    </header>
+
+    <section class="search">
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-type="hotels">Hotels</button>
+        <button class="tab" data-type="flights">Flights</button>
+        <button class="tab" data-type="buses">Buses</button>
+        <button class="tab" data-type="packages">Packages</button>
+      </div>
+
+      <div class="row" style="margin-top:12px">
+        <input id="from" placeholder="From / City" />
+        <input id="to" placeholder="To / Destination" />
+        <input id="date" type="date" />
+        <select id="guests">
+          <option>1 guest</option>
+          <option>2 guests</option>
+          <option>3 guests</option>
+        </select>
+        <button class="btn" id="searchBtn">Search</button>
+      </div>
+
+      <div id="note" class="small" style="margin-top:10px">Tip: Replace the sample links below with your affiliate deep links (Booking.com / Agoda / TravelPayouts).</div>
+    </section>
+
+    <main>
+      <h3 style="margin-top:18px">Top Deals</h3>
+      <div class="grid" id="results">
+        <!-- Sample cards — replace hrefs with your affiliate links -->
+        <article class="card">
+          <div class="small">Coorg • Resort</div>
+          <h4>Coorg Valley Resort</h4>
+          <div class="small">4.5 • Breakfast included • Free cancellation</div>
+          <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div class="price">₹3,999</div>
+              <div class="small">per night</div>
+            </div>
+            <div>
+              <!-- Replace the href with Booking.com/Agoda affiliate deep link -->
+              <a class="btn" href="https://example.com/affiliate-booking-link" target="_blank" rel="nofollow noopener">Book (Booking)</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="small">Bangalore • Business Hotel</div>
+          <h4>City Center Stay</h4>
+          <div class="small">4.2 • Free wifi • Near airport</div>
+          <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div class="price">₹2,499</div>
+              <div class="small">per night</div>
+            </div>
+            <div>
+              <a class="btn" href="https://example.com/affiliate-agoda-link" target="_blank" rel="nofollow noopener">Book (Agoda)</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="small">Flight • One-way</div>
+          <h4>BLR → DEL</h4>
+          <div class="small">Economy • Non-stop</div>
+          <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div class="price">₹3,199</div>
+              <div class="small">per passenger</div>
+            </div>
+            <div>
+              <!-- Replace with TravelPayouts / Skyscanner affiliate link -->
+              <a class="btn" href="https://example.com/affiliate-flight-link" target="_blank" rel="nofollow noopener">Book (Flight)</a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <section style="margin-top:18px" class="card">
+        <h4>How to replace affiliate links</h4>
+        <ol class="small">
+          <li>Sign up for Booking.com, Agoda, TravelPayouts, MakeMyTrip affiliates and get your deep links.</li>
+          <li>Edit this HTML file: replace the <code>href="https://example.com/affiliate-..."</code> links with your affiliate links.</li>
+          <li>Optionally add affiliate badges / widgets where required (most partners provide a small JS snippet).</li>
+        </ol>
+      </section>
+
+      <section style="margin-top:16px" class="card">
+        <h4>SEO & Monetization Tips</h4>
+        <ul class="small">
+          <li>Write city-specific pages (eg. "Best Resorts near Bangalore").</li>
+          <li>Use descriptive titles, meta descriptions and alt-tags for images.</li>
+          <li>Promote pages via Instagram reels and Pinterest for fast traffic.</li>
+        </ul>
+      </section>
+
+    </main>
+
+    <footer>
+      <div class="small">© TravelFinds — Affiliate template for GitHub Pages. Replace brand & links. Do not forget to add Affiliate Disclosure.</div>
+    </footer>
+  </div>
+
+  <script>
+    // Simple tab + demo search behavior. Replace this with real API / backend when ready.
+    const tabs = document.querySelectorAll('.tab');
+    const results = document.getElementById('results');
+    tabs.forEach(t=>t.addEventListener('click', ()=>{
+      tabs.forEach(x=>x.classList.remove('active'));t.classList.add('active');
+      document.getElementById('note').textContent = 'Tip: Replace sample cards/links with your affiliate deep links for ' + t.dataset.type;
+    }));
+
+    document.getElementById('searchBtn').addEventListener('click', ()=>{
+      // Simple demo: highlight the results area and show a message
+      results.innerHTML = '<div class="card"><strong>Demo results</strong><div class="small">Replace this block with dynamic results from your affiliate APIs (TravelPayouts, Booking.com widgets, etc.)</div></div>';
+    });
+  </script>
+
+  <!--
+    DEPLOY ON GITHUB PAGES
+    1. Create a new repo on GitHub (eg. travelfinds). Push this file as index.html to the repo root.
+    2. Settings -> Pages -> Source: main branch / root -> Save. Yoursite: https://yourname.github.io/travelfinds/
+    3. Optional: Add custom domain in Pages settings.
+
+    AFFILIATE NOTES
+    - Use rel="nofollow noopener" on external affiliate links to be safe.
+    - Add an Affiliate Disclosure page and Privacy Policy (required by many networks).
+
+    NEXT STEPS I CAN DO FOR YOU
+    - Replace sample cards with automated API integration (TravelPayouts, Booking widgets).
+    - Create 10 SEO-ready pages (city + topic) and content.
+    - Generate a custom logo and color palette.
+  -->
+</body>
+</html>
