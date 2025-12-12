@@ -1,3 +1,6 @@
+/* Import app-level styles for header, hero, sections */
+@use './app/app.scss';
+
 /* Global base styles (fallback, no Tailwind required) */
 :root {
   --bg: #ffffff;
@@ -23,10 +26,4 @@ body {
 .btn { display: inline-block; padding: 0.5rem 1rem; border-radius: 0.5rem; text-decoration: none; }
 .btn-primary { background: linear-gradient(135deg, var(--brand), #06b6d4); color: white; font-weight: 600; }
 .btn-accent { background: linear-gradient(135deg, var(--accent-from), var(--accent-to)); color: white; font-weight: 600; }
-.card { background: white; border-radius: 0.75rem; box-shadow: 0 8px 20px rgba(2,6,23,0.08); }
-
-/* Simple responsive utilities */
-@media (min-width: 640px) { .sm\:grid-cols-2 { grid-template-columns: repeat(2, 1fr); } }
-
-/* Import app-level styles for header, hero, sections */
-@use './app/app.scss';
+.card { background: white; border-radius: 0.75rem; box-shadow: 0 8px 2

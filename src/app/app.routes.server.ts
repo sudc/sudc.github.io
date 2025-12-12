@@ -1,8 +1,3 @@
-import { RenderMode } from '@angular/ssr';
+import { routes } from './app.routes';
 
-export default [
-  {
-    path: '',
-    renderMode: RenderMode.Hybrid
-  }
-];
+export default routes;
