@@ -1,0 +1,211 @@
+/* ===== FEATURED DEALS ===== */
+.featured-deals {
+  padding: 4rem 1rem;
+  background: #f9fafb;
+}
+
+.deals-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.deal-card {
+  background: white;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.deal-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.15);
+}
+
+.deal-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: white;
+  color: #1f2937;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.875rem;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.deal-image {
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.deal-image .material-icons {
+  font-size: 48px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.deal-content {
+  padding: 1.5rem;
+}
+
+.deal-category {
+  display: inline-block;
+  background: #f3f4f6;
+  color: #374151;
+  padding: 0.375rem 0.875rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+
+.deal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.deal-description {
+  color: #6b7280;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.deal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+  gap: 1rem;
+}
+
+.deal-platform,
+.deal-expiry {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.deal-platform .material-icons,
+.deal-expiry .material-icons {
+  font-size: 18px;
+}
+
+.deal-expiry {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.deal-button {
+  width: 100%;
+  color: white;
+  border: none;
+  padding: 0.875rem 1.5rem;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.deal-button .material-icons {
+  font-size: 20px;
+  transition: transform 0.3s ease;
+}
+
+.deal-button:hover {
+  transform: translateY(-2px);
+}
+
+.deal-button:hover .material-icons {
+  transform: translateX(4px);
+}
+
+/* Color-coded buttons */
+.deal-button[data-category="hotels"],
+.deal-button[data-category="flights"] {
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.deal-button[data-category="hotels"]:hover,
+.deal-button[data-category="flights"]:hover {
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+}
+
+.deal-button[data-category="health"] {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.deal-button[data-category="health"]:hover {
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+}
+
+.deal-button[data-category="deals"] {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+
+.deal-button[data-category="deals"]:hover {
+  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.4);
+}
+
+.deal-button[data-category="insurance"] {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.deal-button[data-category="insurance"]:hover {
+  box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
+}
+
+/* Deals Grid Responsive */
+@media (min-width: 640px) {
+  .deals-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .deal-footer {
+    flex-direction: row;
+  }
+}
+
+@media (min-width: 1024px) {
+  .deals-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .deal-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}

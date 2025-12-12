@@ -42,6 +42,21 @@
                 "glob": "test.html",
                 "input": ".",
                 "output": "."
+              },
+              {
+                "glob": "index.html",
+                "input": ".",
+                "output": "."
+              },
+              {
+                "glob": "**/*",
+                "input": "styles",
+                "output": "styles"
+              },
+              {
+                "glob": "**/*",
+                "input": "scripts",
+                "output": "scripts"
               }
             ],
             "styles": [

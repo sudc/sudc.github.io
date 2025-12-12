@@ -1,0 +1,148 @@
+/* ===== CATEGORIES SECTION ===== */
+.categories-section {
+  padding: 4rem 1rem;
+  background: white;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.75rem;
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  color: #6b7280;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.category-card {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-align: center;
+  border: 2px solid transparent;
+}
+
+.category-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.15);
+}
+
+/* Category-specific colors */
+.category-card[data-category="hotels"]:hover,
+.category-card[data-category="flights"]:hover {
+  border-color: #2563eb;
+}
+
+.category-card[data-category="hotels"] .category-icon,
+.category-card[data-category="flights"] .category-icon {
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+}
+
+.category-card[data-category="health-labs"]:hover {
+  border-color: #10b981;
+}
+
+.category-card[data-category="health-labs"] .category-icon {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.category-card[data-category="deals"]:hover {
+  border-color: #f97316;
+}
+
+.category-card[data-category="deals"] .category-icon {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+}
+
+.category-card[data-category="insurance"]:hover {
+  border-color: #8b5cf6;
+}
+
+.category-card[data-category="insurance"] .category-icon {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+.category-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1.25rem;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.category-icon .material-icons {
+  font-size: 36px;
+  color: white;
+}
+
+.category-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.75rem;
+}
+
+.category-description {
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.category-affiliates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.affiliate-badge {
+  background: #f3f4f6;
+  color: #374151;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: 1px solid #e5e7eb;
+}
+
+.affiliate-badge:hover {
+  background: #1f2937;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Category Grid Responsive */
+@media (min-width: 640px) {
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .category-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+}

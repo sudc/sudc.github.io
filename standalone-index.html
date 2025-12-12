@@ -119,12 +119,14 @@
 
     /* ===== HEADER ===== */
     header {
-      background: white;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(249, 250, 251, 0.95) 100%);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
       position: sticky;
       top: 0;
       z-index: 100;
-      padding: 1rem 2rem;
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid rgba(37, 99, 235, 0.1);
     }
 
     .header-content {
@@ -136,12 +138,26 @@
     }
 
     .logo {
-      font-size: 1.5rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #2563eb 0%, #8b5cf6 100%);
+      font-size: 1.75rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      background-size: 200% auto;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      animation: gradient-shift 3s ease infinite;
+      letter-spacing: -0.5px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    
+    .logo:hover {
+      transform: scale(1.05);
+    }
+    
+    @keyframes gradient-shift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
 
     nav {
@@ -150,13 +166,34 @@
     }
 
     nav a {
-      color: #6b7280;
-      font-weight: 500;
-      transition: color 0.3s ease;
+      color: #4b5563;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      position: relative;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
     }
 
     nav a:hover {
-      color: #2563eb;
+      color: #667eea;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+      transform: translateY(-2px);
+    }
+    
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+    
+    nav a:hover::after {
+      width: 80%;
     }
 
     /* ===== HERO BANNER ===== */
@@ -746,12 +783,26 @@
 
     .footer-bottom {
       text-align: center;
-      padding-top: 2rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      color: #a0aec0;
-      font-size: 0.9rem;
+      padding: 2rem;
+      margin-top: 2rem;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 50%, rgba(240, 147, 251, 0.15) 100%);
+      border-radius: 1rem;
+      border: 1px solid rgba(102, 126, 234, 0.2);
+      color: #e2e8f0;
+      font-size: 0.95rem;
       max-width: 1200px;
-      margin: 0 auto;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.1);
+    }
+    
+    .footer-bottom p {
+      margin: 0;
+      font-weight: 500;
+      background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     /* ===== RESPONSIVE ===== */
