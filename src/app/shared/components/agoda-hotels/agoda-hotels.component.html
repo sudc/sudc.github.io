@@ -1,0 +1,109 @@
+<section class="agoda-hotels-section">
+  <div class="section-header">
+    <h2>🏨 Featured Hotels from Agoda</h2>
+    <p>Handpicked hotels with excellent reviews and ratings</p>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading amazing hotels for you...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="error && !loading">
+    <i class="fas fa-exclamation-triangle"></i>
+    <p>{{ error }}</p>
+    <button (click)="loadFeaturedHotels()" class="retry-btn">Try Again</button>
+  </div>
+
+  <!-- Hotels Grid -->
+  <div class="hotels-grid" *ngIf="!loading && !error && featuredHotels.length > 0">
+    <article class="hotel-card" *ngFor="let hotel of featuredHotels">
+      <a 
+        [href]="hotel.affiliateUrl" 
+        target="_blank"
+        rel="nofollow sponsored noopener"
+        (click)="trackHotelClick(hotel)"
+        class="hotel-link">
+        
+        <!-- Hotel Image -->
+        <div class="hotel-image">
+          <img 
+            [src]="hotel.imageUrl" 
+            [alt]="hotel.hotelName"
+            loading="lazy"
+            onerror="this.src='https://via.placeholder.com/400x300?text=Hotel+Image'" />
+          
+          <div class="hotel-badge" *ngIf="hotel.reviewScore >= 9">
+            <i class="fas fa-star"></i> Exceptional
+          </div>
+          
+          <div class="price-badge">
+            <span class="from">From</span>
+            <span class="price">{{ hotel.currency }} {{ hotel.priceFrom | number:'1.0-0' }}</span>
+            <span class="period">/night</span>
+          </div>
+        </div>
+
+        <!-- Hotel Info -->
+        <div class="hotel-info">
+          <div class="hotel-header">
+            <h3 class="hotel-name">{{ hotel.hotelName }}</h3>
+            <div class="hotel-location">
+              <i class="fas fa-map-marker-alt"></i>
+              {{ hotel.city }}, {{ hotel.country }}
+            </div>
+          </div>
+
+          <!-- Rating -->
+          <div class="hotel-rating">
+            <div class="stars">
+              <i class="fas fa-star" *ngFor="let star of getStarArray(hotel.rating)"></i>
+            </div>
+            <div class="review-score" *ngIf="hotel.reviewScore > 0">
+              <span class="score">{{ hotel.reviewScore | number:'1.1-1' }}</span>
+              <span class="reviews">({{ hotel.numberOfReviews }} reviews)</span>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <p class="hotel-description" *ngIf="hotel.description">
+            {{ hotel.description.length > 120 ? (hotel.description | slice:0:120) + '...' : hotel.description }}
+          </p>
+
+          <!-- Amenities -->
+          <div class="hotel-amenities" *ngIf="hotel.amenities && hotel.amenities.length > 0">
+            <span class="amenity" *ngFor="let amenity of hotel.amenities.slice(0, 3)">
+              <i class="fas fa-check"></i> {{ amenity }}
+            </span>
+          </div>
+
+          <!-- CTA -->
+          <div class="hotel-cta">
+            <span class="cta-text">View Details & Book</span>
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </div>
+      </a>
+    </article>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && !error && featuredHotels.length === 0">
+    <i class="fas fa-hotel"></i>
+    <h3>No hotels available</h3>
+    <p>Please check back later for amazing hotel deals</p>
+  </div>
+
+  <!-- View More -->
+  <div class="view-more" *ngIf="featuredHotels.length > 0">
+    <a href="https://www.agoda.com/partners/partnersearch.aspx?pcs=1&cid=1955073&hl=en-us" 
+       target="_blank" 
+       rel="nofollow sponsored noopener"
+       class="view-more-btn">
+      <span>View All Hotels on Agoda</span>
+      <i class="fas fa-external-link-alt"></i>
+    </a>
+  </div>
+</section>

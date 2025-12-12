@@ -14,8 +14,8 @@ export interface PartnerConfig {
   displayName: string;
   baseUrl: string;
   affiliateId: string;
-  logo: string; // URL to partner's logo
-  brandColor: string; // Primary brand color
+  logo: string;
+  brandColor: string;
   buildUrl: (params?: PartnerParams) => string;
   widget?: {
     enabled: boolean;
@@ -23,10 +23,11 @@ export interface PartnerConfig {
     widgetId?: string;
     config?: any;
   };
-  active: boolean; // Easy enable/disable toggle
+  active: boolean;
 }
 
 export interface PartnerParams {
+  pcs?: string;
   destination?: string;
   city?: string;
   cityId?: string;
@@ -53,7 +54,7 @@ export const PARTNER_LINKS: Record<string, PartnerConfig> = {
     buildUrl: (params?: PartnerParams) => {
       const base = 'https://www.agoda.com/partners/partnersearch.aspx';
       const queryParams = new URLSearchParams({
-        pcs: params?.pcs || '1',
+        pcs: params?.['pcs'] || '1',
         cid: '1955073',
         'hl': 'en-us',
         ...(params?.cityId && { city: params.cityId })
@@ -150,6 +151,28 @@ export const PARTNER_LINKS: Record<string, PartnerConfig> = {
 /**
  * HOW TO ADD A NEW PARTNER (3 Easy Steps):
  * 
+ * 1. Add partner configuration to PARTNER_LINKS above:
+ *    newpartner: {
+ *      name: 'newpartner',
+ *      displayName: 'New Partner Name',
+ *      baseUrl: 'https://www.partner.com',
+ *      affiliateId: 'YOUR_AFFILIATE_ID',
+ *      logo: 'https://partner.com/logo.svg',
+ *      brandColor: '#FF0000',
+ *      buildUrl: (params) => `https://partner.com/search?aid=YOUR_ID`,
+ *      widget: { enabled: false },
+ *      active: true
+ *    }
+ * 
+ * 2. The partner will automatically appear in:
+ *    - Footer "Special Deals" section
+ *    - All pages using getActivePartners()
+ * 
+ * 3. To remove a partner: Set active: false or delete the entry
+ * 
+ * That's it! No need to touch any other files.
+ */
+
 /**
  * Get all ACTIVE partners only
  * @returns Array of active partners
@@ -158,6 +181,21 @@ export function getActivePartners(): Array<{ id: string; config: PartnerConfig }
   return Object.entries(PARTNER_LINKS)
     .filter(([_, config]) => config.active)
     .map(([id, config]) => ({ id, config }));
+}
+
+/**
+ * Get partner link with optional parameters
+ * @param partnerId - The partner identifier
+ * @param params - Optional parameters for the link
+ * @returns The complete affiliate URL
+ */
+export function getPartnerLink(partnerId: string, params?: PartnerParams): string {
+  const partner = PARTNER_LINKS[partnerId];
+  if (!partner) {
+    console.warn(`Partner '${partnerId}' not found in configuration`);
+    return '#';
+  }
+  return partner.buildUrl(params);
 }
 
 /**
@@ -194,47 +232,4 @@ export function getAvailablePartners(): string[] {
 export function isPartnerActive(partnerId: string): boolean {
   const partner = PARTNER_LINKS[partnerId];
   return partner ? partner.active : false;
-}* Get a partner link with optional parameters
- * @param partnerId - The partner identifier (agoda, booking, makemytrip, goibibo)
- * @param params - Optional parameters for the link
- * @returns The complete affiliate URL
- */
-export function getPartnerLink(partnerId: string, params?: PartnerParams): string {
-  const partner = PARTNER_LINKS[partnerId];
-  if (!partner) {
-    console.warn(`Partner '${partnerId}' not found in configuration`);
-    return '#';
-  }
-  return partner.buildUrl(params);
-}
-
-/**
- * Get all enabled partner widgets
- * @returns Array of partners with enabled widgets
- */
-export function getEnabledWidgets(): Array<{ id: string; config: PartnerConfig }> {
-  return Object.entries(PARTNER_LINKS)
-    .filter(([_, config]) => config.widget?.enabled)
-    .map(([id, config]) => ({ id, config }));
-}
-
-/**
- * Get partner configuration
- * @param partnerId - The partner identifier
- * @returns Partner configuration or undefined
- */
-export function getPartnerConfig(partnerId: string): PartnerConfig | undefined {
-  return PARTNER_LINKS[partnerId];
-}
-
-/**
- * List of all available partners
- */
-export const AVAILABLE_PARTNERS = Object.keys(PARTNER_LINKS);
-
-/**
- * Helper to check if a partner exists
- */
-export function isPartnerAvailable(partnerId: string): boolean {
-  return partnerId in PARTNER_LINKS;
 }

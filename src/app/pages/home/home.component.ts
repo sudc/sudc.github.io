@@ -9,6 +9,7 @@ import { HeroBannerComponent } from '../../shared/components/hero-banner/hero-ba
 import { CategoryCardsComponent } from '../../shared/components/category-cards/category-cards.component';
 import { FeaturedDealsComponent } from '../../shared/components/featured-deals/featured-deals.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
+import { AgodaHotelsComponent } from '../../shared/components/agoda-hotels/agoda-hotels.component';
 
 interface Category {
   id: string;
@@ -42,7 +43,8 @@ interface Deal {
     HeroBannerComponent,
     CategoryCardsComponent,
     FeaturedDealsComponent,
-    FooterComponent
+    FooterComponent,
+    AgodaHotelsComponent
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss', './home.component.css']
