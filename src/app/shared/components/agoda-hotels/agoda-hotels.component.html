@@ -57,6 +57,17 @@
     </article>
   </div>
 
+  <!-- View All Button -->
+  <div *ngIf="!loading && !error && featuredHotels.length > 0" class="view-all-container">
+    <a href="https://www.agoda.com?cid=1955073" 
+       target="_blank" 
+       rel="nofollow sponsored noopener"
+       class="btn-view-all">
+      <span class="material-icons">travel_explore</span>
+      Browse All Hotels on Agoda
+    </a>
+  </div>
+
   <!-- Empty -->
   <div *ngIf="!loading && !error && featuredHotels.length === 0" class="empty-state">
     <p>No hotels found</p>

@@ -1,38 +1,60 @@
 <!-- Popular Destinations -->
 <section class="popular-destinations">
   <div class="destinations-container">
-    <h2>Popular Destinations</h2>
-    <div class="pd-grid">
-      <article class="dest-card">
+    <h2>🌍 Popular Destinations</h2>
+    <p class="section-subtitle">Discover amazing hotels in top travel destinations worldwide</p>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading destinations...</p>
+    </div>
+
+    <div *ngIf="!loading" class="pd-grid">
+      <article 
+        *ngFor="let dest of destinations" 
+        class="dest-card"
+        (click)="trackDestinationClick(dest)"
+      >
         <div class="dest-image">
-          <img src="https://picsum.photos/400/280?random=10" alt="Goa" loading="lazy">
+          <img [src]="dest.imageUrl" 
+               [alt]="dest.city + ', ' + dest.country" 
+               loading="lazy">
           <div class="dest-overlay"></div>
+          
+          <!-- Hotel info badge if available -->
+          <div *ngIf="dest.topHotel" class="dest-badge">
+            <span class="rating">{{ dest.topHotel.reviewScore | number:'1.1-1' }}⭐</span>
+          </div>
         </div>
         <div class="dest-info">
-          <h3>Goa</h3>
-          <a href="/destinations/goa">View Hotels →</a>
+          <h3>{{ dest.city }}</h3>
+          <p class="dest-country">
+            <span class="material-icons">place</span>
+            {{ dest.country }}
+          </p>
+          <p *ngIf="dest.topHotel" class="dest-hotel-count">
+            From {{ dest.topHotel.currency }} {{ dest.topHotel.priceFrom | number:'1.0-0' }}/night
+          </p>
+          <a [href]="dest.affiliateUrl" 
+             target="_blank" 
+             rel="nofollow sponsored noopener"
+             class="dest-link">
+            View Hotels →
+          </a>
         </div>
       </article>
-      <article class="dest-card">
-        <div class="dest-image">
-          <img src="https://picsum.photos/400/280?random=11" alt="Dubai" loading="lazy">
-          <div class="dest-overlay"></div>
-        </div>
-        <div class="dest-info">
-          <h3>Dubai</h3>
-          <a href="/destinations/dubai">View Hotels →</a>
-        </div>
-      </article>
-      <article class="dest-card">
-        <div class="dest-image">
-          <img src="https://picsum.photos/400/280?random=12" alt="Bangkok" loading="lazy">
-          <div class="dest-overlay"></div>
-        </div>
-        <div class="dest-info">
-          <h3>Bangkok</h3>
-          <a href="/destinations/bangkok">View Hotels →</a>
-        </div>
-      </article>
+    </div>
+
+    <!-- View All Button -->
+    <div *ngIf="!loading && destinations.length > 0" class="view-all-container">
+      <a href="https://www.agoda.com?cid=1955073" 
+         target="_blank" 
+         rel="nofollow sponsored noopener"
+         class="btn-view-all">
+        <span class="material-icons">explore</span>
+        Explore More Destinations on Agoda
+      </a>
     </div>
   </div>
 </section>
