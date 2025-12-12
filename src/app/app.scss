@@ -50,3 +50,35 @@ header nav a {
 }
 
 /* Styles moved to individual components for better organization */
+
+/* Shared Agoda widget styles (moved out of large component files to reduce component CSS size) */
+.agoda-widget-section,
+.agoda-widget-hero {
+  padding: 2.5rem 1.25rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.agoda-widget-section .agoda-widget-wrapper,
+.agoda-widget-hero .agoda-widget-wrapper {
+  max-width: 380px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 1rem;
+  padding: 1.25rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+}
+
+.agoda-widget-section .section-header,
+.agoda-widget-hero .section-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .agoda-widget-section,
+  .agoda-widget-hero { padding: 1.5rem 1rem; }
+  .agoda-widget-section .agoda-widget-wrapper,
+  .agoda-widget-hero .agoda-widget-wrapper { max-width: 100%; padding: 1rem; }
+}
