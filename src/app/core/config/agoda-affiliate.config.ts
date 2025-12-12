@@ -110,17 +110,17 @@ export const AGODA_CONFIG: AgodaAffiliateConfig = {
       },
       buildUrl: (params = {}) => {
         const queryParams = new URLSearchParams({
-          pcs: params.pcs || '1',
+          pcs: params['pcs'] || '1',
           cid: '1955073',
-          hl: params.hl || 'en-us',
-          ...(params.city && { city: params.city }),
-          ...(params.cityId && { cityId: params.cityId }),
-          ...(params.hid && { hid: params.hid }), // Hotel ID
-          ...(params.checkIn && { checkIn: params.checkIn }),
-          ...(params.checkOut && { checkOut: params.checkOut }),
-          ...(params.adults && { adults: params.adults }),
-          ...(params.children && { children: params.children }),
-          ...(params.rooms && { rooms: params.rooms })
+          hl: params['hl'] || 'en-us',
+          ...(params['city'] && { city: params['city'] }),
+          ...(params['cityId'] && { cityId: params['cityId'] }),
+          ...(params['hid'] && { hid: params['hid'] }), // Hotel ID
+          ...(params['checkIn'] && { checkIn: params['checkIn'] }),
+          ...(params['checkOut'] && { checkOut: params['checkOut'] }),
+          ...(params['adults'] && { adults: params['adults'] }),
+          ...(params['children'] && { children: params['children'] }),
+          ...(params['rooms'] && { rooms: params['rooms'] })
         });
         return `https://www.agoda.com/partners/partnersearch.aspx?${queryParams.toString()}`;
       }
@@ -136,13 +136,13 @@ export const AGODA_CONFIG: AgodaAffiliateConfig = {
       buildUrl: (params = {}) => {
         const queryParams = new URLSearchParams({
           cid: '1955073',
-          hl: params.hl || 'en-us',
-          ...(params.origin && { origin: params.origin }),
-          ...(params.destination && { destination: params.destination }),
-          ...(params.departDate && { departDate: params.departDate }),
-          ...(params.returnDate && { returnDate: params.returnDate }),
-          ...(params.adults && { adults: params.adults }),
-          ...(params.children && { children: params.children })
+          hl: params['hl'] || 'en-us',
+          ...(params['origin'] && { origin: params['origin'] }),
+          ...(params['destination'] && { destination: params['destination'] }),
+          ...(params['departDate'] && { departDate: params['departDate'] }),
+          ...(params['returnDate'] && { returnDate: params['returnDate'] }),
+          ...(params['adults'] && { adults: params['adults'] }),
+          ...(params['children'] && { children: params['children'] })
         });
         return `https://www.agoda.com/flights?${queryParams.toString()}`;
       }
@@ -158,7 +158,7 @@ export const AGODA_CONFIG: AgodaAffiliateConfig = {
       },
       buildUrl: (params = {}) => {
         const queryParams = new URLSearchParams({
-          pcs: params.pcs || '1',
+          pcs: params['pcs'] || '1',
           cid: '1955073',
           hl: 'en-us',
           ...params

@@ -20,13 +20,11 @@
   <div *ngIf="!loading && !error && featuredHotels.length > 0" class="hotels-grid">
     <article *ngFor="let hotel of featuredHotels; let i = index" class="hotel-card card">
       <div class="hotel-image">
-        <img [src]="hotel.image || ('https://picsum.photos/seed/'+hotel.hotelId+'/400/300')" 
+        <img [src]="hotel.imageUrl || ('https://picsum.photos/seed/'+hotel.hotelId+'/300/200')"
              [alt]="hotel.hotelName" 
              loading="lazy">
         
-        <div *ngIf="hotel.discount > 0" class="discount-badge">
-          -{{ hotel.discount | number:'1.0-0' }}%
-        </div>
+        <!-- Discount badge removed - not in AgodaHotel interface -->
 
         <div class="rating-badge">
           <span class="stars">
@@ -39,16 +37,14 @@
       <div class="hotel-body">
         <h3 class="hotel-name">{{ hotel.hotelName }}</h3>
         <p class="hotel-location">📍 {{ hotel.city }}, {{ hotel.country }}</p>
-        <p class="hotel-reviews" *ngIf="hotel.reviewCount > 0">({{ hotel.reviewCount | number }} reviews)</p>
-
-        <div class="amenities" *ngIf="hotel.amenities && hotel.amenities.length > 0">
+          <p class="hotel-reviews" *ngIf="hotel.numberOfReviews > 0">({{ hotel.numberOfReviews | number }} reviews)</p>        <div class="amenities" *ngIf="hotel.amenities && hotel.amenities.length > 0">
           <span *ngFor="let amenity of hotel.amenities.slice(0, 3)" class="tag">{{ amenity }}</span>
         </div>
 
         <div class="price-info">
           <div class="current-price">
             <span class="currency">{{ hotel.currency }}</span>
-            <span class="price">{{ hotel.pricePerNight | number:'1.0-0' }}</span>/night
+            <span class="price">{{ hotel.priceFrom | number:'1.0-0' }}</span>/night
           </div>
         </div>
 

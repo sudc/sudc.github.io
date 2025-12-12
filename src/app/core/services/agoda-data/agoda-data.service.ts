@@ -289,7 +289,7 @@ export class AgodaDataService {
    * Build Agoda affiliate URL for a hotel using centralized config
    */
   private buildAffiliateUrl(hotelId: string): string {
-    return getAgodaHotelLink({ hotelId, pcs: '10' });
+    return getAgodaHotelLink({ hotelId });
   }
 
   /**

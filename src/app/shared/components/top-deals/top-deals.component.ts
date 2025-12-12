@@ -12,6 +12,9 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./top-deals.component.scss']
 })
 export class TopDealsComponent implements OnInit, OnDestroy {
+  // Make Math available in template
+  Math = Math;
+  
   topDeals: AgodaHotel[] = [];
   loading = false;
   showSection = false;
