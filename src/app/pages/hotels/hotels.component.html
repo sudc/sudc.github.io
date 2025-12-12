@@ -43,20 +43,6 @@
           
           <div class="booking-buttons">
             <a 
-              [href]="dest.bookingUrl" 
-              target="_blank"
-              class="booking-btn booking-com"
-              (click)="trackAffiliateClick('Booking.com', dest.name)"
-              rel="nofollow sponsored noopener">
-              <span class="btn-icon">🏨</span>
-              <span class="btn-text">
-                <strong>Check Prices on Booking.com</strong>
-                <small>Free cancellation available</small>
-              </span>
-              <span class="material-icons arrow">arrow_forward</span>
-            </a>
-            
-            <a 
               [href]="dest.agodaUrl" 
               target="_blank"
               class="booking-btn agoda"
@@ -65,21 +51,7 @@
               <span class="btn-icon">⭐</span>
               <span class="btn-text">
                 <strong>Book Hotels on Agoda</strong>
-                <small>Exclusive member deals</small>
-              </span>
-              <span class="material-icons arrow">arrow_forward</span>
-            </a>
-            
-            <a 
-              [href]="dest.mmtUrl" 
-              target="_blank"
-              class="booking-btn mmt"
-              (click)="trackAffiliateClick('MakeMyTrip', dest.name)"
-              rel="nofollow sponsored noopener">
-              <span class="btn-icon">✈️</span>
-              <span class="btn-text">
-                <strong>Book Hotels on MakeMyTrip</strong>
-                <small>Best prices guaranteed</small>
+                <small>Best prices & exclusive deals</small>
               </span>
               <span class="material-icons arrow">arrow_forward</span>
             </a>

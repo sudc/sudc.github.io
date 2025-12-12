@@ -55,34 +55,40 @@ export class DealsComponent implements OnInit {
   }
 
   private loadAgodaDeals() {
-    this.agodaService.getAllHotels().subscribe({
-      next: (data) => {
+    this.agodaService.getHotelsByCity('').subscribe({
+      next: (data: any) => {
         const allHotels = Object.values(data.cities)
-          .flat()
-          .filter((hotel: AgodaHotel) => hotel.discount && parseFloat(hotel.discount) > 0)
-          .sort((a: AgodaHotel, b: AgodaHotel) => parseFloat(b.discount) - parseFloat(a.discount))
+          .flat() as AgodaHotel[];
+        
+        const dealsWithDiscount = allHotels
+          .filter((hotel: AgodaHotel) => hotel.rating && parseFloat(hotel.rating.toString()) > 0)
+          .sort((a: AgodaHotel, b: AgodaHotel) => parseFloat(b.rating.toString()) - parseFloat(a.rating.toString()))
           .slice(0, 20);
 
-        this.deals = allHotels.map((hotel: AgodaHotel, index: number) => ({
-          id: hotel.hotel_id,
-          title: hotel.hotel_name,
-          description: `${hotel.star_rating}★ hotel in ${hotel.city}`,
+        this.deals = dealsWithDiscount.map((hotel: AgodaHotel, index: number) => ({
+          id: hotel.hotelId,
+          title: hotel.hotelName,
+          description: `${hotel.rating}★ hotel in ${hotel.city}`,
           category: 'hotel' as const,
-          image: hotel.image_url || `https://picsum.photos/600/400?random=${index}`,
-          originalPrice: hotel.original_price || 'N/A',
-          discountedPrice: hotel.final_price,
-          discount: hotel.discount ? `${hotel.discount}% OFF` : '0% OFF',
+          image: hotel.imageUrl || `https://picsum.photos/600/400?random=${index}`,
+          originalPrice: hotel.pricePerNight || 'N/A',
+          discountedPrice: hotel.pricePerNight,
+          discount: hotel.rating ? `${hotel.rating}★ Rated` : 'N/A',
           city: hotel.city,
-          rating: parseFloat(hotel.star_rating) || 0,
+          rating: parseFloat(hotel.rating.toString()) || 0,
           platform: 'Agoda',
-          affiliateUrl: this.analytics.addUTMToUrl(hotel.agoda_url, 'tripsaver_deals', 'affiliate'),
+          affiliateUrl: this.analytics.addUTMToUrl(
+            `https://www.agoda.com/hotel/${hotel.hotelId}?cid=1955073`,
+            'tripsaver_deals',
+            'affiliate'
+          ),
           featured: index < 6
         }));
 
         this.filteredDeals = this.deals;
         this.loading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error loading Agoda deals:', error);
         this.loading = false;
       }
