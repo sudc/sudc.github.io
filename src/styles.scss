@@ -29,5 +29,4 @@ body {
 @media (min-width: 640px) { .sm\:grid-cols-2 { grid-template-columns: repeat(2, 1fr); } }
 
 /* Import app-level styles for header, hero, sections */
-@import './app/app.scss';
-
+@use './app/app.scss';

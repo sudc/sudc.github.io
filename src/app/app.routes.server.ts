@@ -1,8 +1,8 @@
-import { RenderMode, ServerRoute } from '@angular/ssr';
+import { RenderMode } from '@angular/ssr';
 
-export const serverRoutes: ServerRoute[] = [
+export default [
   {
-    path: '**',
-    renderMode: RenderMode.Auto
+    path: '',
+    renderMode: RenderMode.Hybrid
   }
 ];
