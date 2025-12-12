@@ -2,17 +2,19 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Title, Meta } from '@angular/platform-browser';
 import { AnalyticsService } from '../../core/services/analytics/analytics.service';
+import { AgodaDataService, AgodaHotel } from '../../core/services/agoda-data/agoda-data.service';
 
 interface Deal {
-  id: number;
+  id: string;
   title: string;
   description: string;
-  category: 'hotel' | 'flight' | 'package';
+  category: 'hotel';
   image: string;
   originalPrice: string;
   discountedPrice: string;
   discount: string;
-  validUntil: string;
+  city: string;
+  rating: number;
   platform: string;
   affiliateUrl: string;
   featured: boolean;
@@ -29,144 +31,62 @@ export class DealsComponent implements OnInit {
   private titleService = inject(Title);
   private metaService = inject(Meta);
   private analytics = inject(AnalyticsService);
+  private agodaService = inject(AgodaDataService);
   
   deals: Deal[] = [];
   filteredDeals: Deal[] = [];
   activeFilter: string = 'all';
+  loading = true;
 
   constructor() {
-    this.initializeDeals();
+    this.loadAgodaDeals();
   }
 
   ngOnInit() {
-    this.titleService.setTitle('Best Travel Deals & Offers Today - Up to 50% Off | TripSaver');
+    this.titleService.setTitle('Best Agoda Hotel Deals & Offers - Up to 50% Off | TripSaver');
     this.metaService.updateTag({ 
       name: 'description', 
-      content: 'Get the best travel deals today! Hotels under ₹2000, flight discounts, and holiday packages. Save up to 50% on verified deals from top booking platforms.' 
+      content: 'Get the best Agoda hotel deals today! Top-rated hotels with exclusive discounts. Save up to 50% on verified deals across India and worldwide destinations.' 
     });
     this.metaService.updateTag({ 
       name: 'keywords', 
-      content: 'travel deals, hotel deals, flight deals, discount offers, cheap hotels, holiday packages, travel offers India' 
+      content: 'Agoda deals, hotel deals, discount offers, cheap hotels, Agoda hotel booking, travel offers India' 
     });
   }
 
-  private initializeDeals() {
-    this.deals = [
-    {
-      id: 1,
-      title: 'Goa Beach Resorts Under ₹2,000',
-      description: '3-star beachfront properties with pool access',
-      category: 'hotel',
-      image: 'https://picsum.photos/600/400?random=20',
-      originalPrice: '₹3,500',
-      discountedPrice: '₹1,899',
-      discount: '46% OFF',
-      validUntil: '2025-12-31',
-      platform: 'Booking.com',
-      affiliateUrl: this.analytics.addUTMToUrl('https://www.booking.com/deals/goa-hotels?aid=REPLACE_WITH_AFFILIATE_ID', 'tripsaver_deals', 'affiliate'),
-      featured: true
-    },
-    {
-      id: 2,
-      title: 'Delhi to Mumbai Flights',
-      description: 'Non-stop flights starting from ₹2,499',
-      category: 'flight',
-      image: 'https://picsum.photos/600/400?random=21',
-      originalPrice: '₹5,200',
-      discountedPrice: '₹2,499',
-      discount: '52% OFF',
-      validUntil: '2025-12-25',
-      platform: 'MakeMyTrip',
-      affiliateUrl: this.analytics.addUTMToUrl('https://www.makemytrip.com/flights/delhi-mumbai?campaign=REPLACE_WITH_AFFILIATE_ID', 'tripsaver_deals', 'affiliate'),
-      featured: true
-    },
-    {
-      id: 3,
-      title: 'Manali 3N/4D Package',
-      description: 'Hotel + Sightseeing + Breakfast included',
-      category: 'package',
-      image: 'https://picsum.photos/600/400?random=22',
-      originalPrice: '₹12,000',
-      discountedPrice: '₹8,999',
-      discount: '25% OFF',
-      validUntil: '2025-12-28',
-      platform: 'MakeMyTrip',
-      affiliateUrl: this.analytics.addUTMToUrl('https://www.makemytrip.com/holidays/india/packages?campaign=REPLACE_WITH_AFFILIATE_ID', 'tripsaver_deals', 'affiliate'),
-      featured: true
-    },
-    {
-      id: 4,
-      title: 'Bangalore Hotels Under ₹1,500',
-      description: 'Budget-friendly stays near city center',
-      category: 'hotel',
-      image: 'https://picsum.photos/600/400?random=23',
-      originalPrice: '₹2,800',
-      discountedPrice: '₹1,399',
-      discount: '50% OFF',
-      validUntil: '2025-12-20',
-      platform: 'Agoda',
-      affiliateUrl: this.analytics.addUTMToUrl('https://www.agoda.com/deals/bangalore?cid=1955073', 'tripsaver_deals', 'affiliate'),
-      featured: false
-    },
-    {
-      id: 5,
-      title: 'Flash Sale: Flights to Goa',
-      description: 'Limited time offer - Book now!',
-      category: 'flight',
-      image: 'https://picsum.photos/600/400?random=24',
-      originalPrice: '₹4,500',
-      discountedPrice: '₹1,999',
-      discount: '56% OFF',
-      validUntil: '2025-12-18',
-      platform: 'Goibibo',
-      affiliateUrl: this.analytics.addUTMToUrl('https://www.goibibo.com/flights/deals?utm_source=REPLACE_WITH_AFFILIATE_ID', 'tripsaver_deals', 'affiliate'),
-      featured: false
-    },
-    {
-      id: 6,
-      title: 'Kerala Backwaters Package',
-      description: 'Houseboat stay + Meals + Transfers',
-      category: 'package',
-      image: 'https://picsum.photos/600/400?random=25',
-      originalPrice: '₹18,000',
-      discountedPrice: '₹13,499',
-      discount: '25% OFF',
-      validUntil: '2025-12-30',
-      platform: 'Booking.com',
-      affiliateUrl: this.analytics.addUTMToUrl('https://www.booking.com/packages/kerala?aid=REPLACE_WITH_AFFILIATE_ID', 'tripsaver_deals', 'affiliate'),
-      featured: false
-    },
-    {
-      id: 7,
-      title: 'Jaipur Heritage Hotels',
-      description: 'Royal experience under ₹2,500',
-      category: 'hotel',
-      image: 'https://picsum.photos/600/400?random=26',
-      originalPrice: '₹4,000',
-      discountedPrice: '₹2,399',
-      discount: '40% OFF',
-      validUntil: '2025-12-22',
-      platform: 'MakeMyTrip',
-      affiliateUrl: this.analytics.addUTMToUrl('https://www.makemytrip.com/hotels/jaipur-heritage?campaign=REPLACE_WITH_AFFILIATE_ID', 'tripsaver_deals', 'affiliate'),
-      featured: false
-    },
-    {
-      id: 8,
-      title: 'Weekend Getaway: Ooty',
-      description: 'Hotel + Breakfast + Hill station tour',
-      category: 'package',
-      image: 'https://picsum.photos/600/400?random=27',
-      originalPrice: '₹9,500',
-      discountedPrice: '₹6,999',
-      discount: '26% OFF',
-      validUntil: '2025-12-24',
-      platform: 'Agoda',
-      affiliateUrl: this.analytics.addUTMToUrl('https://www.agoda.com/packages/ooty?cid=1955073', 'tripsaver_deals', 'affiliate'),
-      featured: false
-    }
-    ];
-    
-    this.filteredDeals = this.deals;
+  private loadAgodaDeals() {
+    this.agodaService.getAllHotels().subscribe({
+      next: (data) => {
+        const allHotels = Object.values(data.cities)
+          .flat()
+          .filter((hotel: AgodaHotel) => hotel.discount && parseFloat(hotel.discount) > 0)
+          .sort((a: AgodaHotel, b: AgodaHotel) => parseFloat(b.discount) - parseFloat(a.discount))
+          .slice(0, 20);
+
+        this.deals = allHotels.map((hotel: AgodaHotel, index: number) => ({
+          id: hotel.hotel_id,
+          title: hotel.hotel_name,
+          description: `${hotel.star_rating}★ hotel in ${hotel.city}`,
+          category: 'hotel' as const,
+          image: hotel.image_url || `https://picsum.photos/600/400?random=${index}`,
+          originalPrice: hotel.original_price || 'N/A',
+          discountedPrice: hotel.final_price,
+          discount: hotel.discount ? `${hotel.discount}% OFF` : '0% OFF',
+          city: hotel.city,
+          rating: parseFloat(hotel.star_rating) || 0,
+          platform: 'Agoda',
+          affiliateUrl: this.analytics.addUTMToUrl(hotel.agoda_url, 'tripsaver_deals', 'affiliate'),
+          featured: index < 6
+        }));
+
+        this.filteredDeals = this.deals;
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading Agoda deals:', error);
+        this.loading = false;
+      }
+    });
   }
 
   selectedCategory: string = 'all';
@@ -179,10 +99,11 @@ export class DealsComponent implements OnInit {
     this.selectedCategory = category;
     this.activeFilter = category;
     
-    if (category === 'all') {
+    // Since we only have hotel deals from Agoda, filtering is simpler
+    if (category === 'all' || category === 'hotel') {
       this.filteredDeals = this.deals;
     } else {
-      this.filteredDeals = this.deals.filter(deal => deal.category === category);
+      this.filteredDeals = [];
     }
     
     this.analytics.trackFilter('deal_category', category);
@@ -198,20 +119,10 @@ export class DealsComponent implements OnInit {
   }
 
   getCategoryIcon(category: string): string {
-    const icons: { [key: string]: string } = {
-      hotel: 'hotel',
-      flight: 'flight',
-      package: 'card_travel'
-    };
-    return icons[category] || 'local_offer';
+    return 'hotel';
   }
 
   getCategoryColor(category: string): string {
-    const colors: { [key: string]: string } = {
-      hotel: '#2563eb',
-      flight: '#0ea5e9',
-      package: '#8b5cf6'
-    };
-    return colors[category] || '#6b7280';
+    return '#2563eb';
   }
 }

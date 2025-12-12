@@ -9,9 +9,7 @@ interface Destination {
   description: string;
   popularHotels: number;
   avgPrice: string;
-  bookingUrl: string;
   agodaUrl: string;
-  mmtUrl: string;
 }
 
 @Component({
@@ -33,14 +31,14 @@ export class HotelsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.titleService.setTitle('Best Hotel Deals in India - Compare Prices | TripSaver');
+    this.titleService.setTitle('Best Hotel Deals in India - Agoda | TripSaver');
     this.metaService.updateTag({ 
       name: 'description', 
-      content: 'Find and compare the best hotel deals in Goa, Bangalore, Manali, Ooty, and more. Book hotels at lowest prices on Booking.com, Agoda, and MakeMyTrip.' 
+      content: 'Find and compare the best hotel deals in Goa, Bangalore, Manali, Ooty, and more. Book hotels at lowest prices on Agoda with exclusive deals.' 
     });
     this.metaService.updateTag({ 
       name: 'keywords', 
-      content: 'hotel deals, cheap hotels, book hotels, Goa hotels, Bangalore hotels, Manali hotels, hotel booking India' 
+      content: 'hotel deals, cheap hotels, book hotels, Goa hotels, Bangalore hotels, Manali hotels, hotel booking India, Agoda hotels' 
     });
   }
 
@@ -52,9 +50,7 @@ export class HotelsComponent implements OnInit {
       description: 'Beautiful beaches, vibrant nightlife, and Portuguese heritage',
       popularHotels: 250,
       avgPrice: '₹2,500',
-      bookingUrl: this.analytics.addUTMToUrl('https://www.booking.com/searchresults.html?ss=Goa&aid=REPLACE_WITH_AFFILIATE_ID', 'tripsaver_hotels', 'affiliate'),
-      agodaUrl: this.analytics.addUTMToUrl('https://www.agoda.com/search?city=9558&cid=1955073', 'tripsaver_hotels', 'affiliate'),
-      mmtUrl: this.analytics.addUTMToUrl('https://www.makemytrip.com/hotels/hotels-in-goa.html?campaign=REPLACE_WITH_AFFILIATE_ID', 'tripsaver_hotels', 'affiliate')
+      agodaUrl: this.analytics.addUTMToUrl('https://www.agoda.com/search?city=9558&cid=1955073', 'tripsaver_hotels', 'affiliate')
     },
     {
       name: 'Bangalore',
@@ -62,9 +58,7 @@ export class HotelsComponent implements OnInit {
       description: 'Garden city with pleasant weather and modern amenities',
       popularHotels: 180,
       avgPrice: '₹3,000',
-      bookingUrl: this.analytics.addUTMToUrl('https://www.booking.com/searchresults.html?ss=Bangalore&aid=REPLACE_WITH_AFFILIATE_ID', 'tripsaver_hotels', 'affiliate'),
-      agodaUrl: this.analytics.addUTMToUrl('https://www.agoda.com/search?city=11304&cid=1955073', 'tripsaver_hotels', 'affiliate'),
-      mmtUrl: this.analytics.addUTMToUrl('https://www.makemytrip.com/hotels/hotels-in-bangalore.html?campaign=REPLACE_WITH_AFFILIATE_ID', 'tripsaver_hotels', 'affiliate')
+      agodaUrl: this.analytics.addUTMToUrl('https://www.agoda.com/search?city=11304&cid=1955073', 'tripsaver_hotels', 'affiliate')
     },
     {
       name: 'Manali',
@@ -72,9 +66,7 @@ export class HotelsComponent implements OnInit {
       description: 'Stunning Himalayan views, adventure sports, and serene valleys',
       popularHotels: 120,
       avgPrice: '₹2,800',
-      bookingUrl: this.analytics.addUTMToUrl('https://www.booking.com/searchresults.html?ss=Manali&aid=REPLACE_WITH_AFFILIATE_ID', 'tripsaver_hotels', 'affiliate'),
-      agodaUrl: this.analytics.addUTMToUrl('https://www.agoda.com/search?city=11058&cid=1955073', 'tripsaver_hotels', 'affiliate'),
-      mmtUrl: this.analytics.addUTMToUrl('https://www.makemytrip.com/hotels/hotels-in-manali.html?campaign=REPLACE_WITH_AFFILIATE_ID', 'tripsaver_hotels', 'affiliate')
+      agodaUrl: this.analytics.addUTMToUrl('https://www.agoda.com/search?city=11058&cid=1955073', 'tripsaver_hotels', 'affiliate')
     },
     {
       name: 'Ooty',
@@ -82,9 +74,7 @@ export class HotelsComponent implements OnInit {
       description: 'Queen of hill stations with tea gardens and cool climate',
       popularHotels: 95,
       avgPrice: '₹2,200',
-      bookingUrl: this.analytics.addUTMToUrl('https://www.booking.com/searchresults.html?ss=Ooty&aid=REPLACE_WITH_AFFILIATE_ID', 'tripsaver_hotels', 'affiliate'),
-      agodaUrl: this.analytics.addUTMToUrl('https://www.agoda.com/search?city=12640&cid=1955073', 'tripsaver_hotels', 'affiliate'),
-      mmtUrl: this.analytics.addUTMToUrl('https://www.makemytrip.com/hotels/hotels-in-ooty.html?campaign=REPLACE_WITH_AFFILIATE_ID', 'tripsaver_hotels', 'affiliate')
+      agodaUrl: this.analytics.addUTMToUrl('https://www.agoda.com/search?city=12640&cid=1955073', 'tripsaver_hotels', 'affiliate')
     },
     {
       name: 'Jaipur',
@@ -92,9 +82,7 @@ export class HotelsComponent implements OnInit {
       description: 'Pink city with majestic forts, palaces, and rich culture',
       popularHotels: 150,
       avgPrice: '₹2,600',
-      bookingUrl: this.analytics.addUTMToUrl('https://www.booking.com/searchresults.html?ss=Jaipur&aid=REPLACE_WITH_AFFILIATE_ID', 'tripsaver_hotels', 'affiliate'),
-      agodaUrl: this.analytics.addUTMToUrl('https://www.agoda.com/search?city=11097&cid=1955073', 'tripsaver_hotels', 'affiliate'),
-      mmtUrl: this.analytics.addUTMToUrl('https://www.makemytrip.com/hotels/hotels-in-jaipur.html?campaign=REPLACE_WITH_AFFILIATE_ID', 'tripsaver_hotels', 'affiliate')
+      agodaUrl: this.analytics.addUTMToUrl('https://www.agoda.com/search?city=11097&cid=1955073', 'tripsaver_hotels', 'affiliate')
     },
     {
       name: 'Kerala',
@@ -102,9 +90,7 @@ export class HotelsComponent implements OnInit {
       description: 'God\'s own country with backwaters, houseboats, and beaches',
       popularHotels: 200,
       avgPrice: '₹3,200',
-      bookingUrl: this.analytics.addUTMToUrl('https://www.booking.com/searchresults.html?ss=Kerala&aid=REPLACE_WITH_AFFILIATE_ID', 'tripsaver_hotels', 'affiliate'),
-      agodaUrl: this.analytics.addUTMToUrl('https://www.agoda.com/search?city=17249&cid=1955073', 'tripsaver_hotels', 'affiliate'),
-      mmtUrl: this.analytics.addUTMToUrl('https://www.makemytrip.com/hotels/hotels-in-kerala.html?campaign=REPLACE_WITH_AFFILIATE_ID', 'tripsaver_hotels', 'affiliate')
+      agodaUrl: this.analytics.addUTMToUrl('https://www.agoda.com/search?city=17249&cid=1955073', 'tripsaver_hotels', 'affiliate')
     }
     ];
   }

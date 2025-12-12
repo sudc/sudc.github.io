@@ -29,40 +29,40 @@ export class AboutComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.titleService.setTitle('About TripSaver - Your Trusted Travel Comparison Platform');
+    this.titleService.setTitle('About TripSaver - Your Trusted Agoda Hotel Deals Platform');
     this.metaService.updateTag({ 
       name: 'description', 
-      content: 'TripSaver helps you compare and book hotels, flights, and travel deals at the best prices. Trusted by 50K+ travelers. Save money on every booking.' 
+      content: 'TripSaver partners with Agoda to bring you the best hotel deals worldwide. Trusted by 50K+ travelers. Save money on every booking with exclusive Agoda offers.' 
     });
   }
 
   stats: Stat[] = [
     { icon: 'people', value: '50K+', label: 'Happy Travelers' },
     { icon: 'savings', value: '₹2Cr+', label: 'Money Saved' },
-    { icon: 'hotel', value: '10K+', label: 'Hotel Partners' },
-    { icon: 'flight', value: '500+', label: 'Flight Routes' }
+    { icon: 'hotel', value: '10K+', label: 'Agoda Hotels' },
+    { icon: 'star', value: '4.5+', label: 'Average Rating' }
   ];
 
   features = [
     {
-      icon: 'compare_arrows',
-      title: 'Compare Prices',
-      description: 'Compare prices across multiple platforms in one place and find the best deals instantly.'
+      icon: 'hotel',
+      title: 'Best Agoda Deals',
+      description: 'Discover exclusive Agoda hotel deals and discounts curated just for you.'
     },
     {
       icon: 'verified',
-      title: 'Verified Partners',
-      description: 'We only work with trusted and verified booking platforms to ensure your safety.'
+      title: 'Trusted Partner',
+      description: 'We partner with Agoda, a leading global hotel booking platform trusted by millions.'
     },
     {
       icon: 'attach_money',
       title: 'Save More',
-      description: 'Get exclusive deals and cashback offers that you won\'t find anywhere else.'
+      description: 'Get access to special Agoda offers and promotions that help you save on every booking.'
     },
     {
-      icon: 'support_agent',
-      title: '24/7 Support',
-      description: 'Our dedicated support team is always here to help you with any questions.'
+      icon: 'public',
+      title: 'Worldwide Hotels',
+      description: 'Access millions of properties worldwide through Agoda\'s extensive network.'
     }
   ];
 

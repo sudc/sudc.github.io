@@ -6,4 +6,4 @@
 
 export * from './provider-data.models';
 export { BaseProviderDataService } from './base-provider-data.service';
-export { AgodaDataService, MakeMyTripDataService, BookingComDataService } from './agoda-data.service';
+export { AgodaDataService } from './agoda-data.service';
