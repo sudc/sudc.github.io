@@ -16,7 +16,7 @@
   
   .pd-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
   }
   
@@ -83,7 +83,13 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) {
+  .pd-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
   .popular-destinations {
     padding: 2rem 1rem;
     
