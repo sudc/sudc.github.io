@@ -1,0 +1,123 @@
+<!-- HEADER -->
+<header>
+  <div class="header-container">
+    <div class="logo">
+      <a routerLink="/">TripSaver</a>
+    </div>
+    <nav>
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+      <a routerLink="/hotels" routerLinkActive="active">Hotels</a>
+      <a routerLink="/deals" routerLinkActive="active">Deals</a>
+      <a routerLink="/contact" routerLinkActive="active">Contact</a>
+      <a routerLink="/about" routerLinkActive="active">About</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO SECTION -->
+<section class="hero-section">
+  <div class="container">
+    <h1 class="page-title">How TripSaver Helps You Choose the Right Hotel Platform</h1>
+    <p class="page-subtitle">
+      TripSaver helps travelers find the most suitable hotel booking platform based on their travel needs — 
+      <strong>without comparing prices or availability.</strong>
+    </p>
+  </div>
+</section>
+
+<!-- WHAT WE DO -->
+<section class="what-we-do-section">
+  <div class="container">
+    <h2 class="section-title">What We Do</h2>
+    <p class="section-intro">
+      We analyze general travel preferences such as:
+    </p>
+    
+    <div class="features-grid">
+      <div class="feature-item" *ngFor="let feature of features">
+        <div class="feature-icon">
+          <span class="material-icons">{{ feature.icon }}</span>
+        </div>
+        <h3>{{ feature.title }}</h3>
+        <p>{{ feature.description }}</p>
+      </div>
+    </div>
+
+    <p class="section-footer">
+      Based on these inputs, we recommend booking platforms that are commonly suited for these needs.
+    </p>
+  </div>
+</section>
+
+<!-- HOW RECOMMENDATIONS ARE MADE -->
+<section class="recommendations-section">
+  <div class="container">
+    <h2 class="section-title">How Recommendations Are Made</h2>
+    <p class="section-intro">
+      Our recommendations are based on:
+    </p>
+
+    <div class="factors-list">
+      <div class="factor-item" *ngFor="let factor of recommendationFactors">
+        <span class="material-icons">check_circle</span>
+        <span>{{ factor }}</span>
+      </div>
+    </div>
+
+    <div class="important-notice">
+      <span class="material-icons">info</span>
+      <p><strong>We do not compare live prices or guarantee the cheapest rates.</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- WHY USE TRIPSAVER -->
+<section class="benefits-section">
+  <div class="container">
+    <h2 class="section-title">Why Use TripSaver</h2>
+    
+    <div class="benefits-grid">
+      <div class="benefit-card" *ngFor="let benefit of benefits">
+        <div class="benefit-icon">
+          <span class="material-icons">{{ benefit.icon }}</span>
+        </div>
+        <h3>{{ benefit.title }}</h3>
+        <p>{{ benefit.description }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRANSPARENCY -->
+<section class="transparency-section">
+  <div class="container">
+    <div class="transparency-box">
+      <div class="transparency-icon">
+        <span class="material-icons">verified_user</span>
+      </div>
+      <h2>Transparency</h2>
+      <p>
+        TripSaver may earn a commission when you book through our links. 
+        <strong>This does not affect our recommendations.</strong>
+      </p>
+      <p class="small-text">
+        We recommend platforms based on general suitability for your preferences, 
+        not based on commission rates.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA SECTION -->
+<section class="cta-section">
+  <div class="container">
+    <h2>Ready to Find Your Perfect Platform?</h2>
+    <a routerLink="/" class="cta-button">
+      <span class="material-icons">search</span>
+      Get Started
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<app-footer></app-footer>

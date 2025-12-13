@@ -1,0 +1,187 @@
+<div class="requirement-modal-overlay" (click)="close()">
+  <div class="requirement-modal" (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="progress-info">
+        <span class="step-indicator">Step {{ currentStep }} of {{ totalSteps }}</span>
+        <button class="close-btn" (click)="close()" aria-label="Close">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
+      </div>
+    </div>
+
+    <!-- Form Content -->
+    <div class="modal-body">
+      <!-- Step 1: Destination -->
+      <div class="form-step" *ngIf="currentStep === 1">
+        <h2 class="step-title">Where are you travelling?</h2>
+        <div class="form-group">
+          <label for="destination">Destination</label>
+          <input 
+            type="text" 
+            id="destination"
+            [(ngModel)]="destination"
+            list="destinations"
+            placeholder="e.g., Goa, Mumbai, Dubai..."
+            class="input-field"
+            autofocus>
+          <datalist id="destinations">
+            <option *ngFor="let dest of popularDestinations" [value]="dest">
+          </datalist>
+        </div>
+      </div>
+
+      <!-- Step 2: Travel Type -->
+      <div class="form-step" *ngIf="currentStep === 2">
+        <h2 class="step-title">Who are you travelling with?</h2>
+        <div class="options-grid">
+          <button 
+            class="option-card"
+            [class.selected]="travelType === 'solo'"
+            (click)="selectTravelType('solo')">
+            <span class="material-icons">person</span>
+            <span class="option-label">Solo</span>
+          </button>
+          <button 
+            class="option-card"
+            [class.selected]="travelType === 'couple'"
+            (click)="selectTravelType('couple')">
+            <span class="material-icons">favorite</span>
+            <span class="option-label">Couple</span>
+          </button>
+          <button 
+            class="option-card"
+            [class.selected]="travelType === 'family'"
+            (click)="selectTravelType('family')">
+            <span class="material-icons">family_restroom</span>
+            <span class="option-label">Family</span>
+          </button>
+          <button 
+            class="option-card"
+            [class.selected]="travelType === 'business'"
+            (click)="selectTravelType('business')">
+            <span class="material-icons">business_center</span>
+            <span class="option-label">Business</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 3: Budget Range -->
+      <div class="form-step" *ngIf="currentStep === 3">
+        <h2 class="step-title">Your budget per night?</h2>
+        <div class="budget-options">
+          <button 
+            class="budget-card"
+            [class.selected]="budgetRange === 'budget'"
+            (click)="selectBudget('budget')">
+            <span class="budget-icon">₹</span>
+            <span class="budget-label">Budget</span>
+            <span class="budget-range">₹500 - ₹2,000</span>
+          </button>
+          <button 
+            class="budget-card"
+            [class.selected]="budgetRange === 'midrange'"
+            (click)="selectBudget('midrange')">
+            <span class="budget-icon">₹₹</span>
+            <span class="budget-label">Mid-range</span>
+            <span class="budget-range">₹2,000 - ₹6,000</span>
+          </button>
+          <button 
+            class="budget-card"
+            [class.selected]="budgetRange === 'luxury'"
+            (click)="selectBudget('luxury')">
+            <span class="budget-icon">₹₹₹</span>
+            <span class="budget-label">Luxury</span>
+            <span class="budget-range">₹6,000+</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 4: Preferences -->
+      <div class="form-step" *ngIf="currentStep === 4">
+        <h2 class="step-title">What matters most?</h2>
+        <p class="step-subtitle">Select all that apply (optional)</p>
+        <div class="preferences-grid">
+          <label class="preference-checkbox">
+            <input type="checkbox" [(ngModel)]="preferences.internationalBrands">
+            <span class="checkbox-custom"></span>
+            <span class="preference-label">
+              <span class="material-icons">public</span>
+              International hotel brands
+            </span>
+          </label>
+          <label class="preference-checkbox">
+            <input type="checkbox" [(ngModel)]="preferences.indianChains">
+            <span class="checkbox-custom"></span>
+            <span class="preference-label">
+              <span class="material-icons">location_city</span>
+              Indian hotel chains
+            </span>
+          </label>
+          <label class="preference-checkbox">
+            <input type="checkbox" [(ngModel)]="preferences.freeCancellation">
+            <span class="checkbox-custom"></span>
+            <span class="preference-label">
+              <span class="material-icons">event_available</span>
+              Free cancellation
+            </span>
+          </label>
+          <label class="preference-checkbox">
+            <input type="checkbox" [(ngModel)]="preferences.payAtHotel">
+            <span class="checkbox-custom"></span>
+            <span class="preference-label">
+              <span class="material-icons">credit_card</span>
+              Pay at hotel
+            </span>
+          </label>
+          <label class="preference-checkbox">
+            <input type="checkbox" [(ngModel)]="preferences.mobileDeal">
+            <span class="checkbox-custom"></span>
+            <span class="preference-label">
+              <span class="material-icons">smartphone</span>
+              Mobile-only deals
+            </span>
+          </label>
+          <label class="preference-checkbox">
+            <input type="checkbox" [(ngModel)]="preferences.couponsCashback">
+            <span class="checkbox-custom"></span>
+            <span class="preference-label">
+              <span class="material-icons">local_offer</span>
+              Coupons & cashback
+            </span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Navigation -->
+    <div class="modal-footer">
+      <button 
+        *ngIf="currentStep > 1"
+        class="btn-secondary"
+        (click)="prevStep()">
+        <span class="material-icons">arrow_back</span>
+        Back
+      </button>
+      <div class="spacer"></div>
+      <button 
+        *ngIf="currentStep < totalSteps"
+        class="btn-primary"
+        [disabled]="!canProceed()"
+        (click)="nextStep()">
+        Next
+        <span class="material-icons">arrow_forward</span>
+      </button>
+      <button 
+        *ngIf="currentStep === totalSteps"
+        class="btn-primary btn-submit"
+        (click)="submitForm()">
+        <span class="material-icons">check_circle</span>
+        Show Best Option for Me
+      </button>
+    </div>
+  </div>
+</div>

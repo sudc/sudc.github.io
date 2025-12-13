@@ -1,0 +1,75 @@
+<div class="result-modal-overlay" (click)="close()">
+  <div class="result-modal" (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="modal-header">
+      <button class="close-btn" (click)="close()" aria-label="Close">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+
+    <!-- Primary Recommendation -->
+    <div class="modal-body" *ngIf="primaryRecommendation">
+      <div class="recommendation-badge">
+        <span class="material-icons">stars</span>
+        Recommended platform for you
+      </div>
+
+      <div class="primary-card">
+        <div class="platform-header">
+          <div class="platform-logo" *ngIf="primaryRecommendation.logo">
+            <img [src]="primaryRecommendation.logo" [alt]="primaryRecommendation.platform" />
+          </div>
+          <h2 class="platform-name" *ngIf="!primaryRecommendation.logo">
+            {{ primaryRecommendation.platform }}
+          </h2>
+          <div class="verified-badge">
+            <span class="material-icons">verified</span>
+          </div>
+        </div>
+
+        <div class="reasons-section">
+          <h3 class="section-title">Why?</h3>
+          <ul class="reasons-list">
+            <li *ngFor="let reason of primaryRecommendation.reasons">
+              <span class="bullet">•</span>
+              {{ reason }}
+            </li>
+          </ul>
+        </div>
+
+        <button 
+          class="cta-primary"
+          (click)="onViewPlatform(primaryRecommendation)"
+          [style.background]="primaryRecommendation.color">
+          <span class="material-icons">trending_flat</span>
+          View recommended options on {{ primaryRecommendation.platform }}
+        </button>
+      </div>
+
+      <!-- Secondary Recommendation -->
+      <div class="secondary-card" *ngIf="secondaryRecommendation">
+        <div class="alternative-label">Alternative option:</div>
+        <div class="secondary-content">
+          <div class="secondary-header">
+            <strong>{{ secondaryRecommendation.platform }}</strong>
+            <span class="separator">–</span>
+            <span class="secondary-reason">{{ secondaryRecommendation.reasons[0] }}</span>
+          </div>
+          <button 
+            class="btn-secondary"
+            (click)="onViewPlatform(secondaryRecommendation)">
+            View options
+            <span class="material-icons">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Trust Footer -->
+      <div class="trust-footer">
+        <p class="disclaimer">
+          <strong>Note:</strong> TripSaver recommends booking platforms based on travel preferences and publicly available platform features. We do not compare prices or availability.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

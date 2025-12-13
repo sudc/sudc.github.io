@@ -20,38 +20,51 @@
   </div>
 </header>
 
-<!-- HERO BANNER -->
-<app-hero-banner></app-hero-banner>
-
-<!-- SMART SEARCH SECTION -->
-<!-- <section class="smart-search-section">
+<!-- HERO SECTION - Single Clear CTA -->
+<section class="hero-main">
   <div class="container">
-    <div class="section-header">
-      <h2>🔍 Smart Hotel Search</h2>
-      <p>Search thousands of hotels instantly with our intelligent comparison across top travel partners</p>
-    </div>
-    <div class="search-wrapper">
-      <app-search-bar></app-search-bar>
-    </div>
-    <div class="search-features">
-      <div class="feature-item">
-        <i class="fas fa-bolt"></i>
-        <span>Instant Results</span>
-      </div>
-      <div class="feature-item">
-        <i class="fas fa-tags"></i>
-        <span>Best Prices</span>
-      </div>
-      <div class="feature-item">
-        <i class="fas fa-shield-alt"></i>
-        <span>Secure Booking</span>
-      </div>
+    <div class="hero-content">
+      <h1 class="hero-headline">
+        Not sure where to book your hotel?<br>
+        We'll recommend the <strong>best suited platform for YOU</strong>.
+      </h1>
+      <button class="cta-primary" (click)="startSearch()">
+        <span class="material-icons">search</span>
+        Find Recommended Platform
+      </button>
+      <p class="hero-disclaimer">
+        <span class="material-icons">info</span>
+        Recommendations are based on travel preferences and general platform strengths, not live pricing.
+      </p>
     </div>
   </div>
-</section> -->
+</section>
+
+<!-- About TripSaver Section -->
+<section class="about-tripsaver">
+  <div class="container">
+    <p class="about-text">
+      TripSaver is a travel recommendation platform that helps users choose the most suitable booking website based on their travel preferences. We redirect users to trusted partners like Agoda and MakeMyTrip to complete bookings.
+    </p>
+  </div>
+</section>
+
+<!-- Requirement Form Modal -->
+<app-requirement-form 
+  *ngIf="showRequirementForm"
+  (formSubmit)="handleFormSubmit($event)"
+  (closeForm)="closeRequirementForm()">
+</app-requirement-form>
+
+<!-- Recommendation Result Modal -->
+<app-recommendation-result
+  *ngIf="showRecommendationResult && userRequirements"
+  [requirements]="userRequirements"
+  (closeResult)="closeRecommendationResult()">
+</app-recommendation-result>
 
 <!-- QUICK ACTION CTAs - Visible Without Scrolling -->
-<section class="quick-cta-bar">
+<section class="quick-cta-bar" style="display: none;">
   <div class="container">
     <div class="quick-cta-grid">
       <a routerLink="/hotels" class="quick-cta-card">
@@ -191,57 +204,88 @@
 <section class="why-choose-section">
   <div class="container">
     <div class="section-header">
-      <h2>Why Choose TripSaver?</h2>
-      <p>Simple, fast, and hassle-free hotel search experience</p>
+      <h2>What Makes TripSaver Unique?</h2>
+      <p>We solve the confusion, not compete with booking platforms</p>
     </div>
     <div class="features-grid">
       <div class="feature-card">
         <div class="feature-icon-circle">
-          <span class="material-icons">no_accounts</span>
+          <span class="material-icons">apps</span>
         </div>
-        <h3>No Login Required</h3>
-        <p>Start searching instantly without creating an account or signing up</p>
+        <h3>Too Many Apps?</h3>
+        <p>Stop juggling multiple platforms. Get one clear recommendation in 60 seconds.</p>
       </div>
       
       <div class="feature-card">
         <div class="feature-icon-circle">
-          <span class="material-icons">block</span>
+          <span class="material-icons">psychology</span>
         </div>
-        <h3>No Ads Clutter</h3>
-        <p>Clean, distraction-free interface focused on your hotel search</p>
-      </div>
-      
-      <div class="feature-card coming-soon">
-        <div class="feature-icon-circle">
-          <span class="material-icons">compare_arrows</span>
-        </div>
-        <h3>Compare Across Partners</h3>
-        <p>Soon you'll be able to compare prices from multiple booking platforms</p>
-        <span class="badge-coming-soon">Coming Soon</span>
+        <h3>Confusing Offers?</h3>
+        <p>No more analysis paralysis. We guide you to the platform that fits your needs best.</p>
       </div>
       
       <div class="feature-card">
         <div class="feature-icon-circle">
-          <span class="material-icons">bookmark</span>
+          <span class="material-icons">gps_fixed</span>
         </div>
-        <h3>Save Hotels Locally</h3>
-        <p>Bookmark your favorite hotels in your browser for quick access later</p>
+        <h3>Wrong Platform?</h3>
+        <p>Budget traveler on a luxury site? Business trip on a leisure app? We match you right.</p>
       </div>
       
       <div class="feature-card">
         <div class="feature-icon-circle">
-          <span class="material-icons">search</span>
+          <span class="material-icons">schedule</span>
         </div>
-        <h3>Smart Search</h3>
-        <p>Intelligent autocomplete helps you find hotels, cities, and destinations faster</p>
+        <h3>Wasting Time?</h3>
+        <p>Answer 4 simple questions. Get your recommended platform. Done in 1 minute.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS / FAQ -->
+<section class="how-it-works-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>How Do We Decide Recommendations?</h2>
+      <p>Transparent, preference-based guidance</p>
+    </div>
+    <div class="how-it-works-content">
+      <div class="explanation-card">
+        <div class="explanation-icon">
+          <span class="material-icons">lightbulb</span>
+        </div>
+        <p class="explanation-text">
+          We use a <strong>preference-based recommendation model</strong> that considers your travel type, destination, 
+          and platform strengths such as inventory coverage, cancellation flexibility, and payment options. 
+          <strong>We do not compare live prices or availability.</strong>
+        </p>
       </div>
       
-      <div class="feature-card">
-        <div class="feature-icon-circle">
-          <span class="material-icons">link</span>
+      <div class="features-breakdown">
+        <div class="breakdown-item">
+          <span class="material-icons">check_circle</span>
+          <span>Your travel preferences (solo, couple, family, business)</span>
         </div>
-        <h3>Direct Partner Links</h3>
-        <p>Book directly with Agoda - no middleman, no extra fees, just great deals</p>
+        <div class="breakdown-item">
+          <span class="material-icons">check_circle</span>
+          <span>Destination type (domestic vs international)</span>
+        </div>
+        <div class="breakdown-item">
+          <span class="material-icons">check_circle</span>
+          <span>Platform strengths (luxury, budget, flexibility)</span>
+        </div>
+        <div class="breakdown-item">
+          <span class="material-icons">check_circle</span>
+          <span>Payment & cancellation preferences</span>
+        </div>
+      </div>
+
+      <div class="learn-more-cta">
+        <a routerLink="/how-it-works" class="learn-more-btn">
+          <span class="material-icons">article</span>
+          Learn More About Our Process
+        </a>
       </div>
     </div>
   </div>

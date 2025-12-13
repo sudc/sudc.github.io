@@ -10,6 +10,8 @@ import { FeaturedDealsComponent } from '../../shared/components/featured-deals/f
 import { FooterComponent } from '../../shared/components/footer/footer.component';
 import { AgodaHotelsComponent } from '../../shared/components/agoda-hotels/agoda-hotels.component';
 import { SearchBarComponent } from '../../shared/components/search-bar/search-bar.component';
+import { RequirementFormComponent, UserRequirements } from '../../shared/components/requirement-form/requirement-form.component';
+import { RecommendationResultComponent } from '../../shared/components/recommendation-result/recommendation-result.component';
 
 interface Category {
   id: string;
@@ -44,7 +46,9 @@ interface Deal {
     FeaturedDealsComponent,
     FooterComponent,
     AgodaHotelsComponent,
-    SearchBarComponent
+    SearchBarComponent,
+    RequirementFormComponent,
+    RecommendationResultComponent
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss', './home.component.css']
@@ -52,6 +56,9 @@ interface Deal {
 export class HomeComponent implements OnInit {
   categories: Category[] = [];
   isMenuOpen = false;
+  showRequirementForm = false;
+  showRecommendationResult = false;
+  userRequirements: UserRequirements | null = null;
 
   constructor(
     private http: HttpClient,
@@ -73,6 +80,28 @@ export class HomeComponent implements OnInit {
     
     // Load data
     this.loadCategories();
+  }
+
+  startSearch(): void {
+    this.showRequirementForm = true;
+  }
+
+  closeRequirementForm(): void {
+    this.showRequirementForm = false;
+  }
+
+  handleFormSubmit(requirements: UserRequirements): void {
+    console.log('User requirements:', requirements);
+    this.userRequirements = requirements;
+    
+    // Close form and show recommendation result
+    this.showRequirementForm = false;
+    this.showRecommendationResult = true;
+  }
+
+  closeRecommendationResult(): void {
+    this.showRecommendationResult = false;
+    this.userRequirements = null;
   }
 
   loadCategories(): void {
