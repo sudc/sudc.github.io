@@ -40,19 +40,13 @@ export class PopularDestinationsComponent implements OnInit, OnDestroy {
   ];
 
   ngOnInit(): void {
-    // Always show section
+    // Always show section with immediate sample data
     this.showSection = true;
+    this.loading = false;
+    this.loadSampleDestinations();
     
-    // Try to load real data from Agoda CSV
-    if (this.agodaService.isDataSourceAvailable()) {
-      this.loading = true;
-      this.loadPopularDestinations();
-    } else {
-      // Use sample data only if CSV not configured
-      this.loading = false;
-      this.loadSampleDestinations();
-      console.info('ℹ️ Agoda CSV not configured. Using sample destinations.');
-    }
+    // Skip CSV loading for now (can be enabled later when CSV is properly configured)
+    console.info('✅ Displaying sample destinations');
   }
 
   ngOnDestroy(): void {

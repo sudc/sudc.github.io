@@ -22,19 +22,13 @@ export class AgodaHotelsComponent implements OnInit, OnDestroy {
   constructor(private agodaService: AgodaDataService) {}
 
   ngOnInit(): void {
-    // Always show section
+    // Always show section with immediate sample data
     this.showSection = true;
+    this.loading = false;
+    this.featuredHotels = this.getSampleHotels();
     
-    // Try to load real data from Agoda CSV
-    if (this.agodaService.isDataSourceAvailable()) {
-      this.loading = true;
-      this.loadFeaturedHotels();
-    } else {
-      // Use sample data only if CSV not configured
-      this.loading = false;
-      this.featuredHotels = this.getSampleHotels();
-      console.info('ℹ️ Agoda CSV not configured. Using sample data.');
-    }
+    // Skip CSV loading for now (can be enabled later when CSV is properly configured)
+    console.info('✅ Displaying sample hotel data');
   }
 
   ngOnDestroy(): void {
