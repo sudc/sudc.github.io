@@ -12,7 +12,7 @@
     <div *ngIf="showDropdown || isSearching" class="search-dropdown">
       <div *ngIf="isSearching" class="search-loading">
         <div class="spinner"></div>
-        <span>Searching...</span>
+        <span>Searching hotels...</span>
       </div>
       
       <ul *ngIf="!isSearching && searchResults.length > 0" class="search-results">
@@ -46,7 +46,7 @@
 
       <div *ngIf="!isSearching && searchResults.length === 0 && destination.length >= 2" class="no-results">
         <i class="fas fa-search"></i>
-        <p>No hotels found. Try a different search term.</p>
+        <p>No hotels found for "{{ destination }}". Try different search terms like city names (Mumbai, Goa) or hotel names.</p>
       </div>
     </div>
   </div>

@@ -210,17 +210,15 @@ export const AGODA_CONFIG: AgodaAffiliateConfig = {
   dataSources: {
     hotelsCSV: {
       type: 'csv',
-      // OPTION 1: Google Drive direct download link
-      // Get your file ID from: https://drive.google.com/file/d/FILE_ID/view
-      // Replace FILE_ID below with your actual Google Drive file ID
-      path: 'https://drive.google.com/uc?export=download&id=YOUR_GOOGLE_DRIVE_FILE_ID',
+      // Google Drive direct download link with actual file ID
+      path: 'https://drive.google.com/uc?export=download&id=1vYalVP7-H0SA1jCcVTTBTPaTkkjDADrY',
       
       // OPTION 2: Local split CSV files (for files > 100MB)
       // path: 'assets/data/hotels',
       // indexPath: 'assets/data/hotels/index.json',
       
       indexPath: undefined, // Not needed for Google Drive
-      enabled: false // Set to true once you add your Google Drive link
+      enabled: true // ✅ Enabled - Data source is configured with Google Drive
     },
     flightsCSV: {
       type: 'csv',

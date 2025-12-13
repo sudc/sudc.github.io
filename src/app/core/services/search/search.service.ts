@@ -29,12 +29,17 @@ export class SearchService {
   }
 
   private loadAllHotels(): void {
-    this.agodaService.getHotelsByCity('').subscribe({
+    // Load all hotels from data source (Google Drive CSV or local files)
+    this.agodaService.loadHotelData().subscribe({
       next: (hotels: AgodaHotel[]) => {
         this.allHotels = hotels;
         this.hotelsLoaded = true;
+        console.log(`✅ Loaded ${hotels.length} hotels for search`);
       },
-      error: (err: any) => console.error('Failed to load hotels for search:', err)
+      error: (err: any) => {
+        console.error('Failed to load hotels for search:', err);
+        this.hotelsLoaded = false;
+      }
     });
   }
 
@@ -51,9 +56,14 @@ export class SearchService {
     const searchTerm = query.trim().toLowerCase();
     
     // Wait for hotels to load
-    if (!this.hotelsLoaded) {
-      return this.agodaService.getHotelsByCity('').pipe(
-        map((hotels: AgodaHotel[]) => this.filterHotels(hotels, searchTerm))
+    if (!this.hotelsLoaded || this.allHotels.length === 0) {
+      return this.agodaService.loadHotelData().pipe(
+        map((hotels: AgodaHotel[]) => {
+          if (hotels.length === 0) {
+            console.warn('⚠️ No hotels loaded for search');
+          }
+          return this.filterHotels(hotels, searchTerm);
+        })
       );
     }
 
@@ -120,8 +130,8 @@ export class SearchService {
    * Get hotel by ID for direct navigation
    */
   getHotelById(hotelId: string): Observable<SearchResult | null> {
-    if (!this.hotelsLoaded) {
-      return this.agodaService.getHotelsByCity('').pipe(
+    if (!this.hotelsLoaded || this.allHotels.length === 0) {
+      return this.agodaService.loadHotelData().pipe(
         map((hotels: AgodaHotel[]) => {
           const hotel = hotels.find((h: AgodaHotel) => h.hotelId === hotelId);
           return hotel ? this.mapToSearchResult(hotel) : null;
