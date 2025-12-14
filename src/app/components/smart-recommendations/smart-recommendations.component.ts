@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { BookingModalComponent } from '../booking-modal/booking-modal.component';
 import { 
   RecommendationEngine, 
   RecommendationInput,
@@ -14,7 +15,7 @@ import { DESTINATIONS_DATA } from '../../core/engines/destination/destinations.d
 @Component({
   selector: 'app-smart-recommendations',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, BookingModalComponent],
   providers: [MongoDBService, DestinationScoringEngine, TripReadinessEngine, RecommendationEngine],
   template: `
     <section class="smart-recommendations-section">
@@ -170,6 +171,78 @@ import { DESTINATIONS_DATA } from '../../core/engines/destination/destinations.d
                     </p>
                   </div>
                   
+                  <!-- Score Breakdown Button -->
+                  <button (click)="toggleScoreDetails(i)" class="score-breakdown-btn">
+                    {{ isScoreExpanded(i) ? '▼ Hide Score Details' : '🔍 Why This Score?' }}
+                  </button>
+                  
+                  <!-- Expandable Score Breakdown -->
+                  <div *ngIf="isScoreExpanded(i)" class="score-breakdown">
+                    <h5 class="breakdown-title">Score Breakdown (110-point system)</h5>
+                    <p class="breakdown-subtitle">From our Destination Scoring Engine</p>
+                    
+                    <ng-container *ngIf="getScoreBreakdown(rec) as breakdown">
+                      <div class="breakdown-item">
+                        <div class="breakdown-label">
+                          <span>Timing Match</span>
+                          <span class="breakdown-score">{{ breakdown.timing.score }}/{{ breakdown.timing.max }}</span>
+                        </div>
+                        <div class="progress-bar">
+                          <div class="progress-fill" [style.width.%]="(breakdown.timing.score / breakdown.timing.max) * 100"></div>
+                        </div>
+                      </div>
+                      
+                      <div class="breakdown-item">
+                        <div class="breakdown-label">
+                          <span>Budget Match</span>
+                          <span class="breakdown-score">{{ breakdown.budget.score }}/{{ breakdown.budget.max }}</span>
+                        </div>
+                        <div class="progress-bar">
+                          <div class="progress-fill" [style.width.%]="(breakdown.budget.score / breakdown.budget.max) * 100"></div>
+                        </div>
+                      </div>
+                      
+                      <div class="breakdown-item">
+                        <div class="breakdown-label">
+                          <span>Interest Match</span>
+                          <span class="breakdown-score">{{ breakdown.interest.score }}/{{ breakdown.interest.max }}</span>
+                        </div>
+                        <div class="progress-bar">
+                          <div class="progress-fill" [style.width.%]="(breakdown.interest.score / breakdown.interest.max) * 100"></div>
+                        </div>
+                      </div>
+                      
+                      <div class="breakdown-item">
+                        <div class="breakdown-label">
+                          <span>Climate Preference</span>
+                          <span class="breakdown-score">{{ breakdown.climate.score }}/{{ breakdown.climate.max }}</span>
+                        </div>
+                        <div class="progress-bar">
+                          <div class="progress-fill" [style.width.%]="(breakdown.climate.score / breakdown.climate.max) * 100"></div>
+                        </div>
+                      </div>
+                      
+                      <div class="breakdown-item">
+                        <div class="breakdown-label">
+                          <span>Popularity Bonus</span>
+                          <span class="breakdown-score">{{ breakdown.popularity.score }}/{{ breakdown.popularity.max }}</span>
+                        </div>
+                        <div class="progress-bar">
+                          <div class="progress-fill" [style.width.%]="(breakdown.popularity.score / breakdown.popularity.max) * 100"></div>
+                        </div>
+                      </div>
+                      
+                      <div class="breakdown-total">
+                        <span>Total Score</span>
+                        <span class="total-score">{{ breakdown.total }}/{{ breakdown.totalMax }}</span>
+                      </div>
+                      
+                      <div class="transparency-note">
+                        ✔ Affiliate-safe • ✔ Transparent • ✔ Trust-building
+                      </div>
+                    </ng-container>
+                  </div>
+                  
                   <!-- Info Row -->
                   <div class="info-row">
                     <span class="info-item">💰 {{ rec.destination.budget | titlecase }}</span>
@@ -177,11 +250,9 @@ import { DESTINATIONS_DATA } from '../../core/engines/destination/destinations.d
                   </div>
                   
                   <!-- CTA Button -->
-                  <a [href]="'https://www.agoda.com/city/' + rec.destination.agoda + '.html?cid=1844104'"
-                     target="_blank"
-                     class="cta-button">
-                    View Hotels on Agoda →
-                  </a>
+                  <button (click)="openBookingModal(rec)" class="cta-button">
+                    View Booking Options →
+                  </button>
                 </div>
               </div>
             </div>
@@ -195,6 +266,14 @@ import { DESTINATIONS_DATA } from '../../core/engines/destination/destinations.d
         </div>
       </div>
     </section>
+    
+    <!-- Booking Modal -->
+    <app-booking-modal
+      [isOpen]="isBookingModalOpen"
+      [destinationName]="selectedDestination?.state || ''"
+      [agodaCode]="selectedDestination?.agoda || ''"
+      (closed)="closeBookingModal()">
+    </app-booking-modal>
   `,
   styles: [`
     .smart-recommendations-section {
@@ -433,6 +512,8 @@ import { DESTINATIONS_DATA } from '../../core/engines/destination/destinations.d
       text-align: center;
       font-weight: 600;
       border-radius: 0.5rem;
+      border: none;
+      cursor: pointer;
       transition: all 0.3s;
       text-decoration: none;
       box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
@@ -442,6 +523,124 @@ import { DESTINATIONS_DATA } from '../../core/engines/destination/destinations.d
       background: linear-gradient(135deg, #059669 0%, #047857 100%);
       transform: translateY(-2px);
       box-shadow: 0 6px 12px -2px rgba(16, 185, 129, 0.4);
+    }
+    
+    .score-breakdown-btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 0.75rem;
+    }
+    
+    .score-breakdown-btn:hover {
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+    }
+    
+    .score-breakdown {
+      background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      border: 2px solid #fbbf24;
+      animation: slideDown 0.3s ease-out;
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        max-height: 0;
+      }
+      to {
+        opacity: 1;
+        max-height: 600px;
+      }
+    }
+    
+    .breakdown-title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: #92400e;
+      margin: 0 0 0.25rem 0;
+    }
+    
+    .breakdown-subtitle {
+      font-size: 0.75rem;
+      color: #78350f;
+      margin: 0 0 1rem 0;
+      font-style: italic;
+    }
+    
+    .breakdown-item {
+      margin-bottom: 0.75rem;
+    }
+    
+    .breakdown-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.375rem;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: #374151;
+    }
+    
+    .breakdown-score {
+      color: #667eea;
+      font-weight: 700;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 0.5rem;
+      background: #ffffff;
+      border-radius: 0.25rem;
+      overflow: hidden;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      transition: width 0.6s ease-out;
+      border-radius: 0.25rem;
+    }
+    
+    .breakdown-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem;
+      background: white;
+      border-radius: 0.375rem;
+      margin-top: 0.75rem;
+      margin-bottom: 0.75rem;
+      font-weight: 700;
+      color: #1f2937;
+      border: 2px solid #667eea;
+    }
+    
+    .total-score {
+      font-size: 1.25rem;
+      color: #667eea;
+    }
+    
+    .transparency-note {
+      text-align: center;
+      font-size: 0.6875rem;
+      color: #059669;
+      font-weight: 600;
+      padding: 0.5rem;
+      background: white;
+      border-radius: 0.25rem;
     }
     
     .error-message {
@@ -473,8 +672,13 @@ export class SmartRecommendationsComponent implements OnInit {
   ];
   
   recommendations: EnhancedRecommendation[] = [];
+  expandedScores: Set<number> = new Set();
   isLoading = false;
   error = '';
+  
+  // Booking modal state
+  isBookingModalOpen = false;
+  selectedDestination: any = null;
 
   ngOnInit(): void {
     // Auto-load recommendations with current month
@@ -490,10 +694,102 @@ export class SmartRecommendationsComponent implements OnInit {
     }
   }
 
+  toggleScoreDetails(index: number): void {
+    if (this.expandedScores.has(index)) {
+      this.expandedScores.delete(index);
+    } else {
+      this.expandedScores.add(index);
+    }
+  }
+
+  isScoreExpanded(index: number): boolean {
+    return this.expandedScores.has(index);
+  }
+
+  getScoreBreakdown(rec: EnhancedRecommendation) {
+    const dest = rec.destination;
+    const prefs = this.preferences;
+    
+    let timingScore = 0;
+    let budgetScore = 0;
+    let interestScore = 0;
+    let climateScore = 0;
+    let popularityScore = 0;
+
+    // Timing (40 max)
+    if (dest.bestMonths.includes(prefs.month)) {
+      timingScore = 40;
+    } else if (dest.avoidMonths.includes(prefs.month)) {
+      timingScore = 10;
+    } else {
+      timingScore = 20;
+    }
+
+    // Budget (30 max)
+    if (dest.budget === prefs.budget) {
+      budgetScore = 30;
+    } else {
+      const budgetOrder = ['budget', 'moderate', 'premium'];
+      const destIndex = budgetOrder.indexOf(dest.budget);
+      const prefIndex = budgetOrder.indexOf(prefs.budget);
+      const diff = Math.abs(destIndex - prefIndex);
+      budgetScore = diff === 1 ? 15 : 5;
+    }
+
+    // Interest (25 max)
+    if (prefs.categories.length > 0) {
+      const matches = dest.categories.filter(cat => prefs.categories.includes(cat));
+      interestScore = Math.min(25, matches.length * 12);
+    }
+
+    // Climate (15 max)
+    climateScore = rec.overallRecommendationScore >= 80 ? 15 : (rec.overallRecommendationScore >= 65 ? 10 : 5);
+
+    // Popularity (5 max)
+    const popularDestinations = ['goa', 'manali', 'jaipur', 'kerala', 'leh', 'andaman'];
+    const destId = (dest as any)._id || rec.destinationId;
+    popularityScore = popularDestinations.includes(destId) ? 5 : 0;
+
+    return {
+      timing: { score: timingScore, max: 40 },
+      budget: { score: budgetScore, max: 30 },
+      interest: { score: interestScore, max: 25 },
+      climate: { score: climateScore, max: 15 },
+      popularity: { score: popularityScore, max: 5 },
+      total: timingScore + budgetScore + interestScore + climateScore + popularityScore,
+      totalMax: 110
+    };
+  }
+
+  getMonthName(month: number): string {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return months[month - 1] || '';
+  }
+
+  formatBudget(budget: string): string {
+    const budgetMap: { [key: string]: string } = {
+      'budget': '₹10k-20k',
+      'moderate': '₹15k-30k',
+      'premium': '₹30k+'
+    };
+    return budgetMap[budget] || budget;
+  }
+
+  hasInterestMatch(categories: string[]): boolean {
+    if (this.preferences.categories.length === 0) return false;
+    return categories.some(cat => this.preferences.categories.includes(cat));
+  }
+
+  getMatchedInterests(categories: string[]): string[] {
+    return categories.filter(cat => this.preferences.categories.includes(cat));
+  }
+
   async getRecommendations(): Promise<void> {
     this.isLoading = true;
     this.error = '';
     this.recommendations = [];
+    this.expandedScores.clear();
 
     try {
       const input: RecommendationInput = {
@@ -595,5 +891,15 @@ export class SmartRecommendationsComponent implements OnInit {
       default:
         return 'Not Recommended';
     }
+  }
+
+  openBookingModal(rec: EnhancedRecommendation): void {
+    this.selectedDestination = rec.destination;
+    this.isBookingModalOpen = true;
+  }
+
+  closeBookingModal(): void {
+    this.isBookingModalOpen = false;
+    this.selectedDestination = null;
   }
 }
