@@ -15,29 +15,118 @@
       <!-- <a routerLink="/flights" routerLinkActive="active" (click)="closeMenu()">Flights</a> -->
       <a routerLink="/deals" routerLinkActive="active" (click)="closeMenu()">Deals</a>
       <a routerLink="/how-it-works" routerLinkActive="active" (click)="closeMenu()">How It Works</a>
-      <!-- <a routerLink="/methodology" routerLinkActive="active" (click)="closeMenu()">Methodology</a> -->
+      <a routerLink="/methodology" routerLinkActive="active" (click)="closeMenu()">Methodology</a>
       <a routerLink="/contact" routerLinkActive="active" (click)="closeMenu()">Contact</a>
       <a routerLink="/about" routerLinkActive="active" (click)="closeMenu()">About</a>
     </nav>
   </div>
 </header>
 
-<!-- HERO SECTION - Single Clear CTA -->
-<section class="hero-main">
+<!-- HERO SECTION - Screen 1: Landing / Entry (Engine 1 - Destination Scoring) -->
+<section class="hero-section">
   <div class="container">
     <div class="hero-content">
       <h1 class="hero-headline">
-        Not sure where to book your hotel?<br>
-        We'll recommend the <strong>best suited platform for YOU</strong>.
+        Find the best destination for <strong>YOU</strong> — powered by smart scoring
       </h1>
-      <button class="cta-primary" (click)="startSearch()">
-        <span class="material-icons">search</span>
-        Find Recommended Platform
-      </button>
-      <p class="hero-disclaimer">
-        <span class="material-icons">info</span>
-        Recommendations are based on travel preferences and general platform strengths, not live pricing.
+      <p class="hero-subtext">
+        Not ads. Not opinions. Data-backed travel recommendations.
       </p>
+
+      <!-- SMART INPUT CARD -->
+      <div class="smart-input-card">
+        <form (ngSubmit)="submitDestinationPreferences()" class="preference-form">
+          
+          <!-- When are you traveling? -->
+          <div class="form-group">
+            <label for="travel-month">When are you traveling? <span class="required">*</span></label>
+            <select 
+              id="travel-month"
+              [(ngModel)]="travelMonth"
+              name="travelMonth"
+              class="form-input"
+              required>
+              <option value="" disabled>Select a month</option>
+              <option *ngFor="let month of monthOptions" [value]="month">{{ month }}</option>
+            </select>
+          </div>
+
+          <!-- Your budget range -->
+          <div class="form-group">
+            <label for="budget-range">Your budget range <span class="required">*</span></label>
+            <select 
+              id="budget-range"
+              [(ngModel)]="budgetRange"
+              name="budgetRange"
+              class="form-input"
+              required>
+              <option value="" disabled>Select budget</option>
+              <option *ngFor="let option of budgetOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Your interests -->
+          <div class="form-group">
+            <label>Your interests <span class="required">*</span></label>
+            <div class="interest-grid">
+              <div *ngFor="let interest of interestOptions" class="interest-checkbox">
+                <input 
+                  [id]="interest.value"
+                  type="checkbox"
+                  [checked]="isInterestSelected(interest.value)"
+                  (change)="toggleInterest(interest.value)">
+                <label [for]="interest.value">{{ interest.label }}</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Climate preference -->
+          <div class="form-group">
+            <label for="climate">Climate preference <span class="required">*</span></label>
+            <select 
+              id="climate"
+              [(ngModel)]="climatePreference"
+              name="climatePreference"
+              class="form-input"
+              required>
+              <option value="" disabled>Select climate</option>
+              <option *ngFor="let option of climateOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+
+          <!-- CTA Button -->
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">
+              Get Recommendations →
+            </button>
+            <button type="button" class="btn-secondary" (click)="resetForm()">
+              Reset
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- TRUST STRIP -->
+      <div class="trust-strip">
+        <div class="trust-item">
+          <span class="check-icon">✔</span>
+          <span>Transparent scoring</span>
+        </div>
+        <div class="trust-item">
+          <span class="check-icon">✔</span>
+          <span>No forced bookings</span>
+        </div>
+        <div class="trust-item">
+          <span class="check-icon">✔</span>
+          <span>Affiliate links disclosed</span>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>

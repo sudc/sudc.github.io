@@ -10,9 +10,11 @@ import { MethodologyComponent } from './pages/methodology/methodology.component'
 import { EngineTestComponent } from './pages/engine-test/engine-test.component';
 import { MongoDbTestComponent } from './pages/mongodb-test/mongodb-test.component';
 import { DataSeederComponent } from './pages/data-seeder/data-seeder.component';
+import { ResultsComponent } from './pages/results/results.component';
 
 export const routes: Routes = [
 	{ path: '', component: HomeComponent },
+	{ path: 'results', component: ResultsComponent },
 	{ path: 'hotels', component: HotelsComponent },
 	{ path: 'flights', component: FlightsComponent },
 	{ path: 'deals', component: DealsComponent },

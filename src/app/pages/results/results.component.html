@@ -1,0 +1,79 @@
+<!-- HEADER -->
+<header>
+  <div class="header-container">
+    <div class="logo">
+      <a routerLink="/">TripSaver</a>
+    </div>
+    
+    <nav class="nav-breadcrumb">
+      <a routerLink="/">Home</a>
+      <span class="divider">→</span>
+      <span class="current">Your Recommendations</span>
+    </nav>
+  </div>
+</header>
+
+<!-- SCREEN 2: DESTINATION SCORING RESULTS -->
+<section class="results-section">
+  <div class="container">
+    
+    <!-- Page Header -->
+    <div class="results-header">
+      <h1 class="results-title">Top Matches for {{ travelMonth }}</h1>
+      <p class="results-subtitle">
+        Based on your preferences: {{ interests.join(', ') }} | Budget: {{ budgetRange }}
+      </p>
+      <button class="btn-reset" (click)="resetPreferences()">
+        Change Preferences
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Finding the best destinations for you...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !isLoading" class="error-state">
+      <p class="error-message">{{ error }}</p>
+      <button class="btn-primary" (click)="resetPreferences()">
+        Go Back & Try Again
+      </button>
+    </div>
+
+    <!-- Results Grid -->
+    <div *ngIf="!isLoading && !error && recommendations.length > 0" class="results-grid">
+      
+      <!-- Smart Recommendations Component (Screen 2) -->
+      <app-smart-recommendations 
+        [recommendations]="recommendations">
+      </app-smart-recommendations>
+
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && !error && recommendations.length === 0" class="empty-state">
+      <p class="empty-message">No recommendations found. Please try different preferences.</p>
+      <button class="btn-primary" (click)="resetPreferences()">
+        Update Preferences
+      </button>
+    </div>
+
+    <!-- IMPROVE ACCURACY CTA -->
+    <div class="improve-accuracy-section" *ngIf="!isLoading && !error && recommendations.length > 0">
+      <div class="improve-card">
+        <h2>Want even better recommendations?</h2>
+        <p>Answer 4 quick questions about your trip readiness → Get personalized insights</p>
+        <button class="btn-secondary" (click)="improveAccuracy()">
+          Improve Accuracy (Optional) →
+        </button>
+        <p class="skip-text">Or skip and proceed to booking options</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Trust Badges -->
+<app-trust-badges></app-trust-badges>

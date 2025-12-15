@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Title, Meta } from '@angular/platform-browser';
 import { PopularDestinationsComponent } from '../../shared/components/popular-destinations/popular-destinations.component';
@@ -11,6 +12,7 @@ import { RequirementFormComponent, UserRequirements } from '../../shared/compone
 import { RecommendationResultComponent } from '../../shared/components/recommendation-result/recommendation-result.component';
 import { SmartRecommendationsComponent } from '../../components/smart-recommendations/smart-recommendations.component';
 import { TrustBadgesComponent } from '../../components/trust-badges/trust-badges.component';
+import { RecommendationEngine } from '../../core/services/recommendation/recommendation.engine';
 
 interface Category {
   id: string;
@@ -39,6 +41,7 @@ interface Deal {
     CommonModule,
     RouterLink,
     RouterLinkActive,
+    FormsModule,
     PopularDestinationsComponent, 
     TopDealsComponent,
     FooterComponent,
@@ -58,10 +61,46 @@ export class HomeComponent implements OnInit {
   showRecommendationResult = false;
   userRequirements: UserRequirements | null = null;
 
+  // Screen 1: Landing Form Properties (Engine 1 - Destination Scoring)
+  travelMonth: string = '';
+  budgetRange: string = '';
+  selectedInterests: Set<string> = new Set();
+  climatePreference: string = '';
+  
+  monthOptions = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  
+  budgetOptions = [
+    { label: '₹10K - 30K', value: '10000-30000' },
+    { label: '₹30K - 50K', value: '30000-50000' },
+    { label: '₹50K - 1L', value: '50000-100000' },
+    { label: '₹1L+', value: '100000+' }
+  ];
+  
+  interestOptions = [
+    { label: '🏖️ Beach', value: 'beach' },
+    { label: '⛰️ Hill Station', value: 'hill' },
+    { label: '🕌 Cultural Heritage', value: 'culture' },
+    { label: '🏛️ Historical Sites', value: 'history' },
+    { label: '🎯 Adventure', value: 'adventure' },
+    { label: '🕉️ Religious', value: 'religious' }
+  ];
+  
+  climateOptions = [
+    { label: '☀️ Warm & Sunny', value: 'warm' },
+    { label: '❄️ Cool & Crisp', value: 'cool' },
+    { label: '🌧️ Monsoon', value: 'monsoon' },
+    { label: '🔄 Any Climate', value: 'any' }
+  ];
+
   constructor(
     private http: HttpClient,
     private titleService: Title,
-    private metaService: Meta
+    private metaService: Meta,
+    private router: Router,
+    private recommendationEngine: RecommendationEngine
   ) {}
 
   ngOnInit(): void {
@@ -177,5 +216,69 @@ export class HomeComponent implements OnInit {
 
   scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // SCREEN 1: LANDING FORM METHODS (Engine 1 - Destination Scoring Engine)
+
+  toggleInterest(interest: string): void {
+    if (this.selectedInterests.has(interest)) {
+      this.selectedInterests.delete(interest);
+    } else {
+      this.selectedInterests.add(interest);
+    }
+  }
+
+  isInterestSelected(interest: string): boolean {
+    return this.selectedInterests.has(interest);
+  }
+
+  submitDestinationPreferences(): void {
+    // Validate form
+    if (!this.travelMonth || !this.budgetRange || !this.climatePreference) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
+    if (this.selectedInterests.size === 0) {
+      alert('Please select at least one interest');
+      return;
+    }
+
+    // Log event for analytics
+    console.log('Destination Preferences Submitted:', {
+      month: this.travelMonth,
+      budget: this.budgetRange,
+      interests: Array.from(this.selectedInterests),
+      climate: this.climatePreference
+    });
+
+    // Call Destination Scoring Engine
+    const preferences = {
+      month: this.travelMonth,
+      budgetRange: this.budgetRange,
+      interests: Array.from(this.selectedInterests),
+      climate: this.climatePreference
+    };
+
+    const recommendations = this.recommendationEngine.generateRecommendations(preferences);
+    
+    // Store in session/state and navigate to results
+    sessionStorage.setItem('preferences', JSON.stringify(preferences));
+    sessionStorage.setItem('recommendations', JSON.stringify(recommendations));
+    
+    this.router.navigate(['/results'], {
+      queryParams: {
+        month: this.travelMonth,
+        budget: this.budgetRange,
+        interests: Array.from(this.selectedInterests).join(',')
+      }
+    });
+  }
+
+  resetForm(): void {
+    this.travelMonth = '';
+    this.budgetRange = '';
+    this.selectedInterests.clear();
+    this.climatePreference = '';
   }
 }
