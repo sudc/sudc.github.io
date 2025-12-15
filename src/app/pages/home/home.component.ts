@@ -10,6 +10,7 @@ import { FooterComponent } from '../../shared/components/footer/footer.component
 import { AgodaHotelsComponent } from '../../shared/components/agoda-hotels/agoda-hotels.component';
 import { RequirementFormComponent, UserRequirements } from '../../shared/components/requirement-form/requirement-form.component';
 import { RecommendationResultComponent } from '../../shared/components/recommendation-result/recommendation-result.component';
+import { SmartRecommendationsComponent } from '../../components/smart-recommendations/smart-recommendations.component';
 
 interface Category {
   id: string;
@@ -44,7 +45,8 @@ interface Deal {
     FooterComponent,
     AgodaHotelsComponent,
     RequirementFormComponent,
-    RecommendationResultComponent
+    RecommendationResultComponent,
+    SmartRecommendationsComponent
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss', './home.component.css']
@@ -55,6 +57,7 @@ export class HomeComponent implements OnInit {
   showRequirementForm = false;
   showRecommendationResult = false;
   userRequirements: UserRequirements | null = null;
+  showSmartRecommendations = false;
 
   // Screen 1: Landing Form Properties (Engine 1 - Destination Scoring)
   travelMonth: string = '';
@@ -245,11 +248,16 @@ export class HomeComponent implements OnInit {
       climate: this.climatePreference
     });
 
-    // Note: The SmartRecommendationsComponent is a self-contained component that handles
-    // its own preference collection and recommendation generation via the Recommendation Engine.
-    // This landing form is a separate UI flow implementation.
-    // For full integration between landing form and SmartRecommendationsComponent,
-    // refactor SmartRecommendationsComponent to accept preferences as @Input.
+    // Show SmartRecommendationsComponent with recommendations
+    this.showSmartRecommendations = true;
+    
+    // Scroll to recommendations
+    setTimeout(() => {
+      const recommendationsSection = document.querySelector('.smart-recommendations-section');
+      if (recommendationsSection) {
+        recommendationsSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   }
 
   resetForm(): void {

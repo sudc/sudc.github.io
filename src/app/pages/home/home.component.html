@@ -223,10 +223,8 @@
 
 <app-top-deals></app-top-deals>
 
-<!-- AI RECOMMENDATIONS - MOVED LOWER -->
-<!-- <app-smart-recommendations></app-smart-recommendations>
-
-<app-trust-badges></app-trust-badges> -->
+<!-- AI RECOMMENDATIONS - Shown after form submission -->
+<app-smart-recommendations *ngIf="showSmartRecommendations"></app-smart-recommendations>
 
 <!-- TRAVEL GUIDES / DESTINATION GUIDES -->
 <section class="destination-guides-section">
