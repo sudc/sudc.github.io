@@ -16,6 +16,12 @@ interface Category {
   affiliates: any[];
 }
 
+interface UserRequirements {
+  month: number;
+  budget: 'budget' | 'moderate' | 'premium';
+  categories: string[];
+}
+
 @Component({
   selector: 'app-home',
   standalone: true,
