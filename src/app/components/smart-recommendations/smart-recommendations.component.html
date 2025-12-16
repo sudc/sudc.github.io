@@ -1,0 +1,144 @@
+<section class="smart-recommendations-section">
+  <div class="container">
+    <!-- FILTER SECTION -->
+    <div class="filters">
+      <h2>🤖 AI-Powered Destination Finder</h2>
+      <p class="subtitle">
+        Personalized destination recommendations based on timing, budget, interests, and climate preferences.
+      </p>
+
+      <div class="filter-row">
+        <div class="filter-group">
+          <label for="month">📅 When are you traveling?</label>
+          <select 
+            id="month"
+            [(ngModel)]="preferences.month" 
+            (change)="getRecommendations()"
+            class="form-input">
+            <option [value]="1">January</option>
+            <option [value]="2">February</option>
+            <option [value]="3">March</option>
+            <option [value]="4">April</option>
+            <option [value]="5">May</option>
+            <option [value]="6">June</option>
+            <option [value]="7">July</option>
+            <option [value]="8">August</option>
+            <option [value]="9">September</option>
+            <option [value]="10">October</option>
+            <option [value]="11">November</option>
+            <option [value]="12">December</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="budget">💰 Budget range</label>
+          <select 
+            id="budget"
+            [(ngModel)]="preferences.budget" 
+            (change)="getRecommendations()"
+            class="form-input">
+            <option value="budget">Budget (₹10k-20k)</option>
+            <option value="moderate">Moderate (₹15k-30k)</option>
+            <option value="premium">Premium (₹30k+)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label>🎯 What interests you?</label>
+        <div class="categories">
+          <label *ngFor="let cat of availableCategories" class="category-pill">
+            <input 
+              type="checkbox" 
+              [checked]="preferences.categories.includes(cat)"
+              (change)="toggleCategory(cat); getRecommendations()">
+            <span>{{ cat }}</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULTS SECTION -->
+    <div class="results" *ngIf="!isLoading && recommendations.length > 0">
+      <h3>✨ Recommended for You</h3>
+      <p class="results-subtitle">Based on your preferences, here are our top recommendations</p>
+
+      <div *ngFor="let rec of recommendations; let i = index" class="destination-card">
+        <!-- Card Header -->
+        <div class="card-header">
+          <div>
+            <div class="destination-name">{{ rec.destination.state }}</div>
+            <span [class]="'badge ' + getRecommendationTypeClass(rec.recommendationType)">
+              {{ getRecommendationTypeLabel(rec.recommendationType) }}
+            </span>
+          </div>
+          <div class="score">{{ rec.overallRecommendationScore }} / 100</div>
+        </div>
+
+        <!-- Reasons -->
+        <div class="reasons" *ngIf="rec.reasons.length > 0">
+          <ul>
+            <li *ngFor="let reason of rec.reasons.slice(0, 2)">{{ reason }}</li>
+          </ul>
+        </div>
+
+        <!-- Score Breakdown -->
+        <button (click)="toggleScoreDetails(i)" class="breakdown-toggle">
+          {{ isScoreExpanded(i) ? '▼ Hide Score Details' : '🔍 View Score Breakdown' }}
+        </button>
+
+        <div *ngIf="isScoreExpanded(i)" class="breakdown" [ngIf]="getScoreBreakdown(rec) as breakdown">
+          <div class="breakdown-row">
+            <span>Timing</span>
+            <span>{{ breakdown.timing.score }} / {{ breakdown.timing.max }}</span>
+          </div>
+          <div class="breakdown-row">
+            <span>Budget Match</span>
+            <span>{{ breakdown.budget.score }} / {{ breakdown.budget.max }}</span>
+          </div>
+          <div class="breakdown-row">
+            <span>Interest Match</span>
+            <span>{{ breakdown.interest.score }} / {{ breakdown.interest.max }}</span>
+          </div>
+          <div class="breakdown-row">
+            <span>Climate</span>
+            <span>{{ breakdown.climate.score }} / {{ breakdown.climate.max }}</span>
+          </div>
+          <div class="breakdown-total">
+            <strong>Total Score:</strong>
+            <strong>{{ breakdown.total }} / {{ breakdown.totalMax }}</strong>
+          </div>
+        </div>
+
+        <!-- CTA Button -->
+        <button (click)="openBookingModal(rec)" class="cta-button">
+          View booking options →
+        </button>
+      </div>
+    </div>
+
+    <!-- LOADING STATE -->
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Finding perfect destinations for you...</p>
+    </div>
+
+    <!-- ERROR STATE -->
+    <div *ngIf="error" class="error-message">
+      ⚠️ {{ error }}
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div *ngIf="!isLoading && recommendations.length === 0 && !error" class="empty-state">
+      <p>Select your preferences above to get personalized recommendations</p>
+    </div>
+  </div>
+</section>
+
+<!-- Booking Modal -->
+<app-booking-modal
+  [isOpen]="isBookingModalOpen"
+  [destinationName]="selectedDestination?.state || ''"
+  [agodaCode]="selectedDestination?.agoda || ''"
+  (closed)="closeBookingModal()">
+</app-booking-modal>
