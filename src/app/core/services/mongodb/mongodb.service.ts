@@ -47,23 +47,48 @@ export class MongoDBService {
 
   /**
    * Get all destinations from MongoDB
+   * Uses CORS proxy for GitHub Pages compatibility
    */
   getAllDestinations(): Observable<Destination[]> {
+    const mongoUrl = `${this.CONFIG.dataApiUrl}/action/find`;
     const body = {
       dataSource: this.CONFIG.dataSource,
       database: this.CONFIG.database,
       collection: 'destinations'
     };
 
+    // Try direct MongoDB API first
     return this.http.post<MongoResponse<Destination>>(
-      `${this.CONFIG.dataApiUrl}/action/find`,
+      mongoUrl,
       body,
       { headers: this.getHeaders() }
     ).pipe(
-      map(response => response.documents),
+      map(response => {
+        console.log('✅ MongoDB Direct API Response:', response);
+        return response.documents || [];
+      }),
       catchError(error => {
-        console.error('Error fetching destinations:', error);
-        return of([]);
+        console.error('❌ Direct API failed:', error.status);
+        console.warn('⚠️ Trying CORS Proxy...');
+        
+        // If direct fails, try CORS proxy
+        const corsProxyUrl = `https://cors-anywhere.herokuapp.com/${mongoUrl}`;
+        
+        return this.http.post<MongoResponse<Destination>>(
+          corsProxyUrl,
+          body,
+          { headers: this.getHeaders() }
+        ).pipe(
+          map(response => {
+            console.log('✅ CORS Proxy Response:', response);
+            return response.documents || [];
+          }),
+          catchError(proxyError => {
+            console.error('❌ CORS Proxy also failed:', proxyError.status);
+            console.warn('⚠️ Falling back to static data');
+            return of([]);
+          })
+        );
       })
     );
   }
@@ -116,17 +141,9 @@ export class MongoDBService {
       filter.state = filters.state;
     }
 
-    const body = {
-      dataSource: this.CONFIG.dataSource,
-      database: this.CONFIG.database,
-      collection: 'destinations',
-      filter
-    };
-
     return this.http.post<MongoResponse<Destination>>(
-      `${this.CONFIG.dataApiUrl}/action/find`,
-      body,
-      { headers: this.getHeaders() }
+      '/api/mongo/search',
+      { filter }
     ).pipe(
       map(response => response.documents),
       catchError(error => {

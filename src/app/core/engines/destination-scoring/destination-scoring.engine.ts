@@ -55,8 +55,11 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
     // Fetch destinations from MongoDB
     const destinations = await firstValueFrom(this.mongoService.getAllDestinations());
     
+    console.log(`📊 Destinations fetched from MongoDB: ${destinations.length}`);
+    
     if (destinations.length === 0) {
-      this.logError('No destinations found in database');
+      this.logError('❌ No destinations found in MongoDB - check collection or credentials');
+      console.warn('⚠️ DestinationScoringEngine failing - MongoDB empty');
       return {
         engineName: this.config.name,
         timestamp: new Date(),
