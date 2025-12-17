@@ -58,8 +58,9 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
     const scored: ScoredDestination[] = [];
     
     // 🔒 HARD FILTER: Only process destinations matching user interests
-    const userCategories = input.userPreferences.categories || [];
-    console.log(`\n🎯 USER INTERESTS (raw):`, userCategories);
+    const userCategories = (input.userPreferences.categories || []).map(cat => cat.toLowerCase());
+    console.log(`\n🎯 USER INTERESTS (raw):`, input.userPreferences.categories);
+    console.log(`🎯 USER INTERESTS (normalized):`, userCategories);
     console.log(`🎯 USER INTERESTS (count): ${userCategories.length}`);
     
     for (const destination of destinations) {
@@ -70,7 +71,7 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
         console.log(`   User wants: ${JSON.stringify(userCategories)}`);
         
         const hasInterestMatch = destination.categories.some(cat => {
-          const matches = userCategories.includes(cat);
+          const matches = userCategories.includes(cat.toLowerCase());
           console.log(`     - ${cat} in user categories? ${matches}`);
           return matches;
         });
