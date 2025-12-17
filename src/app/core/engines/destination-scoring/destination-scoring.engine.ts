@@ -59,20 +59,28 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
     
     // 🔒 HARD FILTER: Only process destinations matching user interests
     const userCategories = input.userPreferences.categories || [];
-    console.log(`🎯 User interests: ${userCategories.join(', ')}`);
+    console.log(`\n🎯 USER INTERESTS (raw):`, userCategories);
+    console.log(`🎯 USER INTERESTS (count): ${userCategories.length}`);
     
     for (const destination of destinations) {
       // ✅ HARD FILTER: Skip destinations that don't match user interests
       if (userCategories.length > 0) {
-        const hasInterestMatch = destination.categories.some(cat => 
-          userCategories.includes(cat)
-        );
+        console.log(`\n🔍 Checking ${destination.state}...`);
+        console.log(`   Categories: ${JSON.stringify(destination.categories)}`);
+        console.log(`   User wants: ${JSON.stringify(userCategories)}`);
+        
+        const hasInterestMatch = destination.categories.some(cat => {
+          const matches = userCategories.includes(cat);
+          console.log(`     - ${cat} in user categories? ${matches}`);
+          return matches;
+        });
         
         if (!hasInterestMatch) {
-          console.log(`⏭️ FILTERED OUT: ${destination.state} (has: ${destination.categories.join(', ')})`);
+          console.log(`   ⏭️ FILTERED OUT: No match found`);
           continue; // Skip this destination entirely - NEVER show it
         } else {
-          console.log(`✅ PASSED FILTER: ${destination.state} (matches: ${destination.categories.filter(c => userCategories.includes(c)).join(', ')})`);
+          const matchedCats = destination.categories.filter(c => userCategories.includes(c));
+          console.log(`   ✅ PASSED FILTER: Matches ${JSON.stringify(matchedCats)}`);
         }
       }
 

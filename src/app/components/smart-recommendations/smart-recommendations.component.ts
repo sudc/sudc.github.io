@@ -190,15 +190,24 @@ export class SmartRecommendationsComponent implements OnInit {
 
   // ✅ NEW: Calculate interest match score for safety check
   private calculateInterestMatchScore(dest: any): number {
+    console.log(`\n🔐 SAFETY CHECK: ${dest.state}`);
+    console.log(`   Destination categories: ${JSON.stringify(dest.categories)}`);
+    console.log(`   User preferences: ${JSON.stringify(this.preferences.categories)}`);
+    
     if (this.preferences.categories.length === 0) {
+      console.log(`   ⚠️ No user preferences set`);
       return 0;
     }
     
-    const matches = dest.categories.filter((cat: string) => 
-      this.preferences.categories.includes(cat)
-    );
+    const matches = dest.categories.filter((cat: string) => {
+      const included = this.preferences.categories.includes(cat);
+      console.log(`     - ${cat}: ${included}`);
+      return included;
+    });
     
-    return matches.length > 0 ? Math.min(25, matches.length * 12) : 0;
+    const score = matches.length > 0 ? Math.min(25, matches.length * 12) : 0;
+    console.log(`   Score: ${score}/25 (matched: ${JSON.stringify(matches)})`);
+    return score;
   }
 
   getMonthName(month: number): string {
@@ -228,6 +237,7 @@ export class SmartRecommendationsComponent implements OnInit {
   async getRecommendations(): Promise<void> {
     // ✅ Only change UI state, NEVER touch preferences
     console.log('🚀 [LOADER START] Getting recommendations...');
+    console.log(`📋 Current preferences:`, this.preferences);
     this.uiState.loading = true;
     this.uiState.error = null;
     this.recommendations = [];
@@ -243,7 +253,7 @@ export class SmartRecommendationsComponent implements OnInit {
         }
       };
 
-      console.log('⏳ [LOADER] Processing with recommendation engine...');
+      console.log('⏳ [LOADER] Input sent to engine:', input);
       // ✅ No timeout needed - using instant static fallback (MongoDB service disabled for now)
       const result = await this.recommendationEngine.process(input);
       
