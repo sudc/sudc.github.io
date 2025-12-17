@@ -9,14 +9,13 @@ import {
 } from '../../core/engines/recommendation/recommendation.engine';
 import { DestinationScoringEngine } from '../../core/engines/destination-scoring/destination-scoring.engine';
 import { TripReadinessEngine } from '../../core/engines/trip-readiness/trip-readiness.engine';
-import { MongoDBService } from '../../core/services/mongodb/mongodb.service';
 import { DESTINATIONS_DATA } from '../../core/engines/destination/destinations.data';
 
 @Component({
   selector: 'app-smart-recommendations',
   standalone: true,
   imports: [CommonModule, FormsModule, BookingModalComponent],
-  providers: [MongoDBService, DestinationScoringEngine, TripReadinessEngine, RecommendationEngine],
+  providers: [DestinationScoringEngine, TripReadinessEngine, RecommendationEngine],
   templateUrl: './smart-recommendations.component.html',
   styleUrls: ['./smart-recommendations.component.scss']
 })
@@ -189,6 +188,7 @@ export class SmartRecommendationsComponent implements OnInit {
 
   async getRecommendations(): Promise<void> {
     // ✅ Only change UI state, NEVER touch preferences
+    console.log('🚀 [LOADER START] Getting recommendations...');
     this.uiState.loading = true;
     this.uiState.error = null;
     this.recommendations = [];
@@ -203,25 +203,31 @@ export class SmartRecommendationsComponent implements OnInit {
         }
       };
 
+      console.log('⏳ [LOADER] Processing with recommendation engine...');
       // ✅ No timeout needed - using instant static fallback (MongoDB service disabled for now)
       const result = await this.recommendationEngine.process(input);
+      
+      console.log('✅ [LOADER] Engine result:', result.recommendations.length, 'recommendations');
       
       if (result.success && result.recommendations.length > 0) {
         this.recommendations = result.recommendations.slice(0, 6); // Top 6
         this.uiState.hasResults = true;
+        console.log('✅ [LOADER] Showing', this.recommendations.length, 'recommendations');
       } else {
         // Engine returned empty results, use fallback
+        console.log('⚠️ [LOADER] Using fallback recommendations');
         this.useFallbackRecommendations();
         this.uiState.hasResults = true;
       }
     } catch (err: any) {
-      console.error('Recommendation error:', err);
+      console.error('❌ [LOADER] Recommendation error:', err);
       // Don't show error - just use fallback silently
       this.useFallbackRecommendations();
       this.uiState.hasResults = true;
     } finally {
       // ✅ Stop loading immediately (no artificial delays)
       this.uiState.loading = false;
+      console.log('✅ [LOADER STOP] Complete!');
     }
   }
 

@@ -52,18 +52,10 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
       throw new Error('Invalid input');
     }
 
-    // Fetch destinations from MongoDB
-    let destinations = await firstValueFrom(this.mongoService.getAllDestinations());
-    
-    console.log(`📊 Destinations fetched from MongoDB: ${destinations.length}`);
-    
-    // If MongoDB returns empty, use static fallback data
-    if (destinations.length === 0) {
-      console.warn('⚠️ MongoDB empty or unreachable');
-      console.log('✅ Using static destination data fallback');
-      destinations = Object.values(DESTINATIONS_DATA) as Destination[];
-      console.log(`📊 Loaded ${destinations.length} destinations from static data`);
-    }
+    // 🚀 SKIP MongoDB entirely - use static data IMMEDIATELY (no async wait)
+    console.warn('⚠️ MongoDB disabled - using instant static data');
+    let destinations = Object.values(DESTINATIONS_DATA) as Destination[];
+    console.log(`📊 Loaded ${destinations.length} destinations from static data (instant)`);
 
     const scored: ScoredDestination[] = [];
     
