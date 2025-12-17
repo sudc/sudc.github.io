@@ -57,7 +57,8 @@ export class DataSeederComponent {
 
   private readonly MONGODB_CONFIG = {
     dataApiUrl: 'https://ap-south-1.aws.data.mongodb-api.com/app/gzggipjk/endpoint/data/v1',
-    apiKey: 'VFPCzeFPD5k38njwbVmpf2vXvwdlQsGpmNY7OTfeTwRE6wJWh9Ht0cpLjN18Cww8',
+    // ⚠️ SECURITY: Credentials removed - set via environment variables
+    apiKey: 'YOUR_API_KEY_FROM_ENV',
     dataSource: 'Cluster0',
     database: 'tripsaver'
   };

@@ -32,8 +32,10 @@ export class MongoDBService {
   private http = inject(HttpClient);
 
   private readonly CONFIG = {
-    dataApiUrl: 'https://ap-south-1.aws.data.mongodb-api.com/app/gzggipjk/endpoint/data/v1',
-    apiKey: 'VFPCzeFPD5k38njwbVmpf2vXvwdlQsGpmNY7OTfeTwRE6wJWh9Ht0cpLjN18Cww8',
+    // ⚠️ SECURITY: Credentials removed from source code
+    // Set via environment variables: MONGODB_PUBLIC_KEY, MONGODB_PRIVATE_KEY
+    dataApiUrl: 'https://ap-south-1.aws.data.mongodb-api.com/app/YOUR_APP_ID/endpoint/data/v1',
+    apiKey: 'YOUR_API_KEY_FROM_ENV',
     dataSource: 'Cluster0',
     database: 'tripsaver'
   };
@@ -87,30 +89,34 @@ export class MongoDBService {
 
   /**
    * Get a single destination by ID
+   * ❌ DISABLED - Using static data only
    */
   getDestination(id: string): Observable<Destination | null> {
-    const body = {
-      dataSource: this.CONFIG.dataSource,
-      database: this.CONFIG.database,
-      collection: 'destinations',
-      filter: { _id: id }
-    };
-
-    return this.http.post<MongoResponse<Destination>>(
-      `${this.CONFIG.dataApiUrl}/action/findOne`,
-      body,
-      { headers: this.getHeaders() }
-    ).pipe(
-      map(response => response.documents[0] || null),
-      catchError(error => {
-        console.error(`Error fetching destination ${id}:`, error);
-        return of(null);
-      })
-    );
+    // COMMENTED OUT - Backend disabled due to MongoDB credentials issue
+    // const body = {
+    //   dataSource: this.CONFIG.dataSource,
+    //   database: this.CONFIG.database,
+    //   collection: 'destinations',
+    //   filter: { _id: id }
+    // };
+    //
+    // return this.http.post<MongoResponse<Destination>>(
+    //   `${this.CONFIG.dataApiUrl}/action/findOne`,
+    //   body,
+    //   { headers: this.getHeaders() }
+    // ).pipe(
+    //   map(response => response.documents[0] || null),
+    //   catchError(error => {
+    //     console.error(`Error fetching destination ${id}:`, error);
+    //     return of(null);
+    //   })
+    // );
+    return of(null);
   }
 
   /**
    * Search destinations by filters
+   * ❌ DISABLED - Using static data only
    */
   searchDestinations(filters: {
     categories?: string[];
@@ -118,107 +124,120 @@ export class MongoDBService {
     climate?: string;
     state?: string;
   }): Observable<Destination[]> {
-    const filter: any = {};
-
-    if (filters.categories && filters.categories.length > 0) {
-      filter.categories = { $in: filters.categories };
-    }
-    if (filters.budget) {
-      filter.budget = filters.budget;
-    }
-    if (filters.climate) {
-      filter.climate = filters.climate;
-    }
-    if (filters.state) {
-      filter.state = filters.state;
-    }
-
-    return this.http.post<MongoResponse<Destination>>(
-      '/api/mongo/search',
-      { filter }
-    ).pipe(
-      map(response => response.documents),
-      catchError(error => {
-        console.error('Error searching destinations:', error);
-        return of([]);
-      })
-    );
+    // COMMENTED OUT - Backend disabled due to MongoDB credentials issue
+    // const filter: any = {};
+    //
+    // if (filters.categories && filters.categories.length > 0) {
+    //   filter.categories = { $in: filters.categories };
+    // }
+    // if (filters.budget) {
+    //   filter.budget = filters.budget;
+    // }
+    // if (filters.climate) {
+    //   filter.climate = filters.climate;
+    // }
+    // if (filters.state) {
+    //   filter.state = filters.state;
+    // }
+    //
+    // return this.http.post<MongoResponse<Destination>>(
+    //   '/api/mongo/search',
+    //   { filter }
+    // ).pipe(
+    //   map(response => response.documents),
+    //   catchError(error => {
+    //     console.error('Error searching destinations:', error);
+    //     return of([]);
+    //   })
+    // );
+    return of([]);
   }
 
   /**
    * Get destinations by month (best time to visit)
+   * ❌ DISABLED - Using static data only
    */
   getDestinationsByMonth(month: number): Observable<Destination[]> {
-    const body = {
-      dataSource: this.CONFIG.dataSource,
-      database: this.CONFIG.database,
-      collection: 'destinations',
-      filter: {
-        bestMonths: { $in: [month] }
-      }
-    };
-
-    return this.http.post<MongoResponse<Destination>>(
-      `${this.CONFIG.dataApiUrl}/action/find`,
-      body,
-      { headers: this.getHeaders() }
-    ).pipe(
-      map(response => response.documents),
-      catchError(error => {
-        console.error(`Error fetching destinations for month ${month}:`, error);
-        return of([]);
-      })
-    );
+    // COMMENTED OUT - Backend disabled due to MongoDB credentials issue
+    // const body = {
+    //   dataSource: this.CONFIG.dataSource,
+    //   database: this.CONFIG.database,
+    //   collection: 'destinations',
+    //   filter: {
+    //     bestMonths: { $in: [month] }
+    //   }
+    // };
+    //
+    // return this.http.post<MongoResponse<Destination>>(
+    //   `${this.CONFIG.dataApiUrl}/action/find`,
+    //   body,
+    //   { headers: this.getHeaders() }
+    // ).pipe(
+    //   map(response => response.documents),
+    //   catchError(error => {
+    //     console.error(`Error fetching destinations for month ${month}:`, error);
+    //     return of([]);
+    //   })
+    // );
+    return of([]);
   }
 
   /**
    * Get trust badges for building credibility
+   * ❌ DISABLED - Using static data only
    */
   getTrustBadges(): Observable<TrustBadge[]> {
-    const body = {
-      dataSource: this.CONFIG.dataSource,
-      database: this.CONFIG.database,
-      collection: 'trust_badges',
-      sort: { order: 1 }
-    };
+    // COMMENTED OUT - Backend disabled due to MongoDB credentials issue
+    // const body = {
+    //   dataSource: this.CONFIG.dataSource,
+    //   database: this.CONFIG.database,
+    //   collection: 'trust_badges',
+    //   sort: { order: 1 }
+    // };
+    //
+    // return this.http.post<MongoResponse<TrustBadge>>(
+    //   `${this.CONFIG.dataApiUrl}/action/find`,
+    //   body,
+    //   { headers: this.getHeaders() }
+    // ).pipe(
+    //   map(response => response.documents),
+    //   catchError(error => {
+    //     console.error('Error fetching trust badges:', error);
+    //     return of([]);
+    //   })
+    // );
 
-    return this.http.post<MongoResponse<TrustBadge>>(
-      `${this.CONFIG.dataApiUrl}/action/find`,
-      body,
-      { headers: this.getHeaders() }
-    ).pipe(
-      map(response => response.documents),
-      catchError(error => {
-        console.error('Error fetching trust badges:', error);
-        return of([]);
-      })
-    );
+    return of([]);
   }
 
   /**
    * Get trust messages for building credibility
+   * ❌ DISABLED - Using static data only
    */
   getTrustMessages(category?: string): Observable<TrustMessage[]> {
-    const filter = category ? { category } : {};
+    // COMMENTED OUT - Backend disabled due to MongoDB credentials issue
+    // const filter = category ? { category } : {};
+    //
+    // const body = {
+    //   dataSource: this.CONFIG.dataSource,
+    //   database: this.CONFIG.database,
+    //   collection: 'trust_messages',
+    //   filter,
+    //   sort: { order: 1 }
+    // };
+    //
+    // return this.http.post<MongoResponse<TrustMessage>>(
+    //   `${this.CONFIG.dataApiUrl}/action/find`,
+    //   body,
+    //   { headers: this.getHeaders() }
+    // ).pipe(
+    //   map(response => response.documents),
+    //   catchError(error => {
+    //     console.error('Error fetching trust messages:', error);
+    //     return of([]);
+    //   })
+    // );
 
-    const body = {
-      dataSource: this.CONFIG.dataSource,
-      database: this.CONFIG.database,
-      collection: 'trust_messages',
-      filter,
-      sort: { order: 1 }
-    };
-
-    return this.http.post<MongoResponse<TrustMessage>>(
-      `${this.CONFIG.dataApiUrl}/action/find`,
-      body,
-      { headers: this.getHeaders() }
-    ).pipe(
-      map(response => response.documents),
-      catchError(error => {
-        console.error('Error fetching trust messages:', error);
-        return of([]);
-      })
-    );
+    return of([]);
   }
 }

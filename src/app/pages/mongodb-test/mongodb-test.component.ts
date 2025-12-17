@@ -31,8 +31,9 @@ export class MongoDbTestComponent {
   error: any = null;
   loading = false;
 
-  private readonly dataApiUrl = 'https://ap-south-1.aws.data.mongodb-api.com/app/gzggipjk/endpoint/data/v1';
-  private readonly apiKey = '5c39bfd7-bc63-4656-b088-a147ca8ba608';
+  // ⚠️ SECURITY: Credentials removed - this component is for testing only
+  private readonly dataApiUrl = 'https://ap-south-1.aws.data.mongodb-api.com/app/YOUR_APP_ID/endpoint/data/v1';
+  private readonly apiKey = 'YOUR_API_KEY_FROM_ENV';
   private readonly dataSource = 'Cluster0';
   private readonly database = 'tripsaver';
 

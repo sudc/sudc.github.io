@@ -45,3 +45,38 @@ Thumbs.db
 src/assets/E342B777-64FD-4A49-9C9F-FEF4BA635863_EN.csv
 *.csv
 !src/assets/data/hotels/*.csv
+
+# 🔐 SECURITY: NEVER COMMIT CREDENTIALS
+.env
+.env.local
+.env.*.local
+.env.prod
+.env.development
+*.key
+*.pem
+credentials.json
+secrets.json
+secret*.js
+secret*.ts
+
+# Environment files with credentials
+/backend/.env
+/backend/.env.local
+src/environments/.env
+src/config/secrets.ts
+
+# IDE sensitive files that may contain credentials
+.vscode/.env
+.vscode/launch.json.bak
+
+# OS files that may contain credential paths
+.env.example
+
+# Database backups with credentials
+*.db.backup
+*.sql
+
+# Archive files that might contain credentials
+*.zip.bak
+*.tar.gz.bak
+

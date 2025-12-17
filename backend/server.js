@@ -3,8 +3,10 @@ const cors = require('cors');
 const app = express();
 
 // MongoDB Atlas App Services - REST Data API
-const MONGODB_PUBLIC_KEY = process.env.MONGODB_PUBLIC_KEY || 'gzggipjk';
-const MONGODB_PRIVATE_KEY = process.env.MONGODB_PRIVATE_KEY || '5c39bfd7-bc63-4656-b088-a147ca8ba608';
+// ⚠️ SECURITY: Credentials MUST be set via environment variables
+// DO NOT hardcode credentials in source code
+const MONGODB_PUBLIC_KEY = process.env.MONGODB_PUBLIC_KEY || 'YOUR_APP_ID';
+const MONGODB_PRIVATE_KEY = process.env.MONGODB_PRIVATE_KEY || 'YOUR_API_KEY';
 const MONGODB_BASE_URL = `https://ap-south-1.aws.data.mongodb-api.com/app/${MONGODB_PUBLIC_KEY}/endpoint/data/v1`;
 
 // Enable CORS for your GitHub Pages domain

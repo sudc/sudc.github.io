@@ -16,63 +16,64 @@ const angularApp = new AngularNodeAppEngine();
 app.use(express.json());
 
 /**
- * ✅ MongoDB Data API Proxy Endpoints
- * Avoids CORS issues by proxying requests through backend
+ * ❌ DISABLED - MongoDB Data API Proxy Endpoints
+ * Using client-side static data instead
+ * Will be re-enabled once MongoDB App ID credentials are fixed
  */
-app.post('/api/mongo/destinations', async (req, res) => {
-  try {
-    const mongoResponse = await fetch(
-      'https://ap-south-1.aws.data.mongodb-api.com/app/gzggipjk/endpoint/data/v1/action/find',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'api-key': 'VFPCzeFPD5k38njwbVmpf2vXvwdlQsGpmNY7OTfeTwRE6wJWh9Ht0cpLjN18Cww8',
-        },
-        body: JSON.stringify({
-          dataSource: 'Cluster0',
-          database: 'tripsaver',
-          collection: 'destinations',
-        }),
-      }
-    );
-
-    const data = await mongoResponse.json();
-    res.json(data);
-  } catch (error) {
-    console.error('MongoDB proxy error:', error);
-    res.status(500).json({ error: 'Failed to fetch destinations' });
-  }
-});
-
-app.post('/api/mongo/search', async (req, res) => {
-  try {
-    const { filter } = req.body;
-    
-    const mongoResponse = await fetch(
-      'https://ap-south-1.aws.data.mongodb-api.com/app/gzggipjk/endpoint/data/v1/action/find',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'api-key': 'VFPCzeFPD5k38njwbVmpf2vXvwdlQsGpmNY7OTfeTwRE6wJWh9Ht0cpLjN18Cww8',
-        },
-        body: JSON.stringify({
-          dataSource: 'Cluster0',
-          database: 'tripsaver',
-          collection: 'destinations',
-          filter: filter || {},
-        }),
-      }
-    );
-
-    const data = await mongoResponse.json();
-    res.json(data);
-  } catch (error) {
-    console.error('MongoDB search proxy error:', error);
-    res.status(500).json({ error: 'Failed to search destinations' });
-  }
-});
+// app.post('/api/mongo/destinations', async (req, res) => {
+//   try {
+//     const mongoResponse = await fetch(
+//       'https://ap-south-1.aws.data.mongodb-api.com/app/gzggipjk/endpoint/data/v1/action/find',
+//       {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//           'api-key': 'VFPCzeFPD5k38njwbVmpf2vXvwdlQsGpmNY7OTfeTwRE6wJWh9Ht0cpLjN18Cww8',
+//         },
+//         body: JSON.stringify({
+//           dataSource: 'Cluster0',
+//           database: 'tripsaver',
+//           collection: 'destinations',
+//         }),
+//       }
+//     );
+//
+//     const data = await mongoResponse.json();
+//     res.json(data);
+//   } catch (error) {
+//     console.error('MongoDB proxy error:', error);
+//     res.status(500).json({ error: 'Failed to fetch destinations' });
+//   }
+// });
+//
+// app.post('/api/mongo/search', async (req, res) => {
+//   try {
+//     const { filter } = req.body;
+//     
+//     const mongoResponse = await fetch(
+//       'https://ap-south-1.aws.data.mongodb-api.com/app/gzggipjk/endpoint/data/v1/action/find',
+//       {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//           'api-key': 'VFPCzeFPD5k38njwbVmpf2vXvwdlQsGpmNY7OTfeTwRE6wJWh9Ht0cpLjN18Cww8',
+//         },
+//         body: JSON.stringify({
+//           dataSource: 'Cluster0',
+//           database: 'tripsaver',
+//           collection: 'destinations',
+//           filter: filter || {},
+//         }),
+//       }
+//     );
+//
+//     const data = await mongoResponse.json();
+//     res.json(data);
+//   } catch (error) {
+//     console.error('MongoDB search proxy error:', error);
+//     res.status(500).json({ error: 'Failed to search destinations' });
+//   }
+// });
 
 /**
  * Serve static files from /browser

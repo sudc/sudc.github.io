@@ -203,15 +203,8 @@ export class SmartRecommendationsComponent implements OnInit {
         }
       };
 
-      // ✅ Add timeout of 5 seconds - if engines don't respond, use fallback
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Engine timeout - using fallback')), 5000)
-      );
-
-      const result = await Promise.race([
-        this.recommendationEngine.process(input),
-        timeoutPromise as any
-      ]) as any;
+      // ✅ No timeout needed - using instant static fallback (MongoDB service disabled for now)
+      const result = await this.recommendationEngine.process(input);
       
       if (result.success && result.recommendations.length > 0) {
         this.recommendations = result.recommendations.slice(0, 6); // Top 6
@@ -227,6 +220,7 @@ export class SmartRecommendationsComponent implements OnInit {
       this.useFallbackRecommendations();
       this.uiState.hasResults = true;
     } finally {
+      // ✅ Stop loading immediately (no artificial delays)
       this.uiState.loading = false;
     }
   }
