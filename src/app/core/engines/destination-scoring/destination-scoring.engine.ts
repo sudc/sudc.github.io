@@ -69,9 +69,11 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
         throw new Error('Empty response from backend');
       }
     } catch (err: any) {
-      console.warn('⚠️ MongoDB backend failed, falling back to static data:', err.message);
-      destinations = Object.values(DESTINATIONS_DATA) as Destination[];
-      console.log(`📊 Using fallback: ${destinations.length} destinations from static data`);
+      console.warn('⚠️ MongoDB backend failed, NO fallback:', err.message);
+      // COMMENTED OUT - Testing backend only
+      // destinations = Object.values(DESTINATIONS_DATA) as Destination[];
+      // console.log(`📊 Using fallback: ${destinations.length} destinations from static data`);
+      destinations = [];
     }
 
     const scored: ScoredDestination[] = [];

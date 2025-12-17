@@ -6,5 +6,5 @@ export const environment = {
    * - Local dev: http://localhost:3000
    * - Production (Render): https://tripsaver-github-io.onrender.com
    */
-  apiBaseUrl: 'http://localhost:3000'
+  apiBaseUrl: 'https://tripsaver-github-io.onrender.com'
 };

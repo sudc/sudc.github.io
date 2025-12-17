@@ -187,7 +187,9 @@ export class HomeComponent implements OnInit {
     });
 
     // ✅ Build preferences object to pass to SmartRecommendationsComponent
-    const monthValue = this.travelMonth ? parseInt(this.travelMonth) : 2; // Default to February if not selected
+    // Convert month name to number (1-12)
+    const monthIndex = this.monthOptions.indexOf(this.travelMonth);
+    const monthValue = monthIndex >= 0 ? monthIndex + 1 : 2; // Default to February (2) if not selected
     this.userPreferences = {
       month: monthValue,
       budget: this.budgetRange,
