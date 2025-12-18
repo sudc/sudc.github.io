@@ -323,13 +323,13 @@ export class SmartRecommendationsComponent implements OnInit {
           } else {
             // All recommendations filtered out
             console.log('⚠️ [LOADER] All recommendations filtered (interest match = 0)');
-            this.useFallbackRecommendations();
+            this.recommendations = [];
             this.uiState.hasResults = true;
           }
         } else {
-          // Engine returned empty results, use fallback
-          console.log('⚠️ [LOADER] Using fallback recommendations');
-          this.useFallbackRecommendations();
+          // Engine returned empty results
+          console.log('⚠️ [LOADER] No recommendations found');
+          this.recommendations = [];
           this.uiState.hasResults = true;
         }
         this.cdr.markForCheck();
@@ -338,8 +338,7 @@ export class SmartRecommendationsComponent implements OnInit {
       console.error('❌ [LOADER] Recommendation error:', err);
       // Run error handling in Angular zone
       this.ngZone.run(() => {
-        // Don't show error - just use fallback silently
-        this.useFallbackRecommendations();
+        this.recommendations = [];
         this.uiState.hasResults = true;
         this.cdr.markForCheck();
       });
@@ -351,63 +350,6 @@ export class SmartRecommendationsComponent implements OnInit {
         console.log('✅ [LOADER STOP] Complete!');
       });
     }
-  }
-
-  private useFallbackRecommendations(): void {
-    // Use static data as fallback
-    const destinations = Object.entries(DESTINATIONS_DATA);
-    const scored = destinations.map(([id, dest]) => {
-      let score = 50;
-      const reasons: string[] = [];
-      const badges: string[] = [];
-      
-      // Month scoring
-      if (dest.bestMonths.includes(this.preferences.month)) {
-        score += 30;
-        reasons.push('Perfect weather and peak season timing');
-        badges.push('Perfect Season');
-      }
-      
-      // Budget scoring
-      if (dest.budget === this.preferences.budget) {
-        score += 25;
-        reasons.push('Strong budget match for your trip');
-        badges.push('Budget Match');
-      }
-      
-      // Category scoring
-      if (this.preferences.categories.length > 0) {
-        const matches = dest.categories.filter(c => this.preferences.categories.includes(c));
-        if (matches.length > 0) {
-          score += matches.length * 10;
-          reasons.push(`Strong match for ${matches.join(', ')} interests`);
-          badges.push('Great Match');
-        }
-      }
-      
-      const internalScore = score;
-      const displayScore = Math.round((internalScore / 110) * 100);
-      
-      return {
-        destinationId: id,
-        destination: dest,
-        score: internalScore,
-        displayScore,
-        reasons,
-        badges,
-        overallRecommendationScore: Math.min(100, displayScore),
-        // ✅ LOCKED THRESHOLDS (80-100=Highly Rec, 65-79=Rec, 50-64=Consider, <50=Hidden)
-        recommendationType: displayScore >= 80 ? 'highly-recommended' : 
-                           displayScore >= 65 ? 'recommended' : 
-                           displayScore >= 50 ? 'consider' : 'hidden',
-        warnings: []
-      } as EnhancedRecommendation;
-    });
-    
-    // ✅ Filter out hidden recommendations (score < 50)
-    const visibleRecommendations = scored.filter(rec => rec.recommendationType !== 'hidden');
-    visibleRecommendations.sort((a, b) => b.displayScore - a.displayScore);
-    this.recommendations = visibleRecommendations.slice(0, 6);
   }
 
   getRecommendationTypeClass(type: string): string {
