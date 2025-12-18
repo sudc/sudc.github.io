@@ -104,6 +104,72 @@ app.get('/api/destinations', async (req, res) => {
   }
 });
 
+// 🚀 BULK INSERT destinations (ONE-TIME SEED)
+app.post('/api/destinations/bulk-insert', async (req, res) => {
+  try {
+    const { destinations } = req.body;
+
+    if (!Array.isArray(destinations) || destinations.length === 0) {
+      return res.status(400).json({ error: 'destinations array required' });
+    }
+
+    // Clear existing destinations first (optional - remove if you want to append)
+    await db.collection('destinations').deleteMany({});
+    console.log('🗑️  Cleared existing destinations');
+
+    // Insert new destinations
+    const result = await db
+      .collection('destinations')
+      .insertMany(destinations);
+
+    console.log(`✅ Inserted ${result.insertedCount} destinations`);
+
+    res.status(201).json({
+      success: true,
+      inserted: result.insertedCount,
+      message: `Successfully inserted ${result.insertedCount} destinations`
+    });
+  } catch (err) {
+    console.error('❌ /api/destinations/bulk-insert:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 🎯 SIMPLE SEED ENDPOINT (just visit in browser)
+app.get('/api/seed-destinations', async (req, res) => {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    
+    // Read destinations from file
+    const filePath = path.join(__dirname, '../public/assets/data/destinations-full.json');
+    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    const data = JSON.parse(fileContent);
+    const destinations = data.destinations || [];
+
+    if (destinations.length === 0) {
+      return res.status(400).json({ error: 'No destinations found in file' });
+    }
+
+    // Clear existing
+    await db.collection('destinations').deleteMany({});
+    console.log('🗑️  Cleared existing destinations');
+
+    // Insert new
+    const result = await db.collection('destinations').insertMany(destinations);
+    console.log(`✅ Inserted ${result.insertedCount} destinations`);
+
+    res.json({
+      success: true,
+      inserted: result.insertedCount,
+      message: `✅ Successfully inserted ${result.insertedCount} destinations into MongoDB`
+    });
+  } catch (err) {
+    console.error('❌ /api/seed-destinations:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Search destinations
 app.post('/api/search', async (req, res) => {
   try {

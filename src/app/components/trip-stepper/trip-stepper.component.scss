@@ -607,10 +607,24 @@
   flex: 1;
 
   h3 {
-    margin: 0 0 6px 0;
-    font-size: 18px;
+    margin: 0 0 4px 0;
+    font-size: 20px;
     font-weight: 700;
     color: #1a1a1a;
+  }
+
+  .destination-name {
+    margin: 0 0 4px 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+
+  .destination-location {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    color: #666;
+    font-weight: 400;
   }
 }
 
@@ -646,6 +660,20 @@
   font-size: 24px;
   font-weight: 700;
   color: #4f46e5;
+}
+
+.type-badge {
+  margin-bottom: 12px;
+
+  .badge-type {
+    display: inline-block;
+    background: #f3f4f6;
+    color: #374151;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+  }
 }
 
 .tags {

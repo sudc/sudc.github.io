@@ -216,7 +216,8 @@
           <!-- Card Header -->
           <div class="card-header">
             <div class="destination-info">
-              <h3>{{ rec.destination.state }}</h3>
+              <h3 class="destination-name">{{ rec.destination.name }}</h3>
+              <p class="destination-location">{{ rec.destination.state }}, {{ rec.destination.country }}</p>
               <span [class]="'score-badge ' + getScoreBadgeClass(rec.overallRecommendationScore)">
                 {{ getScoreBadgeText(rec.overallRecommendationScore) }}
               </span>
@@ -224,21 +225,21 @@
             <div class="score">{{ rec.overallRecommendationScore }}/100</div>
           </div>
 
-          <!-- Tags -->
+          <!-- Destination Type Badge -->
+          <div class="type-badge">
+            <span class="badge-type">{{ getDestinationTypeBadge(rec.destination.type) }} {{ rec.destination.type | titlecase }}</span>
+          </div>
+
+          <!-- Reasons/Tags -->
           <div class="tags">
-            <span *ngFor="let reason of rec.reasons.slice(0, 3)" class="tag">
+            <span *ngFor="let reason of rec.reasons.slice(0, 2)" class="tag">
               {{ reason }}
             </span>
           </div>
 
-          <!-- Description -->
-          <div class="card-description">
-            <p>{{ rec.destination.description }}</p>
-          </div>
-
           <!-- CTA -->
           <button class="btn-explore" (click)="openBookingModal(rec)">
-            Explore & Book → 
+            Explore {{ rec.destination.name }} →
           </button>
         </div>
       </div>
@@ -262,8 +263,8 @@
   <app-booking-modal 
     *ngIf="isBookingModalOpen && selectedDestination"
     [isOpen]="isBookingModalOpen"
-    [destinationName]="selectedDestination?.destination?.state"
-    [agodaCode]="selectedDestination?.destination?.agodaCode"
+    [destinationName]="selectedDestination?.destination?.name"
+    [agodaCode]="selectedDestination?.destination?.agoda"
     (closed)="closeBookingModal()">
   </app-booking-modal>
 </section>

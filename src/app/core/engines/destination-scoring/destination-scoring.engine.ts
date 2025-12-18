@@ -8,7 +8,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BaseEngine, BaseEngineConfig, BaseEngineResult } from '../base.engine';
-import { Destination, DESTINATIONS_DATA } from '../destination/destinations.data';
+import { Destination } from '../destination/destinations.data';
 import { environment } from '../../../../environments/environment';
 
 export interface UserPreferences {
@@ -68,64 +68,50 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
         destinations = response;
         console.log(`✅ Loaded ${destinations.length} destinations from MongoDB`);
       } else {
-        throw new Error('Empty response from backend');
+        throw new Error('Empty response from backend - no destinations available');
       }
     } catch (err: any) {
-      console.warn('⚠️ MongoDB backend failed, NO fallback:', err.message);
-      // COMMENTED OUT - Testing backend only
-      // destinations = Object.values(DESTINATIONS_DATA) as Destination[];
-      // console.log(`📊 Using fallback: ${destinations.length} destinations from static data`);
-      destinations = [];
+      console.error('❌ MongoDB backend failed:', err.message);
+      this.logError(`Failed to load destinations from backend: ${err.message}`);
+      return {
+        engineName: this.config.name,
+        timestamp: new Date(),
+        success: false,
+        recommendations: [],
+        totalDestinationsScored: 0
+      };
     }
 
     const scored: ScoredDestination[] = [];
     
-    // 🔒 HARD FILTER: Only process destinations matching user interests
+    // � SOFT MATCHING: Score ALL destinations, let scoring determine relevance
     const userCategories = (input.userPreferences.categories || []).map(cat => cat.toLowerCase());
-    console.log(`\n🎯 USER INTERESTS (raw):`, input.userPreferences.categories);
-    console.log(`🎯 USER INTERESTS (normalized):`, userCategories);
-    console.log(`🎯 USER INTERESTS (count): ${userCategories.length}`);
+    console.log(`\n🎯 USER INTERESTS: ${input.userPreferences.categories.join(', ')}`);
+    console.log(`🎯 SCORING: ${destinations.length} destinations...`);
     
     for (const destination of destinations) {
-      // ✅ HARD FILTER: Skip destinations that don't match user interests
-      if (userCategories.length > 0) {
-        console.log(`\n🔍 Checking ${destination.state}...`);
-        console.log(`   Categories: ${JSON.stringify(destination.categories)}`);
-        console.log(`   User wants: ${JSON.stringify(userCategories)}`);
-        
-        const hasInterestMatch = destination.categories.some(cat => {
-          const matches = userCategories.includes(cat.toLowerCase());
-          console.log(`     - ${cat} in user categories? ${matches}`);
-          return matches;
-        });
-        
-        if (!hasInterestMatch) {
-          console.log(`   ⏭️ FILTERED OUT: No match found`);
-          continue; // Skip this destination entirely - NEVER show it
-        } else {
-          const matchedCats = destination.categories.filter(c => userCategories.includes(c));
-          console.log(`   ✅ PASSED FILTER: Matches ${JSON.stringify(matchedCats)}`);
-        }
-      }
-
       const { score, displayScore, reasons, badges, interestMatchScore, interestMatchMessage } = this.scoreDestination(destination, input.userPreferences);
-      scored.push({
-        destinationId: (destination as any)._id || '',
-        destination,
-        score,
-        displayScore,
-        reasons,
-        badges,
-        interestMatchScore,
-        interestMatchMessage
-      });
+      
+      // ✅ SOFT FILTER: Only show destinations scoring >= 50/100 or having strong experience match
+      if (displayScore >= 50 || interestMatchMessage === 'primary') {
+        scored.push({
+          destinationId: destination.id,
+          destination,
+          score,
+          displayScore,
+          reasons,
+          badges,
+          interestMatchScore,
+          interestMatchMessage
+        });
+      }
     }
 
     // Sort by score descending
     scored.sort((a, b) => b.score - a.score);
 
-    this.log(`Scored ${scored.length} destinations (after interest filtering)`);
-    console.log(`📋 Final destinations after filtering:`, scored.map(s => `${s.destination.state} (${s.displayScore}/100)`));
+    this.log(`Scored ${scored.length} destinations (showing top 10)`);
+    console.log(`📋 Top destinations:`, scored.slice(0, 10).map(s => `${s.destination.name}, ${s.destination.state} (${s.displayScore}/100)`));
 
     return {
       engineName: this.config.name,
@@ -145,32 +131,71 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
     dest: Destination, 
     prefs: UserPreferences
   ): { score: number; displayScore: number; reasons: string[]; badges: string[]; interestMatchScore: number; interestMatchMessage: string } {
-    let score = 0; // Internal /110 scale
-    let interestMatchScore = 0; // Track explicitly
-    let interestMatchMessage = 'secondary'; // Default to secondary match
+    let score = 0; // Base /100 scale
+    let interestMatchScore = 0;
+    let interestMatchMessage = 'secondary';
     const reasons: string[] = [];
     const badges: string[] = [];
     
-    console.log(`\n📍 SCORING: ${dest.state}`);
-    console.log(`   User categories: ${prefs.categories.join(', ') || 'NONE'}`);
-    console.log(`   Destination categories: ${dest.categories.join(', ')}`);
+    console.log(`\n📍 SCORING: ${dest.name} (${dest.state})`);
+    console.log(`   User interests: ${prefs.categories.join(', ') || 'NONE'}`);
+    console.log(`   Destination type: ${dest.type}`);
     
-    // 1. Perfect Timing (36 points max - /100 scale)
+    // 1. EXPERIENCE SCORE (40 points max) - ✅ PRIMARY SCORING
+    // Match user interests against destination's experience scores
+    if (prefs.categories && prefs.categories.length > 0) {
+      let totalExperienceScore = 0;
+      let matchCount = 0;
+      
+      for (const category of prefs.categories) {
+        const categoryKey = category.toLowerCase();
+        const destScore = (dest.scores as any)[categoryKey] || 0;
+        
+        console.log(`   - ${category}: ${destScore}/100`);
+        
+        if (destScore > 0) {
+          totalExperienceScore += destScore;
+          matchCount++;
+        }
+      }
+      
+      if (matchCount > 0) {
+        // Average the matching scores
+        const avgScore = totalExperienceScore / matchCount;
+        interestMatchScore = Math.round((avgScore / 100) * 40);
+        score += interestMatchScore;
+        
+        if (matchCount === prefs.categories.length) {
+          interestMatchMessage = 'primary';
+          reasons.push(`✅ Perfect match: ${matchCount}/${prefs.categories.length} interests (avg: ${Math.round(avgScore)}/100)`);
+          badges.push('Perfect Match');
+        } else {
+          interestMatchMessage = 'secondary';
+          reasons.push(`✓ ${matchCount}/${prefs.categories.length} interests match (avg: ${Math.round(avgScore)}/100)`);
+        }
+        
+        console.log(`   ✅ Experience score: ${interestMatchScore}/40 (${interestMatchMessage})`);
+      } else {
+        console.log(`   ⚠️ No experience scores found`);
+      }
+    }
+    
+    // 2. TIMING MATCH (30 points max)
     if (dest.bestMonths.includes(prefs.month)) {
-      score += 36;
-      reasons.push('✓ Perfect time to visit');
+      score += 30;
+      reasons.push('✓ Perfect season');
       badges.push('Perfect Season');
     } else if (dest.avoidMonths.includes(prefs.month)) {
-      score -= 27;
+      score -= 15;
       reasons.push('⚠ Not ideal season');
     } else {
-      score += 9;
+      score += 10;
       reasons.push('○ Acceptable season');
     }
     
-    // 2. Budget Match (27 points max - /100 scale)
+    // 3. BUDGET MATCH (20 points max)
     if (dest.budget === prefs.budget) {
-      score += 27;
+      score += 20;
       reasons.push('✓ Matches your budget');
       badges.push('Budget Match');
     } else {
@@ -180,76 +205,29 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
       const diff = Math.abs(destIndex - prefIndex);
       
       if (diff === 1) {
-        score += 13;
+        score += 10;
         reasons.push('○ Close to your budget');
       } else {
-        score += 4;
+        score += 3;
         reasons.push('⚠ Different budget range');
       }
     }
     
-    // 3. Category Match (25 points max) - ✅ CRITICAL
-    if (prefs.categories && prefs.categories.length > 0) {
-      const normUserCategories = prefs.categories.map(cat => cat.toLowerCase());
-      const matchingCategories = dest.categories.filter(cat => 
-        normUserCategories.includes(cat.toLowerCase())
-      );
-      
-      console.log(`   📊 Interest matching: ${JSON.stringify(matchingCategories)}`);
-      
-      if (matchingCategories.length >= 1) {
-        // Primary match: destination has 2+ of user's selected interests
-        if (matchingCategories.length >= 2) {
-          interestMatchScore = 23;
-          interestMatchMessage = 'primary';
-          reasons.push(`✅ Matches your ${matchingCategories.length} selected interests`);
-          badges.push('Perfect Match');
-        } 
-        // Secondary match: destination has 1 of user's interests
-        else {
-          interestMatchScore = 14; // Partial credit
-          interestMatchMessage = 'secondary';
-          reasons.push(`⚠️ Partial match — has ${matchingCategories[0]} experiences`);
-        }
-        score += interestMatchScore;
-        console.log(`   ✅ Interest match: ${matchingCategories.length} category/ies. Score: ${interestMatchScore}/23 (${interestMatchMessage})`);
-      } 
-      // Weak match: destination doesn't match but passed hard filter? (shouldn't happen)
-      else {
-        interestMatchScore = 5; // Minimum credit
-        interestMatchMessage = 'weak';
-        score += interestMatchScore;
-        console.log(`   ℹ️ Limited interest match. Score: ${interestMatchScore}/23 (weak)`);
-      }
-    } else {
-      console.log(`   ⚠️ No user categories provided`);
-    }
-    
-    // 4. Climate Preference (14 points max - /100 scale)
+    // 4. CLIMATE PREFERENCE (10 points max)
     if (prefs.climate && prefs.climate.length > 0) {
-      if (prefs.climate.includes(dest.climate)) {
-        score += 14;
-        reasons.push('✓ Ideal climate for you');
+      const climateKey = prefs.climate[0].toLowerCase();
+      if (dest.climate === climateKey || prefs.climate.includes(dest.climate)) {
+        score += 10;
+        reasons.push('✓ Ideal climate');
         badges.push('Great Weather');
       }
     }
     
-    // 5. Bonus Points for Special Cases
-    // Popular destinations bonus
-    const popularDestinations = ['goa', 'manali', 'jaipur', 'kerala', 'leh', 'andaman'];
-    const destId = (dest as any)._id || '';
-    if (popularDestinations.includes(destId)) {
-      score += 5;
-      badges.push('Popular Choice');
-    }
-    
     // Ensure score is within bounds (0-100)
     score = Math.max(0, Math.min(100, score));
+    const displayScore = Math.round(score);
     
-    // ✅ FIXED: Score is now /100 - no conversion needed
-    const displayScore = score;
-    
-    console.log(`   🎯 Final Score: ${displayScore}/100 (Interest: ${interestMatchScore}/23)\n`);
+    console.log(`   🎯 Final Score: ${displayScore}/100\n`);
     
     return { score, displayScore, reasons, badges, interestMatchScore, interestMatchMessage };
   }

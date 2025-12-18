@@ -1,9 +1,18 @@
 /**
- * DESTINATIONS DATA
- * ==================
+ * DESTINATIONS DATA (v2)
+ * =======================
  * 
- * Static data for Indian destinations
+ * City-level destinations with experience-based scoring
+ * 
+ * Structure:
+ * - name: Actual destination city/town
+ * - state: Parent state (metadata)
+ * - type: Primary destination type (beach, hill, city, heritage, island, wildlife)
+ * - categories: Experience tags
+ * - scores: Experience-specific scores (0-100) for matching
  */
+
+export type DestinationType = 'beach' | 'hill' | 'city' | 'heritage' | 'island' | 'wildlife' | 'spiritual';
 
 export type DestinationCategory = 
   | 'Beach' | 'Mountain' | 'Hill' | 'Heritage' | 'Spiritual'
@@ -17,411 +26,744 @@ export type ClimateType =
 
 export type BudgetType = 'budget' | 'moderate' | 'premium';
 
+export interface ExperienceScores {
+  beach?: number;
+  adventure?: number;
+  relaxation?: number;
+  nightlife?: number;
+  family?: number;
+  couple?: number;
+  cultural?: number;
+  spiritual?: number;
+  nature?: number;
+  wildlife?: number;
+  heritage?: number;
+  [key: string]: number | undefined;
+}
+
 export interface Destination {
+  id: string;
+  name: string;
   state: string;
+  country: string;
+  type: DestinationType;
   categories: DestinationCategory[];
   bestMonths: number[];
   avoidMonths: number[];
   climate: ClimateType;
   budget: BudgetType;
+  scores: ExperienceScores;
   agoda: string;
 }
 
 export const DESTINATIONS_DATA: Record<string, Destination> = {
-  'goa': {
-    state: 'Goa',
-    categories: ['Beach', 'Party'],
-    bestMonths: [11, 12, 1, 2],
-    avoidMonths: [6, 7, 8],
-    climate: 'tropical',
-    budget: 'moderate',
-    agoda: 'goa-in'
-  },
-  'mumbai': {
-    state: 'Maharashtra',
-    categories: ['City', 'Coastal'],
-    bestMonths: [10, 11, 12, 1, 2],
-    avoidMonths: [6, 7, 8],
-    climate: 'humid',
-    budget: 'premium',
-    agoda: 'mumbai-in'
-  },
-  'pune': {
-    state: 'Maharashtra',
-    categories: ['City', 'Hill'],
-    bestMonths: [10, 11, 12, 1, 2],
-    avoidMonths: [6, 7, 8],
-    climate: 'moderate',
-    budget: 'moderate',
-    agoda: 'pune-in'
-  },
-  'manali': {
-    state: 'Himachal Pradesh',
-    categories: ['Mountain', 'Snow'],
-    bestMonths: [3, 4, 5, 10],
-    avoidMonths: [7, 8],
-    climate: 'cold',
-    budget: 'budget',
-    agoda: 'manali-in'
-  },
-  'shimla': {
-    state: 'Himachal Pradesh',
-    categories: ['Hill', 'Colonial'],
-    bestMonths: [3, 4, 5, 10],
-    avoidMonths: [7, 8],
-    climate: 'cold',
-    budget: 'budget',
-    agoda: 'shimla-in'
-  },
-  'jaipur': {
-    state: 'Rajasthan',
-    categories: ['Heritage'],
-    bestMonths: [10, 11, 12, 1, 2],
-    avoidMonths: [5, 6],
-    climate: 'hot',
-    budget: 'budget',
-    agoda: 'jaipur-in'
-  },
-  'udaipur': {
-    state: 'Rajasthan',
-    categories: ['Romantic', 'Heritage'],
-    bestMonths: [10, 11, 12, 1, 2],
-    avoidMonths: [5, 6],
-    climate: 'hot',
-    budget: 'moderate',
-    agoda: 'udaipur-in'
-  },
-  'jodhpur': {
-    state: 'Rajasthan',
-    categories: ['Heritage'],
-    bestMonths: [10, 11, 12, 1, 2],
-    avoidMonths: [5, 6],
-    climate: 'hot',
-    budget: 'budget',
-    agoda: 'jodhpur-in'
-  },
-  'rishikesh': {
-    state: 'Uttarakhand',
-    categories: ['Spiritual', 'Adventure'],
-    bestMonths: [2, 3, 4, 9, 10],
-    avoidMonths: [7, 8],
-    climate: 'moderate',
-    budget: 'budget',
-    agoda: 'rishikesh-in'
-  },
-  'delhi': {
-    state: 'Delhi',
-    categories: ['City', 'Culture', 'Heritage'],
-    bestMonths: [10, 11, 12, 2, 3],
-    avoidMonths: [5, 6],
-    climate: 'extreme',
-    budget: 'budget',
-    agoda: 'new-delhi-in'
-  },
-  'agra': {
-    state: 'Uttar Pradesh',
-    categories: ['Heritage'],
-    bestMonths: [10, 11, 12, 1, 2],
-    avoidMonths: [5, 6],
-    climate: 'hot',
-    budget: 'budget',
-    agoda: 'agra-in'
-  },
-  'varanasi': {
-    state: 'Uttar Pradesh',
-    categories: ['Spiritual', 'Culture'],
-    bestMonths: [10, 11, 12, 1, 2],
-    avoidMonths: [5, 6],
-    climate: 'hot',
-    budget: 'budget',
-    agoda: 'varanasi-in'
-  },
-  'leh': {
-    state: 'Ladakh',
-    categories: ['Adventure', 'Mountain'],
-    bestMonths: [6, 7, 8, 9],
-    avoidMonths: [11, 12, 1, 2],
-    climate: 'cold_desert',
-    budget: 'premium',
-    agoda: 'leh-in'
-  },
-  'srinagar': {
-    state: 'Jammu & Kashmir',
-    categories: ['Nature', 'Romantic'],
-    bestMonths: [4, 5, 6, 9],
-    avoidMonths: [12, 1, 2],
-    climate: 'cold',
-    budget: 'moderate',
-    agoda: 'srinagar-in'
-  },
-  'gulmarg': {
-    state: 'Jammu & Kashmir',
-    categories: ['Snow', 'Ski'],
-    bestMonths: [1, 2, 12],
-    avoidMonths: [7, 8],
-    climate: 'cold',
-    budget: 'premium',
-    agoda: 'gulmarg-in'
-  },
-  'kochi': {
-    state: 'Kerala',
-    categories: ['Backwaters', 'Culture'],
-    bestMonths: [10, 11, 12, 1, 2],
-    avoidMonths: [6, 7],
-    climate: 'tropical',
-    budget: 'moderate',
-    agoda: 'kochi-in'
-  },
-  'munnar': {
-    state: 'Kerala',
-    categories: ['Hill', 'Nature'],
-    bestMonths: [9, 10, 11, 12, 1],
-    avoidMonths: [6, 7],
-    climate: 'cool',
-    budget: 'moderate',
-    agoda: 'munnar-in'
-  },
-  'alleppey': {
-    state: 'Kerala',
-    categories: ['Backwaters'],
-    bestMonths: [10, 11, 12, 1, 2],
-    avoidMonths: [6, 7],
-    climate: 'tropical',
-    budget: 'moderate',
-    agoda: 'alleppey-in'
-  },
-  'ooty': {
-    state: 'Tamil Nadu',
-    categories: ['Hill'],
-    bestMonths: [10, 11, 12, 1, 2],
-    avoidMonths: [6, 7],
-    climate: 'cool',
-    budget: 'moderate',
-    agoda: 'ooty-in'
-  },
-  'pondicherry': {
-    state: 'Puducherry',
-    categories: ['Beach', 'Culture', 'Colonial'],
-    bestMonths: [10, 11, 12, 1, 2],
-    avoidMonths: [10],
-    climate: 'humid',
-    budget: 'moderate',
-    agoda: 'pondicherry-in'
-  },
-  'hampi': {
-    state: 'Karnataka',
-    categories: ['Heritage'],
-    bestMonths: [10, 11, 12, 1, 2],
-    avoidMonths: [5, 6],
-    climate: 'hot',
-    budget: 'budget',
-    agoda: 'hampi-in'
-  },
-  'coorg': {
-    state: 'Karnataka',
-    categories: ['Hill', 'Nature'],
-    bestMonths: [10, 11, 12, 1, 2],
-    avoidMonths: [6, 7],
-    climate: 'cool',
-    budget: 'moderate',
-    agoda: 'coorg-in'
-  },
+  /* =====================
+     BEACH DESTINATIONS
+  ===================== */
   'gokarna': {
+    id: 'gokarna',
+    name: 'Gokarna',
     state: 'Karnataka',
-    categories: ['Beach'],
+    country: 'India',
+    type: 'beach',
+    categories: ['Beach', 'Spiritual'],
     bestMonths: [10, 11, 12, 1, 2],
-    avoidMonths: [6, 7],
+    avoidMonths: [6, 7, 8],
     climate: 'tropical',
     budget: 'budget',
+    scores: { beach: 95, adventure: 65, relaxation: 90, nightlife: 40, family: 70 },
     agoda: 'gokarna-in'
   },
-  'darjeeling': {
-    state: 'West Bengal',
-    categories: ['Hill', 'Colonial'],
-    bestMonths: [3, 4, 5, 10],
-    avoidMonths: [7, 8],
-    climate: 'cool',
-    budget: 'moderate',
-    agoda: 'darjeeling-in'
-  },
-  'gangtok': {
-    state: 'Sikkim',
-    categories: ['Hill', 'Nature'],
-    bestMonths: [3, 4, 5, 10],
-    avoidMonths: [7, 8],
-    climate: 'cool',
-    budget: 'moderate',
-    agoda: 'gangtok-in'
-  },
-  'shillong': {
-    state: 'Meghalaya',
-    categories: ['Nature', 'Hill'],
-    bestMonths: [10, 11, 12, 3, 4],
-    avoidMonths: [6, 7],
-    climate: 'cool',
+  'varkala': {
+    id: 'varkala',
+    name: 'Varkala',
+    state: 'Kerala',
+    country: 'India',
+    type: 'beach',
+    categories: ['Beach', 'Spiritual'],
+    bestMonths: [10, 11, 12, 1, 2],
+    avoidMonths: [6, 7, 8],
+    climate: 'tropical',
     budget: 'budget',
-    agoda: 'shillong-in'
+    scores: { beach: 92, relaxation: 88, spiritual: 75, adventure: 50, nightlife: 35 },
+    agoda: 'varkala-in'
   },
-  'andaman': {
+  'udupi': {
+    id: 'udupi',
+    name: 'Udupi',
+    state: 'Karnataka',
+    country: 'India',
+    type: 'beach',
+    categories: ['Beach', 'Spiritual', 'Heritage'],
+    bestMonths: [10, 11, 12, 1, 2],
+    avoidMonths: [6, 7, 8],
+    climate: 'tropical',
+    budget: 'budget',
+    scores: { beach: 88, spiritual: 85, heritage: 75, relaxation: 80, family: 75 },
+    agoda: 'udupi-in'
+  },
+  'palolem-goa': {
+    id: 'palolem-goa',
+    name: 'Palolem',
+    state: 'Goa',
+    country: 'India',
+    type: 'beach',
+    categories: ['Beach', 'Party'],
+    bestMonths: [11, 12, 1, 2, 3],
+    avoidMonths: [6, 7, 8, 9],
+    climate: 'tropical',
+    budget: 'moderate',
+    scores: { beach: 90, nightlife: 85, party: 88, relaxation: 75, adventure: 60 },
+    agoda: 'palolem-in'
+  },
+  'anjuna-goa': {
+    id: 'anjuna-goa',
+    name: 'Anjuna',
+    state: 'Goa',
+    country: 'India',
+    type: 'beach',
+    categories: ['Beach', 'Party'],
+    bestMonths: [11, 12, 1, 2, 3],
+    avoidMonths: [6, 7, 8, 9],
+    climate: 'tropical',
+    budget: 'moderate',
+    scores: { beach: 85, nightlife: 88, party: 90, adventure: 65, relaxation: 70 },
+    agoda: 'anjuna-in'
+  },
+  'baga-goa': {
+    id: 'baga-goa',
+    name: 'Baga',
+    state: 'Goa',
+    country: 'India',
+    type: 'beach',
+    categories: ['Beach', 'Party'],
+    bestMonths: [11, 12, 1, 2, 3],
+    avoidMonths: [6, 7, 8, 9],
+    climate: 'tropical',
+    budget: 'moderate',
+    scores: { beach: 82, nightlife: 85, party: 87, adventure: 70, family: 60 },
+    agoda: 'baga-in'
+  },
+  'pondicherry': {
+    id: 'pondicherry',
+    name: 'Pondicherry',
+    state: 'Puducherry',
+    country: 'India',
+    type: 'beach',
+    categories: ['Beach', 'Culture', 'Colonial'],
+    bestMonths: [10, 11, 12, 1, 2],
+    avoidMonths: [6, 7, 8],
+    climate: 'humid',
+    budget: 'moderate',
+    scores: { beach: 75, cultural: 88, heritage: 85, romance: 82, relaxation: 80 },
+    agoda: 'pondicherry-in'
+  },
+  'kovalam': {
+    id: 'kovalam',
+    name: 'Kovalam',
+    state: 'Kerala',
+    country: 'India',
+    type: 'beach',
+    categories: ['Beach', 'Relaxation'],
+    bestMonths: [10, 11, 12, 1, 2],
+    avoidMonths: [6, 7, 8],
+    climate: 'tropical',
+    budget: 'moderate',
+    scores: { beach: 85, relaxation: 92, family: 80, romance: 80, nightlife: 50 },
+    agoda: 'kovalam-in'
+  },
+  'alleppey': {
+    id: 'alleppey',
+    name: 'Alleppey (Alappuzha)',
+    state: 'Kerala',
+    country: 'India',
+    type: 'beach',
+    categories: ['Backwaters', 'Beach'],
+    bestMonths: [10, 11, 12, 1, 2],
+    avoidMonths: [6, 7, 8],
+    climate: 'tropical',
+    budget: 'moderate',
+    scores: { relaxation: 88, family: 85, romance: 85, nature: 80, beach: 70 },
+    agoda: 'alleppey-in'
+  },
+  'havelock-andaman': {
+    id: 'havelock-andaman',
+    name: 'Havelock Island',
     state: 'Andaman & Nicobar',
+    country: 'India',
+    type: 'island',
+    categories: ['Island', 'Beach', 'Adventure'],
+    bestMonths: [11, 12, 1, 2, 3],
+    avoidMonths: [6, 7, 8],
+    climate: 'tropical',
+    budget: 'premium',
+    scores: { beach: 98, adventure: 92, family: 85, relaxation: 80, wildlife: 75 },
+    agoda: 'havelock-in'
+  },
+  'neil-andaman': {
+    id: 'neil-andaman',
+    name: 'Neil Island',
+    state: 'Andaman & Nicobar',
+    country: 'India',
+    type: 'island',
     categories: ['Island', 'Beach'],
     bestMonths: [11, 12, 1, 2, 3],
     avoidMonths: [6, 7, 8],
     climate: 'tropical',
     budget: 'premium',
-    agoda: 'andaman-in'
+    scores: { beach: 90, relaxation: 92, family: 82, adventure: 70, romance: 85 },
+    agoda: 'neil-in'
   },
-  'amritsar': {
-    state: 'Punjab',
-    categories: ['Spiritual', 'Heritage'],
-    bestMonths: [10, 11, 12, 1, 2],
-    avoidMonths: [5, 6],
-    climate: 'extreme',
+
+  /* =====================
+     HILL DESTINATIONS
+  ===================== */
+  'manali': {
+    id: 'manali',
+    name: 'Manali',
+    state: 'Himachal Pradesh',
+    country: 'India',
+    type: 'hill',
+    categories: ['Mountain', 'Adventure', 'Snow'],
+    bestMonths: [3, 4, 5, 10, 11],
+    avoidMonths: [7, 8],
+    climate: 'cold',
     budget: 'budget',
-    agoda: 'amritsar-in'
+    scores: { adventure: 92, nature: 88, relaxation: 75, family: 80, couple: 85 },
+    agoda: 'manali-in'
   },
-  'varkala': {
+  'shimla': {
+    id: 'shimla',
+    name: 'Shimla',
+    state: 'Himachal Pradesh',
+    country: 'India',
+    type: 'hill',
+    categories: ['Hill', 'Colonial'],
+    bestMonths: [3, 4, 5, 10, 11],
+    avoidMonths: [7, 8],
+    climate: 'cold',
+    budget: 'budget',
+    scores: { nature: 85, heritage: 80, family: 85, couple: 80, relaxation: 75 },
+    agoda: 'shimla-in'
+  },
+  'mussoorie': {
+    id: 'mussoorie',
+    name: 'Mussoorie',
+    state: 'Uttarakhand',
+    country: 'India',
+    type: 'hill',
+    categories: ['Hill', 'Colonial'],
+    bestMonths: [3, 4, 5, 10, 11],
+    avoidMonths: [7, 8],
+    climate: 'cool',
+    budget: 'moderate',
+    scores: { nature: 82, heritage: 78, family: 80, couple: 82, adventure: 70 },
+    agoda: 'mussoorie-in'
+  },
+  'nainital': {
+    id: 'nainital',
+    name: 'Nainital',
+    state: 'Uttarakhand',
+    country: 'India',
+    type: 'hill',
+    categories: ['Hill', 'Lake'],
+    bestMonths: [3, 4, 5, 10, 11],
+    avoidMonths: [7, 8],
+    climate: 'cool',
+    budget: 'moderate',
+    scores: { family: 88, nature: 82, romance: 80, adventure: 75, relaxation: 78 },
+    agoda: 'nainital-in'
+  },
+  'munnar': {
+    id: 'munnar',
+    name: 'Munnar',
     state: 'Kerala',
-    categories: ['Beach', 'Spiritual'],
+    country: 'India',
+    type: 'hill',
+    categories: ['Hill', 'Nature'],
+    bestMonths: [9, 10, 11, 12, 1],
+    avoidMonths: [6, 7],
+    climate: 'cool',
+    budget: 'moderate',
+    scores: { nature: 95, relaxation: 88, family: 82, adventure: 70, couple: 85 },
+    agoda: 'munnar-in'
+  },
+  'coorg': {
+    id: 'coorg',
+    name: 'Coorg (Kodagu)',
+    state: 'Karnataka',
+    country: 'India',
+    type: 'hill',
+    categories: ['Hill', 'Nature'],
     bestMonths: [10, 11, 12, 1, 2],
     avoidMonths: [6, 7],
-    climate: 'tropical',
-    budget: 'budget',
-    agoda: 'varkala-in'
+    climate: 'cool',
+    budget: 'moderate',
+    scores: { nature: 90, adventure: 80, relaxation: 82, family: 80, couple: 85 },
+    agoda: 'coorg-in'
+  },
+  'ooty': {
+    id: 'ooty',
+    name: 'Ooty (Udhagamandalam)',
+    state: 'Tamil Nadu',
+    country: 'India',
+    type: 'hill',
+    categories: ['Hill', 'Colonial'],
+    bestMonths: [10, 11, 12, 1, 2],
+    avoidMonths: [6, 7],
+    climate: 'cool',
+    budget: 'moderate',
+    scores: { nature: 88, family: 88, heritage: 75, adventure: 70, couple: 82 },
+    agoda: 'ooty-in'
   },
   'kodaikanal': {
+    id: 'kodaikanal',
+    name: 'Kodaikanal',
     state: 'Tamil Nadu',
-    categories: ['Hill'],
+    country: 'India',
+    type: 'hill',
+    categories: ['Hill', 'Lake'],
     bestMonths: [10, 11, 12, 1, 2],
     avoidMonths: [6, 7],
     climate: 'cool',
     budget: 'moderate',
+    scores: { family: 88, nature: 85, romance: 85, adventure: 75, relaxation: 82 },
     agoda: 'kodaikanal-in'
   },
-  'mahabaleshwar': {
-    state: 'Maharashtra',
-    categories: ['Hill'],
-    bestMonths: [10, 11, 12, 1, 2],
+  'darjeeling': {
+    id: 'darjeeling',
+    name: 'Darjeeling',
+    state: 'West Bengal',
+    country: 'India',
+    type: 'hill',
+    categories: ['Hill', 'Colonial', 'Culture'],
+    bestMonths: [3, 4, 5, 10, 11],
     avoidMonths: [7, 8],
     climate: 'cool',
     budget: 'moderate',
-    agoda: 'mahabaleshwar-in'
+    scores: { heritage: 85, culture: 82, nature: 80, family: 78, adventure: 70 },
+    agoda: 'darjeeling-in'
+  },
+  'gangtok': {
+    id: 'gangtok',
+    name: 'Gangtok',
+    state: 'Sikkim',
+    country: 'India',
+    type: 'hill',
+    categories: ['Hill', 'Nature'],
+    bestMonths: [3, 4, 5, 10, 11],
+    avoidMonths: [7, 8],
+    climate: 'cool',
+    budget: 'moderate',
+    scores: { nature: 85, adventure: 80, culture: 78, family: 75, relaxation: 75 },
+    agoda: 'gangtok-in'
   },
   'lonavala': {
+    id: 'lonavala',
+    name: 'Lonavala',
     state: 'Maharashtra',
-    categories: ['Hill'],
+    country: 'India',
+    type: 'hill',
+    categories: ['Hill', 'Adventure'],
     bestMonths: [10, 11, 12, 1, 2],
     avoidMonths: [7, 8],
     climate: 'cool',
     budget: 'budget',
+    scores: { adventure: 82, family: 80, nature: 78, couple: 75, relaxation: 72 },
     agoda: 'lonavala-in'
   },
-  'haridwar': {
-    state: 'Uttarakhand',
-    categories: ['Spiritual'],
-    bestMonths: [10, 11, 12, 2, 3],
-    avoidMonths: [7, 8],
-    climate: 'moderate',
-    budget: 'budget',
-    agoda: 'haridwar-in'
-  },
-  'wayanad': {
-    state: 'Kerala',
-    categories: ['Nature', 'Wildlife'],
+  'mahabaleshwar': {
+    id: 'mahabaleshwar',
+    name: 'Mahabaleshwar',
+    state: 'Maharashtra',
+    country: 'India',
+    type: 'hill',
+    categories: ['Hill', 'Nature'],
     bestMonths: [10, 11, 12, 1, 2],
+    avoidMonths: [7, 8],
+    climate: 'cool',
+    budget: 'moderate',
+    scores: { nature: 88, family: 82, adventure: 75, relaxation: 80, couple: 78 },
+    agoda: 'mahabaleshwar-in'
+  },
+  'mount-abu': {
+    id: 'mount-abu',
+    name: 'Mount Abu',
+    state: 'Rajasthan',
+    country: 'India',
+    type: 'hill',
+    categories: ['Hill', 'Spiritual'],
+    bestMonths: [11, 12, 1, 2, 3],
+    avoidMonths: [5, 6],
+    climate: 'cool',
+    budget: 'moderate',
+    scores: { nature: 85, spiritual: 82, family: 80, couple: 78, relaxation: 75 },
+    agoda: 'mount-abu-in'
+  },
+  'shillong': {
+    id: 'shillong',
+    name: 'Shillong',
+    state: 'Meghalaya',
+    country: 'India',
+    type: 'hill',
+    categories: ['Nature', 'Hill'],
+    bestMonths: [10, 11, 12, 3, 4],
     avoidMonths: [6, 7],
     climate: 'cool',
     budget: 'budget',
-    agoda: 'wayanad-in'
+    scores: { nature: 92, culture: 75, family: 78, adventure: 72, relaxation: 75 },
+    agoda: 'shillong-in'
   },
-  'kaziranga': {
-    state: 'Assam',
-    categories: ['Wildlife', 'Nature'],
-    bestMonths: [11, 12, 1, 2, 3],
-    avoidMonths: [6, 7, 8],
-    climate: 'humid',
-    budget: 'moderate',
-    agoda: 'kaziranga-in'
-  },
-  'mysore': {
-    state: 'Karnataka',
-    categories: ['Heritage', 'Culture'],
-    bestMonths: [10, 11, 12, 1, 2],
-    avoidMonths: [6, 7],
-    climate: 'moderate',
-    budget: 'budget',
-    agoda: 'mysore-in'
-  },
-  'ranthambore': {
+
+  /* =====================
+     HERITAGE/CULTURAL
+  ===================== */
+  'jaipur': {
+    id: 'jaipur',
+    name: 'Jaipur',
     state: 'Rajasthan',
-    categories: ['Wildlife'],
-    bestMonths: [10, 11, 12, 1, 2, 3],
-    avoidMonths: [6, 7],
+    country: 'India',
+    type: 'heritage',
+    categories: ['Heritage', 'City', 'Culture'],
+    bestMonths: [10, 11, 12, 1, 2],
+    avoidMonths: [5, 6],
     climate: 'hot',
-    budget: 'premium',
-    agoda: 'ranthambore-in'
+    budget: 'budget',
+    scores: { heritage: 95, culture: 90, family: 80, couple: 80, city: 85 },
+    agoda: 'jaipur-in'
   },
-  'khajuraho': {
-    state: 'Madhya Pradesh',
+  'agra': {
+    id: 'agra',
+    name: 'Agra',
+    state: 'Uttar Pradesh',
+    country: 'India',
+    type: 'heritage',
     categories: ['Heritage'],
     bestMonths: [10, 11, 12, 1, 2],
     avoidMonths: [5, 6],
     climate: 'hot',
     budget: 'budget',
+    scores: { heritage: 98, culture: 92, family: 75, couple: 85, city: 75 },
+    agoda: 'agra-in'
+  },
+  'udaipur': {
+    id: 'udaipur',
+    name: 'Udaipur',
+    state: 'Rajasthan',
+    country: 'India',
+    type: 'heritage',
+    categories: ['Heritage', 'Romantic', 'Lake'],
+    bestMonths: [10, 11, 12, 1, 2],
+    avoidMonths: [5, 6],
+    climate: 'hot',
+    budget: 'moderate',
+    scores: { heritage: 90, romance: 95, family: 80, culture: 85, couple: 92 },
+    agoda: 'udaipur-in'
+  },
+  'jodhpur': {
+    id: 'jodhpur',
+    name: 'Jodhpur',
+    state: 'Rajasthan',
+    country: 'India',
+    type: 'heritage',
+    categories: ['Heritage', 'Culture'],
+    bestMonths: [10, 11, 12, 1, 2],
+    avoidMonths: [5, 6],
+    climate: 'hot',
+    budget: 'budget',
+    scores: { heritage: 92, culture: 88, family: 78, couple: 82, adventure: 65 },
+    agoda: 'jodhpur-in'
+  },
+  'hampi': {
+    id: 'hampi',
+    name: 'Hampi',
+    state: 'Karnataka',
+    country: 'India',
+    type: 'heritage',
+    categories: ['Heritage', 'Culture'],
+    bestMonths: [10, 11, 12, 1, 2],
+    avoidMonths: [5, 6],
+    climate: 'hot',
+    budget: 'budget',
+    scores: { heritage: 95, culture: 90, adventure: 75, family: 75, couple: 78 },
+    agoda: 'hampi-in'
+  },
+  'mysore': {
+    id: 'mysore',
+    name: 'Mysore',
+    state: 'Karnataka',
+    country: 'India',
+    type: 'heritage',
+    categories: ['Heritage', 'Culture'],
+    bestMonths: [10, 11, 12, 1, 2],
+    avoidMonths: [6, 7],
+    climate: 'moderate',
+    budget: 'budget',
+    scores: { heritage: 88, culture: 85, family: 82, couple: 80, adventure: 60 },
+    agoda: 'mysore-in'
+  },
+  'delhi': {
+    id: 'delhi',
+    name: 'Delhi',
+    state: 'Delhi',
+    country: 'India',
+    type: 'city',
+    categories: ['City', 'Heritage', 'Culture'],
+    bestMonths: [10, 11, 12, 2, 3],
+    avoidMonths: [5, 6],
+    climate: 'extreme',
+    budget: 'budget',
+    scores: { heritage: 85, culture: 90, city: 95, family: 78, couple: 75 },
+    agoda: 'new-delhi-in'
+  },
+  'khajuraho': {
+    id: 'khajuraho',
+    name: 'Khajuraho',
+    state: 'Madhya Pradesh',
+    country: 'India',
+    type: 'heritage',
+    categories: ['Heritage', 'Culture'],
+    bestMonths: [10, 11, 12, 1, 2],
+    avoidMonths: [5, 6],
+    climate: 'hot',
+    budget: 'budget',
+    scores: { heritage: 93, culture: 88, couple: 80, family: 72, adventure: 55 },
     agoda: 'khajuraho-in'
   },
+  'madurai': {
+    id: 'madurai',
+    name: 'Madurai',
+    state: 'Tamil Nadu',
+    country: 'India',
+    type: 'heritage',
+    categories: ['Heritage', 'Spiritual', 'Culture'],
+    bestMonths: [10, 11, 12, 1, 2],
+    avoidMonths: [5, 6],
+    climate: 'hot',
+    budget: 'budget',
+    scores: { spiritual: 88, heritage: 85, culture: 88, family: 80, couple: 72 },
+    agoda: 'madurai-in'
+  },
+  'kochi': {
+    id: 'kochi',
+    name: 'Kochi',
+    state: 'Kerala',
+    country: 'India',
+    type: 'city',
+    categories: ['City', 'Culture', 'Coastal'],
+    bestMonths: [10, 11, 12, 1, 2],
+    avoidMonths: [6, 7],
+    climate: 'tropical',
+    budget: 'moderate',
+    scores: { culture: 88, heritage: 82, family: 80, couple: 80, city: 85 },
+    agoda: 'kochi-in'
+  },
+
+  /* =====================
+     SPIRITUAL DESTINATIONS
+  ===================== */
+  'varanasi': {
+    id: 'varanasi',
+    name: 'Varanasi',
+    state: 'Uttar Pradesh',
+    country: 'India',
+    type: 'spiritual',
+    categories: ['Spiritual', 'Culture', 'Heritage'],
+    bestMonths: [10, 11, 12, 1, 2],
+    avoidMonths: [5, 6],
+    climate: 'hot',
+    budget: 'budget',
+    scores: { spiritual: 98, culture: 92, heritage: 88, family: 70, couple: 72 },
+    agoda: 'varanasi-in'
+  },
+  'rishikesh': {
+    id: 'rishikesh',
+    name: 'Rishikesh',
+    state: 'Uttarakhand',
+    country: 'India',
+    type: 'spiritual',
+    categories: ['Spiritual', 'Adventure'],
+    bestMonths: [2, 3, 4, 9, 10, 11],
+    avoidMonths: [7, 8],
+    climate: 'moderate',
+    budget: 'budget',
+    scores: { spiritual: 92, adventure: 85, relaxation: 80, family: 75, couple: 80 },
+    agoda: 'rishikesh-in'
+  },
+  'haridwar': {
+    id: 'haridwar',
+    name: 'Haridwar',
+    state: 'Uttarakhand',
+    country: 'India',
+    type: 'spiritual',
+    categories: ['Spiritual', 'Heritage'],
+    bestMonths: [10, 11, 12, 2, 3],
+    avoidMonths: [7, 8],
+    climate: 'moderate',
+    budget: 'budget',
+    scores: { spiritual: 95, heritage: 82, family: 80, culture: 80, couple: 75 },
+    agoda: 'haridwar-in'
+  },
   'pushkar': {
+    id: 'pushkar',
+    name: 'Pushkar',
     state: 'Rajasthan',
+    country: 'India',
+    type: 'spiritual',
     categories: ['Spiritual', 'Culture'],
     bestMonths: [10, 11, 12, 1, 2],
     avoidMonths: [5, 6],
     climate: 'hot',
     budget: 'budget',
+    scores: { spiritual: 90, culture: 85, couple: 78, family: 72, adventure: 60 },
     agoda: 'pushkar-in'
   },
-  'mount-abu': {
-    state: 'Rajasthan',
-    categories: ['Hill'],
-    bestMonths: [11, 12, 1, 2, 3],
+  'amritsar': {
+    id: 'amritsar',
+    name: 'Amritsar',
+    state: 'Punjab',
+    country: 'India',
+    type: 'spiritual',
+    categories: ['Spiritual', 'Heritage', 'Culture'],
+    bestMonths: [10, 11, 12, 1, 2],
     avoidMonths: [5, 6],
-    climate: 'cool',
+    climate: 'extreme',
+    budget: 'budget',
+    scores: { spiritual: 92, heritage: 88, culture: 88, family: 80, couple: 75 },
+    agoda: 'amritsar-in'
+  },
+
+  /* =====================
+     ADVENTURE DESTINATIONS
+  ===================== */
+  'leh': {
+    id: 'leh',
+    name: 'Leh (Ladakh)',
+    state: 'Ladakh',
+    country: 'India',
+    type: 'adventure',
+    categories: ['Adventure', 'Mountain', 'Nature'],
+    bestMonths: [6, 7, 8, 9],
+    avoidMonths: [11, 12, 1, 2],
+    climate: 'cold_desert',
+    budget: 'premium',
+    scores: { adventure: 98, nature: 92, couple: 85, family: 70, relaxation: 60 },
+    agoda: 'leh-in'
+  },
+  'srinagar': {
+    id: 'srinagar',
+    name: 'Srinagar',
+    state: 'Jammu & Kashmir',
+    country: 'India',
+    type: 'hill',
+    categories: ['Nature', 'Romantic', 'Adventure'],
+    bestMonths: [4, 5, 6, 9],
+    avoidMonths: [12, 1, 2],
+    climate: 'cold',
     budget: 'moderate',
-    agoda: 'mount-abu-in'
+    scores: { nature: 92, romance: 90, adventure: 75, couple: 92, family: 78 },
+    agoda: 'srinagar-in'
+  },
+  'gulmarg': {
+    id: 'gulmarg',
+    name: 'Gulmarg',
+    state: 'Jammu & Kashmir',
+    country: 'India',
+    type: 'adventure',
+    categories: ['Snow', 'Adventure', 'Mountain'],
+    bestMonths: [1, 2, 12],
+    avoidMonths: [7, 8, 9],
+    climate: 'cold',
+    budget: 'premium',
+    scores: { adventure: 95, nature: 88, family: 75, couple: 82, relaxation: 65 },
+    agoda: 'gulmarg-in'
+  },
+  'wayanad': {
+    id: 'wayanad',
+    name: 'Wayanad',
+    state: 'Kerala',
+    country: 'India',
+    type: 'hill',
+    categories: ['Nature', 'Wildlife', 'Adventure'],
+    bestMonths: [10, 11, 12, 1, 2],
+    avoidMonths: [6, 7],
+    climate: 'cool',
+    budget: 'budget',
+    scores: { nature: 90, adventure: 85, wildlife: 88, family: 80, couple: 80 },
+    agoda: 'wayanad-in'
+  },
+  'ranthambore': {
+    id: 'ranthambore',
+    name: 'Ranthambore',
+    state: 'Rajasthan',
+    country: 'India',
+    type: 'wildlife',
+    categories: ['Wildlife', 'Adventure', 'Nature'],
+    bestMonths: [10, 11, 12, 1, 2, 3],
+    avoidMonths: [6, 7],
+    climate: 'hot',
+    budget: 'premium',
+    scores: { wildlife: 95, adventure: 88, nature: 85, family: 78, couple: 82 },
+    agoda: 'ranthambore-in'
+  },
+  'kaziranga': {
+    id: 'kaziranga',
+    name: 'Kaziranga',
+    state: 'Assam',
+    country: 'India',
+    type: 'wildlife',
+    categories: ['Wildlife', 'Nature', 'Adventure'],
+    bestMonths: [11, 12, 1, 2, 3],
+    avoidMonths: [6, 7, 8],
+    climate: 'humid',
+    budget: 'moderate',
+    scores: { wildlife: 98, nature: 92, adventure: 80, family: 80, couple: 75 },
+    agoda: 'kaziranga-in'
   },
   'cherrapunji': {
+    id: 'cherrapunji',
+    name: 'Cherrapunji',
     state: 'Meghalaya',
-    categories: ['Nature'],
+    country: 'India',
+    type: 'adventure',
+    categories: ['Nature', 'Adventure'],
     bestMonths: [10, 11, 12, 3, 4],
     avoidMonths: [6, 7],
     climate: 'wet',
     budget: 'budget',
+    scores: { nature: 92, adventure: 85, couple: 75, family: 72, relaxation: 65 },
     agoda: 'cherrapunji-in'
   },
-  'madurai': {
-    state: 'Tamil Nadu',
-    categories: ['Heritage', 'Spiritual'],
+
+  /* =====================
+     CITY DESTINATIONS
+  ===================== */
+  'mumbai': {
+    id: 'mumbai',
+    name: 'Mumbai',
+    state: 'Maharashtra',
+    country: 'India',
+    type: 'city',
+    categories: ['City', 'Coastal'],
     bestMonths: [10, 11, 12, 1, 2],
-    avoidMonths: [5, 6],
-    climate: 'hot',
-    budget: 'budget',
-    agoda: 'madurai-in'
+    avoidMonths: [6, 7, 8],
+    climate: 'humid',
+    budget: 'premium',
+    scores: { city: 95, nightlife: 90, culture: 85, family: 75, couple: 80 },
+    agoda: 'mumbai-in'
   },
-  'nainital': {
-    state: 'Uttarakhand',
-    categories: ['Hill', 'Lake'],
-    bestMonths: [3, 4, 5, 10],
-    avoidMonths: [7, 8],
-    climate: 'cool',
+  'pune': {
+    id: 'pune',
+    name: 'Pune',
+    state: 'Maharashtra',
+    country: 'India',
+    type: 'city',
+    categories: ['City', 'Culture'],
+    bestMonths: [10, 11, 12, 1, 2],
+    avoidMonths: [6, 7, 8],
+    climate: 'moderate',
     budget: 'moderate',
-    agoda: 'nainital-in'
-  },
-  'mussoorie': {
-    state: 'Uttarakhand',
-    categories: ['Hill', 'Colonial'],
-    bestMonths: [3, 4, 5, 10],
-    avoidMonths: [7, 8],
-    climate: 'cool',
-    budget: 'moderate',
-    agoda: 'mussoorie-in'
+    scores: { city: 90, culture: 85, family: 80, nightlife: 80, couple: 78 },
+    agoda: 'pune-in'
   }
 };

@@ -190,6 +190,20 @@ export class TripStepperComponent implements OnInit {
     return 'Lower Match';
   }
 
+  getDestinationTypeBadge(type: string): string {
+    const badges: Record<string, string> = {
+      'beach': '🏖️',
+      'hill': '⛰️',
+      'city': '🏙️',
+      'heritage': '🏛️',
+      'adventure': '🎒',
+      'island': '🏝️',
+      'wildlife': '🦁',
+      'spiritual': '🙏'
+    };
+    return badges[type.toLowerCase()] || '📍';
+  }
+
   // ✅ Helper Methods for Template Binding
   getBudgetLabel(value: 'budget' | 'moderate' | 'premium'): string {
     const option = this.budgetOptions.find(b => b.value === value);
