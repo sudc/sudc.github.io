@@ -155,22 +155,22 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
     console.log(`   User categories: ${prefs.categories.join(', ') || 'NONE'}`);
     console.log(`   Destination categories: ${dest.categories.join(', ')}`);
     
-    // 1. Perfect Timing (40 points max)
+    // 1. Perfect Timing (36 points max - /100 scale)
     if (dest.bestMonths.includes(prefs.month)) {
-      score += 40;
+      score += 36;
       reasons.push('✓ Perfect time to visit');
       badges.push('Perfect Season');
     } else if (dest.avoidMonths.includes(prefs.month)) {
-      score -= 30;
+      score -= 27;
       reasons.push('⚠ Not ideal season');
     } else {
-      score += 10;
+      score += 9;
       reasons.push('○ Acceptable season');
     }
     
-    // 2. Budget Match (30 points max)
+    // 2. Budget Match (27 points max - /100 scale)
     if (dest.budget === prefs.budget) {
-      score += 30;
+      score += 27;
       reasons.push('✓ Matches your budget');
       badges.push('Budget Match');
     } else {
@@ -180,10 +180,10 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
       const diff = Math.abs(destIndex - prefIndex);
       
       if (diff === 1) {
-        score += 15;
+        score += 13;
         reasons.push('○ Close to your budget');
       } else {
-        score += 5;
+        score += 4;
         reasons.push('⚠ Different budget range');
       }
     }
@@ -200,35 +200,35 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
       if (matchingCategories.length >= 1) {
         // Primary match: destination has 2+ of user's selected interests
         if (matchingCategories.length >= 2) {
-          interestMatchScore = 25;
+          interestMatchScore = 23;
           interestMatchMessage = 'primary';
           reasons.push(`✅ Matches your ${matchingCategories.length} selected interests`);
           badges.push('Perfect Match');
         } 
         // Secondary match: destination has 1 of user's interests
         else {
-          interestMatchScore = 15; // Partial credit
+          interestMatchScore = 14; // Partial credit
           interestMatchMessage = 'secondary';
           reasons.push(`⚠️ Partial match — has ${matchingCategories[0]} experiences`);
         }
         score += interestMatchScore;
-        console.log(`   ✅ Interest match: ${matchingCategories.length} category/ies. Score: ${interestMatchScore}/25 (${interestMatchMessage})`);
+        console.log(`   ✅ Interest match: ${matchingCategories.length} category/ies. Score: ${interestMatchScore}/23 (${interestMatchMessage})`);
       } 
       // Weak match: destination doesn't match but passed hard filter? (shouldn't happen)
       else {
         interestMatchScore = 5; // Minimum credit
         interestMatchMessage = 'weak';
         score += interestMatchScore;
-        console.log(`   ℹ️ Limited interest match. Score: ${interestMatchScore}/25 (weak)`);
+        console.log(`   ℹ️ Limited interest match. Score: ${interestMatchScore}/23 (weak)`);
       }
     } else {
       console.log(`   ⚠️ No user categories provided`);
     }
     
-    // 4. Climate Preference (15 points max)
+    // 4. Climate Preference (14 points max - /100 scale)
     if (prefs.climate && prefs.climate.length > 0) {
       if (prefs.climate.includes(dest.climate)) {
-        score += 15;
+        score += 14;
         reasons.push('✓ Ideal climate for you');
         badges.push('Great Weather');
       }
@@ -243,13 +243,13 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
       badges.push('Popular Choice');
     }
     
-    // Ensure internal score doesn't go below 0 (no upper cap on /110 scale)
-    score = Math.max(0, score);
+    // Ensure score is within bounds (0-100)
+    score = Math.max(0, Math.min(100, score));
     
-    // Convert /110 internal score to /100 display score
-    const displayScore = Math.round((score / 110) * 100);
+    // ✅ FIXED: Score is now /100 - no conversion needed
+    const displayScore = score;
     
-    console.log(`   🎯 Internal Score: ${score}/110 → Display Score: ${displayScore}/100 (Interest: ${interestMatchScore}/25)\n`);
+    console.log(`   🎯 Final Score: ${displayScore}/100 (Interest: ${interestMatchScore}/23)\n`);
     
     return { score, displayScore, reasons, badges, interestMatchScore, interestMatchMessage };
   }

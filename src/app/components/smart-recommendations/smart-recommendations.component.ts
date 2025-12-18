@@ -126,49 +126,49 @@ export class SmartRecommendationsComponent implements OnInit {
       // Fallback: recalculate (should not happen)
       if (prefs.categories.length > 0) {
         const matches = dest.categories.filter(cat => prefs.categories.includes(cat));
-        interestScore = Math.min(25, matches.length * 12);
+        interestScore = Math.min(23, matches.length * 11);
       }
     }
 
-    // Timing (40 max)
+    // Timing (36 max - /100 scale)
     if (dest.bestMonths.includes(prefs.month)) {
-      timingScore = 40;
+      timingScore = 36;
     } else if (dest.avoidMonths.includes(prefs.month)) {
-      timingScore = 10;
+      timingScore = 9;
     } else {
-      timingScore = 20;
+      timingScore = 18;
     }
 
-    // Budget (30 max)
+    // Budget (27 max - /100 scale)
     if (dest.budget === prefs.budget) {
-      budgetScore = 30;
+      budgetScore = 27;
     } else {
       const budgetOrder = ['budget', 'moderate', 'premium'];
       const destIndex = budgetOrder.indexOf(dest.budget);
       const prefIndex = budgetOrder.indexOf(prefs.budget);
       const diff = Math.abs(destIndex - prefIndex);
-      budgetScore = diff === 1 ? 15 : 5;
+      budgetScore = diff === 1 ? 13 : 4;
     }
 
-    // Climate (15 max)
-    climateScore = rec.overallRecommendationScore >= 80 ? 15 : (rec.overallRecommendationScore >= 65 ? 10 : 5);
+    // Climate (14 max - /100 scale)
+    climateScore = rec.overallRecommendationScore >= 80 ? 14 : (rec.overallRecommendationScore >= 65 ? 9 : 5);
 
-    // Popularity (5 max)
+    // Popularity (0 - included in the 100)
     const popularDestinations = ['goa', 'manali', 'jaipur', 'kerala', 'leh', 'andaman'];
     const destId = (dest as any)._id || rec.destinationId;
-    popularityScore = popularDestinations.includes(destId) ? 5 : 0;
+    popularityScore = popularDestinations.includes(destId) ? 0 : 0; // No popularity bonus in /100 scale
 
     // ✅ USE DISPLAYSCORE FROM ENGINE - NO RECALCULATION
     const displayTotal = rec.displayScore;
     
     return {
-      timing: { score: timingScore, max: 40 },
-      budget: { score: budgetScore, max: 30 },
-      interest: { score: interestScore, max: 25 },
-      climate: { score: climateScore, max: 15 },
-      popularity: { score: popularityScore, max: 5 },
+      timing: { score: timingScore, max: 36 },
+      budget: { score: budgetScore, max: 27 },
+      interest: { score: interestScore, max: 23 },
+      climate: { score: climateScore, max: 14 },
+      popularity: { score: popularityScore, max: 0 },
       total: timingScore + budgetScore + interestScore + climateScore + popularityScore,
-      totalMax: 110,
+      totalMax: 100,
       // ✅ Use displayScore from engine (single source of truth)
       displayTotal,
       displayMax: 100
