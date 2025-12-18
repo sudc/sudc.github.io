@@ -1,5 +1,5 @@
 .trip-stepper-section {
-  padding: 40px 0;
+  padding: 20px 0;
   background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
   min-height: 600px;
 }
@@ -12,7 +12,7 @@
 
 /* ========== PROGRESS INDICATOR ========== */
 .progress-container {
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   text-align: center;
 }
 
@@ -40,9 +40,9 @@
 .sticky-summary {
   background: white;
   border-left: 4px solid #4f46e5;
-  padding: 16px;
+  padding: 12px;
   border-radius: 8px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 
   h4 {
@@ -75,12 +75,12 @@
 .stepper-content {
   background: white;
   border-radius: 12px;
-  padding: 40px;
+  padding: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   animation: fadeIn 0.3s ease;
 
   @media (max-width: 768px) {
-    padding: 24px;
+    padding: 16px;
   }
 }
 
@@ -96,11 +96,11 @@
 }
 
 .step-header {
-  margin-bottom: 30px;
+  margin-bottom: 18px;
 
   h2 {
-    margin: 0 0 8px 0;
-    font-size: 28px;
+    margin: 0 0 4px 0;
+    font-size: 20px;
     font-weight: 700;
     color: #1a1a1a;
   }
@@ -113,19 +113,23 @@
 }
 
 .step-body {
-  margin-bottom: 30px;
+  margin-bottom: 18px;
 }
 
 /* ========== STEP 1: INTERESTS ========== */
 .interests-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   margin-bottom: 20px;
 
   @media (max-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(1, 1fr);
   }
 }
 
@@ -134,14 +138,17 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 16px;
+  padding: 12px;
   background: #f9fafb;
   border: 2px solid #e5e7eb;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: center;
-  min-height: 130px;
+  min-height: 100px;
+  width: 100%;
+  overflow: visible;
+  word-wrap: break-word;
 
   &:hover {
     border-color: #4f46e5;
@@ -183,7 +190,7 @@
 
 /* ========== STEP 2: BUDGET & DURATION ========== */
 .form-group {
-  margin-bottom: 28px;
+  margin-bottom: 16px;
 }
 
 .form-label {
@@ -196,8 +203,12 @@
 
 .budget-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }
 
 .budget-card {
@@ -225,8 +236,12 @@
 
 .duration-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }
 
 .duration-chip {
@@ -238,6 +253,7 @@
   text-align: center;
   font-weight: 600;
   font-size: 14px;
+  color: #333;
   transition: all 0.2s ease;
 
   &:hover {
@@ -265,11 +281,15 @@
 /* ========== STEP 3: TIMING & CLIMATE ========== */
 .months-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+  grid-template-columns: repeat(6, 1fr);
   gap: 8px;
   margin-bottom: 20px;
 
   @media (max-width: 768px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (max-width: 480px) {
     grid-template-columns: repeat(3, 1fr);
   }
 }
@@ -283,6 +303,7 @@
   text-align: center;
   font-size: 12px;
   font-weight: 600;
+  color: #333;
   transition: all 0.2s ease;
 
   &:hover {
@@ -298,8 +319,12 @@
 
 .climate-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }
 
 .climate-card {
@@ -311,6 +336,7 @@
   border: 2px solid #e5e7eb;
   border-radius: 8px;
   cursor: pointer;
+  color: #333;
   transition: all 0.2s ease;
 
   &:hover {
@@ -328,6 +354,7 @@
 .climate-emoji {
   font-size: 24px;
   margin-bottom: 6px;
+  color: #333;
 }
 
 .climate-label {

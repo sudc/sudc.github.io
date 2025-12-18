@@ -36,5 +36,5 @@ export class FooterComponent {
     { label: 'Affiliate Disclosure', path: '/affiliate-disclosure' }
   ];
 
-  contactEmail = 'support@tripsaver.in';
+  contactEmail = 'sudarshan.choudhary5@gmail.com';
 }
