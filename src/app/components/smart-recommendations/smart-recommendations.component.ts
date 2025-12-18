@@ -72,6 +72,9 @@ export class SmartRecommendationsComponent implements OnInit {
   // 🎠 Carousel state
   currentCardIndex = 0;
 
+  // 📊 Grid layout state
+  showAllResults = false;
+
   ngOnInit(): void {
     // Fetch trust config from MongoDB (non-blocking)
     this.trustConfigService.getConfig().subscribe(config => {

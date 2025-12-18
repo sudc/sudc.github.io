@@ -112,7 +112,7 @@
       <!-- ✅ GRID LAYOUT (Multiple Cards) -->
       <div class="recommendations-grid">
         <app-destination-card-compact
-          *ngFor="let rec of recommendations | slice:0:6"
+          *ngFor="let rec of (showAllResults ? recommendations : (recommendations | slice:0:6))"
           [recommendation]="rec"
           (bookingClicked)="openBookingModal($event)">
         </app-destination-card-compact>
