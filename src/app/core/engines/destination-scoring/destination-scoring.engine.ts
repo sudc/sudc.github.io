@@ -197,13 +197,15 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
     
     // 2. TIMING MATCH (30 points max)
     // Normalize bestMonths array to handle both string and number formats
-    const normalizedBestMonths = dest.bestMonths.map(m => normalizeMonth(m));
+    const normalizedBestMonths = (dest.bestMonths && dest.bestMonths.length > 0) 
+      ? dest.bestMonths.map(m => normalizeMonth(m)) 
+      : [];
     
     if (normalizedBestMonths.includes(prefs.month)) {
       score += 30;
       reasons.push('✓ Perfect season');
       badges.push('Perfect Season');
-    } else if (dest.avoidMonths.includes(prefs.month)) {
+    } else if (dest.avoidMonths && dest.avoidMonths.length > 0 && dest.avoidMonths.includes(prefs.month)) {
       score -= 15;
       reasons.push('⚠ Not ideal season');
     } else {
@@ -212,12 +214,12 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
     }
     
     // 3. BUDGET MATCH (20 points max)
-    if (dest.budget === prefs.budget) {
+    if (dest.budget && dest.budget === prefs.budget) {
       score += 20;
       reasons.push('✓ Matches your budget');
       badges.push('Budget Match');
-    } else {
-      const budgetOrder = ['budget', 'moderate', 'premium'];
+    } else if (dest.budget) {
+      const budgetOrder = ['budget', 'moderate', 'premium', 'low', 'medium', 'high'];
       const destIndex = budgetOrder.indexOf(dest.budget);
       const prefIndex = budgetOrder.indexOf(prefs.budget);
       const diff = Math.abs(destIndex - prefIndex);
@@ -232,9 +234,9 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
     }
     
     // 4. CLIMATE PREFERENCE (10 points max)
-    if (prefs.climate && prefs.climate.length > 0) {
-      const climateKey = prefs.climate[0].toLowerCase();
-      if (dest.climate === climateKey || prefs.climate.includes(dest.climate)) {
+    if (prefs.climate && prefs.climate.length > 0 && dest.climate) {
+      const climateKey = dest.climate.toLowerCase();
+      if (prefs.climate.includes(climateKey) || climateKey === prefs.climate[0].toLowerCase()) {
         score += 10;
         reasons.push('✓ Ideal climate');
         badges.push('Great Weather');
