@@ -54,7 +54,7 @@ export interface Destination {
   type: DestinationType;
   categories: DestinationCategory[];
   tags: string[];
-  bestMonths: number[];
+  bestMonths: (number | string)[];
   avoidMonths: number[];
   climate: ClimateType;
   budget: BudgetType;

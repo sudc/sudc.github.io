@@ -38,6 +38,21 @@ export interface DestinationScoringResult extends BaseEngineResult {
   totalDestinationsScored: number;
 }
 
+// ✅ Helper function to normalize month strings to numbers
+function normalizeMonth(month: number | string): number {
+  if (typeof month === 'number') return month;
+  
+  const monthMap: Record<string, number> = {
+    'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'Jun': 6,
+    'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 'Nov': 11, 'Dec': 12,
+    'January': 1, 'February': 2, 'March': 3, 'April': 4,
+    'June': 6, 'July': 7, 'August': 8, 'September': 9,
+    'October': 10, 'November': 11, 'December': 12
+  };
+  
+  return monthMap[month] || (typeof month === 'number' ? month : 0);
+}
+
 @Injectable()
 export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput, DestinationScoringResult> {
   private http = inject(HttpClient);
@@ -181,7 +196,10 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
     }
     
     // 2. TIMING MATCH (30 points max)
-    if (dest.bestMonths.includes(prefs.month)) {
+    // Normalize bestMonths array to handle both string and number formats
+    const normalizedBestMonths = dest.bestMonths.map(m => normalizeMonth(m));
+    
+    if (normalizedBestMonths.includes(prefs.month)) {
       score += 30;
       reasons.push('✓ Perfect season');
       badges.push('Perfect Season');
