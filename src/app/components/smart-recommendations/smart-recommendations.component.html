@@ -86,9 +86,10 @@
         {{ getButtonLabel() }}
       </button>
     </div>
+  </div>
 
-    <!-- RESULTS SECTION -->
-    <div class="results" *ngIf="!uiState.loading && recommendations.length > 0">
+  <!-- RESULTS SECTION (Outside .container for full-width) -->
+  <div class="results" *ngIf="!uiState.loading && recommendations.length > 0">
       <!-- Results Title (only show when in results-only mode) -->
       <div *ngIf="!showForm" class="results-header">
         <h2>✨ Smart Recommendations</h2>
@@ -127,14 +128,15 @@
         </button>
       </div>
     </div>
+  </div>
 
-    <!-- LOADING STATE -->
-    <div *ngIf="uiState.loading" class="loading-state">
+  <!-- LOADING STATE (Outside .container) -->
+  <div *ngIf="uiState.loading" class="loading-state">
       <div class="spinner"></div>
       <p>Finding perfect destinations for you...</p>
     </div>
 
-    <!-- NO RESULTS STATE (with smart fallback guidance) -->
+    <!-- NO RESULTS STATE (with smart fallback guidance) (Outside .container) -->
     <div *ngIf="hasNoResults()" class="no-results-state">
       <div class="no-results-content">
         <h3>😊 Let's refine your search</h3>
@@ -153,16 +155,15 @@
       </div>
     </div>
 
-    <!-- ERROR STATE -->
+    <!-- ERROR STATE (Outside .container) -->
     <div *ngIf="uiState.error" class="error-message">
       ⚠️ {{ uiState.error }}
     </div>
 
-    <!-- EMPTY STATE -->
+    <!-- EMPTY STATE (Outside .container) -->
     <div *ngIf="!uiState.loading && recommendations.length === 0 && !uiState.error && !hasNoResults()" class="empty-state">
       <p>Select your preferences above and click "Get Recommendations" to discover personalized destinations</p>
     </div>
-  </div>
 </section>
 
 <!-- Booking Modal -->
