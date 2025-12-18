@@ -158,6 +158,9 @@ export class SmartRecommendationsComponent implements OnInit {
     const destId = (dest as any)._id || rec.destinationId;
     popularityScore = popularDestinations.includes(destId) ? 5 : 0;
 
+    // ✅ USE DISPLAYSCORE FROM ENGINE - NO RECALCULATION
+    const displayTotal = rec.displayScore;
+    
     return {
       timing: { score: timingScore, max: 40 },
       budget: { score: budgetScore, max: 30 },
@@ -166,8 +169,8 @@ export class SmartRecommendationsComponent implements OnInit {
       popularity: { score: popularityScore, max: 5 },
       total: timingScore + budgetScore + interestScore + climateScore + popularityScore,
       totalMax: 110,
-      // ✅ Display score (normalized to /100)
-      displayTotal: Math.round(((timingScore + budgetScore + interestScore + climateScore + popularityScore) / 110) * 100),
+      // ✅ Use displayScore from engine (single source of truth)
+      displayTotal,
       displayMax: 100
     };
   }
@@ -185,9 +188,9 @@ export class SmartRecommendationsComponent implements OnInit {
     
     switch (matchMessage) {
       case 'primary':
-        return '🎯 View booking options →';
+        return '� View booking options →';
       case 'secondary':
-        return '⚠️ View booking options →';
+        return '➜ View booking options →';
       case 'weak':
         return 'ℹ️ View booking options →';
       default:
@@ -382,14 +385,18 @@ export class SmartRecommendationsComponent implements OnInit {
         reasons,
         badges,
         overallRecommendationScore: Math.min(100, displayScore),
+        // ✅ LOCKED THRESHOLDS (80-100=Highly Rec, 65-79=Rec, 50-64=Consider, <50=Hidden)
         recommendationType: displayScore >= 80 ? 'highly-recommended' : 
-                           displayScore >= 65 ? 'recommended' : 'consider',
+                           displayScore >= 65 ? 'recommended' : 
+                           displayScore >= 50 ? 'consider' : 'hidden',
         warnings: []
       } as EnhancedRecommendation;
     });
     
-    scored.sort((a, b) => b.score - a.score);
-    this.recommendations = scored.slice(0, 6);
+    // ✅ Filter out hidden recommendations (score < 50)
+    const visibleRecommendations = scored.filter(rec => rec.recommendationType !== 'hidden');
+    visibleRecommendations.sort((a, b) => b.displayScore - a.displayScore);
+    this.recommendations = visibleRecommendations.slice(0, 6);
   }
 
   getRecommendationTypeClass(type: string): string {
@@ -412,7 +419,9 @@ export class SmartRecommendationsComponent implements OnInit {
       case 'recommended':
         return '👍 Recommended';
       case 'consider':
-        return '💭 Worth Considering';
+        return '🤔 Worth Considering';
+      case 'hidden':
+        return 'Hidden';
       default:
         return 'Consider';
     }
