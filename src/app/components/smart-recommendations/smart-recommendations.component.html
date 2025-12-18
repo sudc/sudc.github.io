@@ -109,87 +109,14 @@
         [resultCount]="recommendations.length">
       </app-result-summary>
 
-      <!-- 🧪 FEATURE TOGGLE: Compact Cards Layout (NEW - Recommended) -->
-      <div *ngIf="useCompactCards" class="recommendations-grid">
+      <!-- ✅ COMPACT CARDS LAYOUT (Standard) -->
+      <div class="recommendations-grid">
         <app-destination-card-compact
           *ngFor="let rec of recommendations; let i = index"
           [recommendation]="rec"
           [hidden]="isInvalidRecommendation(rec)"
           (bookingClicked)="openBookingModal($event)">
         </app-destination-card-compact>
-      </div>
-
-      <!-- Original Cards Layout (OLD - Keep for now) -->
-      <div *ngIf="!useCompactCards">
-        <div *ngFor="let rec of recommendations; let i = index" class="destination-card" [hidden]="isInvalidRecommendation(rec)">
-        <!-- Card Header -->
-        <div class="card-header">
-          <div>
-            <div class="destination-name">{{ rec.destination.state }}</div>
-            <span [class]="'badge ' + getRecommendationTypeClass(rec.recommendationType)">
-              {{ getRecommendationTypeLabel(rec.recommendationType) }}
-            </span>
-          </div>
-          <div class="score">{{ rec.overallRecommendationScore }} / 100</div>
-        </div>
-
-        <!-- Reasons -->
-        <div class="reasons" *ngIf="rec.reasons.length > 0">
-          <ul>
-            <li *ngFor="let reason of rec.reasons.slice(0, 2)">{{ reason }}</li>
-          </ul>
-        </div>
-
-        <!-- Score Breakdown -->
-        <button (click)="toggleScoreDetails(i)" class="breakdown-toggle">
-          {{ isScoreExpanded(i) ? '▼ Hide Score Details' : '🔍 View Score Breakdown' }}
-        </button>
-
-        <div *ngIf="isScoreExpanded(i)" class="breakdown">
-          <div class="breakdown-row">
-            <span>Timing</span>
-            <span>{{ getScoreBreakdown(rec).timing.score }} / {{ getScoreBreakdown(rec).timing.max }}</span>
-          </div>
-          <div class="breakdown-row">
-            <span>Budget Match</span>
-            <span>{{ getScoreBreakdown(rec).budget.score }} / {{ getScoreBreakdown(rec).budget.max }}</span>
-          </div>
-          <div class="breakdown-row">
-            <span>Interest Match</span>
-            <span>{{ getScoreBreakdown(rec).interest.score }} / {{ getScoreBreakdown(rec).interest.max }}</span>
-          </div>
-          <div class="breakdown-row">
-            <span>Climate</span>
-            <span>{{ getScoreBreakdown(rec).climate.score }} / {{ getScoreBreakdown(rec).climate.max }}</span>
-          </div>
-          <div class="breakdown-total">
-            <strong>Total Score:</strong>
-            <strong>{{ getScoreBreakdown(rec).displayTotal }} / {{ getScoreBreakdown(rec).displayMax }}</strong>
-          </div>
-        </div>
-
-        <!-- ✅ Soft Warning for Low Scores -->
-        <div *ngIf="rec.overallRecommendationScore < 50" class="low-score-warning">
-          ⚠️ This destination partially matches your preferences
-        </div>
-
-        <!-- ✅ Hard Block for Zero Interest Match -->
-        <div *ngIf="isBookingDisabled(rec)" class="booking-disabled-message">
-          🚫 {{ getBookingDisabledMessage(rec) }}
-        </div>
-
-        <!-- ✅ Trust Badge (Subtle - before CTA) -->
-        <div class="trust-badge-label">
-          {{ trustBadge }}
-        </div>
-
-        <!-- CTA Button - Always enabled with contextual messaging based on interest match -->
-        <button 
-          (click)="openBookingModal(rec)" 
-          class="cta-button">
-          {{ getBookingButtonText(rec) }}
-        </button>
-        </div>
       </div>
     </div>
 

@@ -58,8 +58,9 @@ export class SmartRecommendationsComponent implements OnInit {
   recommendations: EnhancedRecommendation[] = [];
   expandedScores: Set<number> = new Set();
   
-  // ✅ Feature toggle for compact cards (set to true to use new compact layout)
-  useCompactCards = false;
+  // ✅ Compact cards are the standard layout (not experimental)
+  // Industry standard: Booking, Airbnb, Google Travel all use compact cards
+  useCompactCards = true;
   
   // 📱 Mobile menu state
   mobileMenuOpen = false;
