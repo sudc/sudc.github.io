@@ -728,3 +728,26 @@ $text-muted: #6b7280;
     width: 100%;
   }
 }
+
+/* ========== GRID CARD FIX (CRITICAL) ========== */
+.recommendation-card {
+  background: white;
+  border: 1px solid $border;
+  border-radius: 14px;
+  padding: 1.25rem;
+
+  width: auto;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.recommendations-grid .recommendation-card {
+  margin: 0;
+}
