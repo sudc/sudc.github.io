@@ -90,80 +90,79 @@
 
   <!-- RESULTS SECTION (Outside .container for full-width) -->
   <div class="results" *ngIf="!uiState.loading && recommendations.length > 0">
-      <!-- Results Title (only show when in results-only mode) -->
-      <div *ngIf="!showForm" class="results-header">
-        <h2>✨ Smart Recommendations</h2>
-        <p class="results-subtitle">Based on your preferences, here are our top recommendations</p>
-      </div>
-      
-      <!-- Results Title (show differently when form is visible) -->
-      <div *ngIf="showForm" class="results-header">
-        <h3>✨ Recommended for You</h3>
-        <p class="results-subtitle">Based on your preferences, here are our top recommendations</p>
-      </div>
+    <!-- Results Title (only show when in results-only mode) -->
+    <div *ngIf="!showForm" class="results-header">
+      <h2>✨ Smart Recommendations</h2>
+      <p class="results-subtitle">Based on your preferences, here are our top recommendations</p>
+    </div>
+    
+    <!-- Results Title (show differently when form is visible) -->
+    <div *ngIf="showForm" class="results-header">
+      <h3>✨ Recommended for You</h3>
+      <p class="results-subtitle">Based on your preferences, here are our top recommendations</p>
+    </div>
 
-      <!-- Result Summary - Shows filter criteria -->
-      <app-result-summary
-        [month]="preferences.month"
-        [budget]="preferences.budget"
-        [categories]="preferences.categories"
-        [resultCount]="recommendations.length">
-      </app-result-summary>
+    <!-- Result Summary - Shows filter criteria -->
+    <app-result-summary
+      [month]="preferences.month"
+      [budget]="preferences.budget"
+      [categories]="preferences.categories"
+      [resultCount]="recommendations.length">
+    </app-result-summary>
 
-      <!-- ✅ GRID LAYOUT (Multiple Cards) -->
-      <div class="recommendations-grid">
-        <app-destination-card-compact
-          *ngFor="let rec of (showAllResults ? recommendations : (recommendations | slice:0:6))"
-          [recommendation]="rec"
-          (bookingClicked)="openBookingModal($event)">
-        </app-destination-card-compact>
-      </div>
+    <!-- ✅ GRID LAYOUT (Multiple Cards) -->
+    <div class="recommendations-grid">
+      <app-destination-card-compact
+        *ngFor="let rec of (showAllResults ? recommendations : (recommendations | slice:0:6))"
+        [recommendation]="rec"
+        (bookingClicked)="openBookingModal($event)">
+      </app-destination-card-compact>
+    </div>
 
-      <!-- Show More Button -->
-      <div class="show-more-container" *ngIf="recommendations.length > 6">
-        <button
-          class="show-more-btn"
-          (click)="showAllResults = !showAllResults">
-          {{ showAllResults ? 'Show Less' : 'Show More Destinations' }}
-        </button>
-      </div>
+    <!-- Show More Button -->
+    <div class="show-more-container" *ngIf="recommendations.length > 6">
+      <button
+        class="show-more-btn"
+        (click)="showAllResults = !showAllResults">
+        {{ showAllResults ? 'Show Less' : 'Show More Destinations' }}
+      </button>
     </div>
   </div>
 
   <!-- LOADING STATE (Outside .container) -->
   <div *ngIf="uiState.loading" class="loading-state">
-      <div class="spinner"></div>
-      <p>Finding perfect destinations for you...</p>
-    </div>
+    <div class="spinner"></div>
+    <p>Finding perfect destinations for you...</p>
+  </div>
 
-    <!-- NO RESULTS STATE (with smart fallback guidance) (Outside .container) -->
-    <div *ngIf="hasNoResults()" class="no-results-state">
-      <div class="no-results-content">
-        <h3>😊 Let's refine your search</h3>
-        <p class="no-results-message">{{ getNoResultsMessage() }}</p>
-        
-        <div class="suggestions">
-          <p class="suggestions-title">💡 Try these adjustments:</p>
-          <ul>
-            <li *ngFor="let suggestion of getSuggestionsForNoResults()">{{ suggestion }}</li>
-          </ul>
-        </div>
-
-        <button (click)="getRecommendations()" class="retry-button">
-          🔍 Search Again
-        </button>
+  <!-- NO RESULTS STATE (with smart fallback guidance) (Outside .container) -->
+  <div *ngIf="hasNoResults()" class="no-results-state">
+    <div class="no-results-content">
+      <h3>😊 Let's refine your search</h3>
+      <p class="no-results-message">{{ getNoResultsMessage() }}</p>
+      
+      <div class="suggestions">
+        <p class="suggestions-title">💡 Try these adjustments:</p>
+        <ul>
+          <li *ngFor="let suggestion of getSuggestionsForNoResults()">{{ suggestion }}</li>
+        </ul>
       </div>
-    </div>
 
-    <!-- ERROR STATE (Outside .container) -->
-    <div *ngIf="uiState.error" class="error-message">
-      ⚠️ {{ uiState.error }}
+      <button (click)="getRecommendations()" class="retry-button">
+        🔍 Search Again
+      </button>
     </div>
+  </div>
 
-    <!-- EMPTY STATE (Outside .container) -->
-    <div *ngIf="!uiState.loading && recommendations.length === 0 && !uiState.error && !hasNoResults()" class="empty-state">
-      <p>Select your preferences above and click "Get Recommendations" to discover personalized destinations</p>
-    </div>
+  <!-- ERROR STATE (Outside .container) -->
+  <div *ngIf="uiState.error" class="error-message">
+    ⚠️ {{ uiState.error }}
+  </div>
+
+  <!-- EMPTY STATE (Outside .container) -->
+  <div *ngIf="!uiState.loading && recommendations.length === 0 && !uiState.error && !hasNoResults()" class="empty-state">
+    <p>Select your preferences above and click "Get Recommendations" to discover personalized destinations</p>
+  </div>
 </section>
 
 <!-- Booking Modal -->
