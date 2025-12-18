@@ -2,6 +2,8 @@ import { Component, OnInit, Input, inject, NgZone, ChangeDetectorRef } from '@an
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BookingModalComponent } from '../booking-modal/booking-modal.component';
+import { ResultSummaryComponent } from '../result-summary/result-summary.component';
+import { DestinationCardCompactComponent } from '../destination-card-compact/destination-card-compact.component';
 import { 
   RecommendationEngine, 
   RecommendationInput,
@@ -14,7 +16,7 @@ import { TrustConfigService } from '../../core/services/trust-config.service';
 @Component({
   selector: 'app-smart-recommendations',
   standalone: true,
-  imports: [CommonModule, FormsModule, BookingModalComponent],
+  imports: [CommonModule, FormsModule, BookingModalComponent, ResultSummaryComponent, DestinationCardCompactComponent],
   providers: [DestinationScoringEngine, TripReadinessEngine, RecommendationEngine],
   templateUrl: './smart-recommendations.component.html',
   styleUrls: ['./smart-recommendations.component.scss']
@@ -55,6 +57,9 @@ export class SmartRecommendationsComponent implements OnInit {
   
   recommendations: EnhancedRecommendation[] = [];
   expandedScores: Set<number> = new Set();
+  
+  // ✅ Feature toggle for compact cards (set to true to use new compact layout)
+  useCompactCards = false;
   
   // Booking modal state
   isBookingModalOpen = false;

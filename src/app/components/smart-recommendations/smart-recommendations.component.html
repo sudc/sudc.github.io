@@ -82,7 +82,27 @@
         <p class="results-subtitle">Based on your preferences, here are our top recommendations</p>
       </div>
 
-      <div *ngFor="let rec of recommendations; let i = index" class="destination-card" [hidden]="isInvalidRecommendation(rec)">
+      <!-- Result Summary - Shows filter criteria -->
+      <app-result-summary
+        [month]="preferences.month"
+        [budget]="preferences.budget"
+        [categories]="preferences.categories"
+        [resultCount]="recommendations.length">
+      </app-result-summary>
+
+      <!-- 🧪 FEATURE TOGGLE: Compact Cards Layout (NEW - Recommended) -->
+      <div *ngIf="useCompactCards" class="recommendations-grid">
+        <app-destination-card-compact
+          *ngFor="let rec of recommendations; let i = index"
+          [recommendation]="rec"
+          [hidden]="isInvalidRecommendation(rec)"
+          (bookingClicked)="openBookingModal($event)">
+        </app-destination-card-compact>
+      </div>
+
+      <!-- Original Cards Layout (OLD - Keep for now) -->
+      <div *ngIf="!useCompactCards">
+        <div *ngFor="let rec of recommendations; let i = index" class="destination-card" [hidden]="isInvalidRecommendation(rec)">
         <!-- Card Header -->
         <div class="card-header">
           <div>
@@ -150,6 +170,7 @@
           class="cta-button">
           {{ getBookingButtonText(rec) }}
         </button>
+        </div>
       </div>
     </div>
 

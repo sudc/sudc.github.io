@@ -1,0 +1,25 @@
+<div class="compact-card">
+  <!-- Header: Name + Score -->
+  <div class="card-header">
+    <div class="name-section">
+      <h3 class="destination-name">{{ recommendation.destination.state }}</h3>
+      <p class="destination-location">{{ recommendation.destination.country }}</p>
+    </div>
+    <div class="score-section" [ngClass]="getScoreColor()">
+      <span class="score-value">{{ recommendation.overallRecommendationScore }}</span>
+      <span class="score-max">/100</span>
+    </div>
+  </div>
+
+  <!-- Badges: Max 2 categories -->
+  <div class="badges-section" *ngIf="topBadges.length > 0">
+    <span *ngFor="let badge of topBadges" [ngClass]="['badge', getBadgeClass(badge)]">
+      {{ badge }}
+    </span>
+  </div>
+
+  <!-- CTA Button -->
+  <button class="cta-button" (click)="onBookingClick()">
+    Explore →
+  </button>
+</div>
