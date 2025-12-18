@@ -151,17 +151,15 @@ export class TripStepperComponent implements OnInit {
     try {
       // Convert preferences to recommendation input format
       const input = {
-        month: this.preferences.month,
-        budget: this.preferences.budget,
-        categories: this.preferences.interests,
-        climate: this.preferences.climate === 'doesnt-matter' ? null : this.preferences.climate,
-        duration: this.preferences.duration,
-        budgetReady: this.preferences.budgetReady,
-        docsReady: this.preferences.docsReady,
-        flexibleDates: this.preferences.flexibleDates
+        userPreferences: {
+          categories: this.preferences.interests,
+          month: this.preferences.month,
+          budget: this.preferences.budget,
+          climate: this.preferences.climate === 'doesnt-matter' ? undefined : [this.preferences.climate]
+        }
       };
 
-      const result = await this.recommendationEngine.getRecommendations(input).toPromise();
+      const result = await this.recommendationEngine.process(input).toPromise();
 
       if (result && result.recommendations) {
         this.recommendations = result.recommendations;
@@ -190,6 +188,29 @@ export class TripStepperComponent implements OnInit {
     if (score >= 60) return 'Recommended';
     if (score >= 40) return 'Consider';
     return 'Lower Match';
+  }
+
+  // ✅ Helper Methods for Template Binding
+  getBudgetLabel(value: 'budget' | 'moderate' | 'premium'): string {
+    const option = this.budgetOptions.find(b => b.value === value);
+    return option ? option.label : '';
+  }
+
+  getClimateLabel(value: string): string {
+    const option = this.climateOptions.find(c => c.value === value);
+    return option ? option.label : '';
+  }
+
+  setBudget(value: string): void {
+    this.preferences.budget = value as 'budget' | 'moderate' | 'premium';
+  }
+
+  setDuration(value: string): void {
+    this.preferences.duration = value as '1' | '3-5' | '6-10';
+  }
+
+  setClimate(value: string): void {
+    this.preferences.climate = value as 'warm' | 'cool' | 'doesnt-matter';
   }
 
   // ✅ Booking Modal

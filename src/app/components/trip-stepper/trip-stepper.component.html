@@ -17,10 +17,10 @@
         <span *ngIf="preferences.interests.length > 0" class="summary-item">
           {{ preferences.interests.join(' • ') }}
         </span>
-        <span class="summary-item">₹{{ budgetOptions.find(b => b.value === preferences.budget)?.label }}</span>
+        <span class="summary-item">{{ getBudgetLabel(preferences.budget) }}</span>
         <span class="summary-item">{{ months[preferences.month - 1] }}</span>
         <span *ngIf="preferences.climate !== 'doesnt-matter'" class="summary-item">
-          {{ climateOptions.find(c => c.value === preferences.climate)?.label }}
+          {{ getClimateLabel(preferences.climate) }}
         </span>
       </div>
     </div>
@@ -65,7 +65,7 @@
             <div *ngFor="let option of budgetOptions"
                  class="budget-card"
                  [class.selected]="preferences.budget === option.value"
-                 (click)="preferences.budget = option.value as any">
+               (click)="setBudget(option.value)">
               <span class="budget-label">{{ option.label }}</span>
             </div>
           </div>
@@ -78,7 +78,7 @@
             <div *ngFor="let option of durationOptions"
                  class="duration-chip"
                  [class.selected]="preferences.duration === option.value"
-                 (click)="preferences.duration = option.value as any">
+                 (click)="setDuration(option.value)">
               {{ option.label }}
             </div>
           </div>
@@ -125,7 +125,7 @@
             <div *ngFor="let climate of climateOptions"
                  class="climate-card"
                  [class.selected]="preferences.climate === climate.value"
-                 (click)="preferences.climate = climate.value as any">
+                 (click)="setClimate(climate.value)">
               <span class="climate-emoji">{{ climate.icon }}</span>
               <span class="climate-label">{{ climate.label }}</span>
             </div>
@@ -261,7 +261,9 @@
   <!-- Booking Modal -->
   <app-booking-modal 
     *ngIf="isBookingModalOpen && selectedDestination"
-    [destination]="selectedDestination"
+    [isOpen]="isBookingModalOpen"
+    [destinationName]="selectedDestination?.destination?.state"
+    [agodaCode]="selectedDestination?.destination?.agodaCode"
     (close)="closeBookingModal()">
   </app-booking-modal>
 </section>

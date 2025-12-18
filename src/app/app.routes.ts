@@ -27,7 +27,5 @@ export const routes: Routes = [
 	{ path: 'privacy-policy', component: PrivacyPolicyComponent },
 	{ path: 'terms', component: TermsComponent },
 	{ path: 'affiliate-disclosure', component: AffiliateDisclosureComponent },
-	{ path: 'engine-test', component: EngineTestComponent },
-	{ path: 'mongodb-test', component: MongoDbTestComponent },
 	{ path: '**', redirectTo: '' }
 ];
