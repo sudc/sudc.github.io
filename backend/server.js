@@ -67,11 +67,15 @@ app.get('/', (req, res) => {
     service: 'TripSaver Backend',
     status: 'ok',
     database: 'mongodb-atlas',
+    collections: ['destinations', 'trust-badges', 'trust-messages'],
     endpoints: {
       health: 'GET /api/health',
       destinations: 'GET /api/destinations',
       search: 'POST /api/search',
-      destinationById: 'GET /api/destinations/:id'
+      destinationById: 'GET /api/destinations/:id',
+      trustBadges: 'GET /api/trust-badges',
+      trustMessages: 'GET /api/trust-messages',
+      trustMessagesByContext: 'GET /api/trust-messages/:context'
     }
   });
 });
@@ -144,6 +148,53 @@ app.get('/api/destinations/:id', async (req, res) => {
   } catch (err) {
     console.error('❌ /api/destinations/:id:', err.message);
     res.status(500).json({ error: 'Invalid ID format' });
+  }
+});
+
+// Get trust badges
+app.get('/api/trust-badges', async (req, res) => {
+  try {
+    const badges = await db
+      .collection('trust-badges')
+      .find({})
+      .toArray();
+
+    res.json(badges);
+  } catch (err) {
+    console.error('❌ /api/trust-badges:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get trust messages
+app.get('/api/trust-messages', async (req, res) => {
+  try {
+    const messages = await db
+      .collection('trust-messages')
+      .find({})
+      .toArray();
+
+    res.json(messages);
+  } catch (err) {
+    console.error('❌ /api/trust-messages:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get trust messages by context
+app.get('/api/trust-messages/:context', async (req, res) => {
+  try {
+    const { context } = req.params;
+
+    const messages = await db
+      .collection('trust-messages')
+      .find({ context: context })
+      .toArray();
+
+    res.json(messages);
+  } catch (err) {
+    console.error('❌ /api/trust-messages/:context:', err.message);
+    res.status(500).json({ error: err.message });
   }
 });
 

@@ -9,6 +9,7 @@ import {
 } from '../../core/engines/recommendation/recommendation.engine';
 import { DestinationScoringEngine } from '../../core/engines/destination-scoring/destination-scoring.engine';
 import { TripReadinessEngine } from '../../core/engines/trip-readiness/trip-readiness.engine';
+import { TrustConfigService } from '../../core/services/trust-config.service';
 import { DESTINATIONS_DATA } from '../../core/engines/destination/destinations.data';
 
 @Component({
@@ -23,6 +24,11 @@ export class SmartRecommendationsComponent implements OnInit {
   private recommendationEngine = inject(RecommendationEngine);
   private ngZone = inject(NgZone);
   private cdr = inject(ChangeDetectorRef);
+  private trustConfigService = inject(TrustConfigService);
+  
+  // Trust config
+  trustBadge = 'Powered by trusted travel partners';
+  affiliateDisclosure = 'We may earn a commission at no extra cost to you';
   
   // ✅ Accept preferences from parent (home component)
   @Input() userPreferences: any = null;
@@ -56,6 +62,12 @@ export class SmartRecommendationsComponent implements OnInit {
   selectedDestination: any = null;
 
   ngOnInit(): void {
+    // Fetch trust config from MongoDB (non-blocking)
+    this.trustConfigService.getConfig().subscribe(config => {
+      this.trustBadge = config.trustBadge;
+      this.affiliateDisclosure = config.affiliateDisclosure;
+    });
+
     // ✅ If preferences passed from parent, use them and auto-load
     if (this.userPreferences) {
       this.preferences = {

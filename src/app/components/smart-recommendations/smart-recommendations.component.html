@@ -139,6 +139,11 @@
           🚫 {{ getBookingDisabledMessage(rec) }}
         </div>
 
+        <!-- ✅ Trust Badge (Subtle - before CTA) -->
+        <div class="trust-badge-label">
+          {{ trustBadge }}
+        </div>
+
         <!-- CTA Button - Always enabled with contextual messaging based on interest match -->
         <button 
           (click)="openBookingModal(rec)" 

@@ -7,6 +7,7 @@ import { Title, Meta } from '@angular/platform-browser';
 
 import { FooterComponent } from '../../shared/components/footer/footer.component';
 import { SmartRecommendationsComponent } from '../../components/smart-recommendations/smart-recommendations.component';
+import { TrustConfigService } from '../../core/services/trust-config.service';
 
 interface Category {
   id: string;
@@ -60,6 +61,9 @@ export class HomeComponent implements OnInit {
   selectedInterests: Set<string> = new Set();
   readonly MAX_INTERESTS = 3;
 
+  // Trust config
+  heroSubtitle = 'Smart travel recommendations, ranked for you — not ads';
+
   monthOptions = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
@@ -94,8 +98,14 @@ export class HomeComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private titleService: Title,
-    private metaService: Meta
-  ) {}
+    private metaService: Meta,
+    private trustConfigService: TrustConfigService
+  ) {
+    // Fetch trust config on init (non-blocking)
+    this.trustConfigService.getConfig().subscribe(config => {
+      this.heroSubtitle = config.heroSubtitle;
+    });
+  }
 
   /* =======================
      LIFECYCLE
