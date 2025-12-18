@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Destination } from '../../core/data/destinations.data';
 import { EnhancedRecommendation } from '../../core/engines/recommendation/recommendation.engine';
 
 @Component({

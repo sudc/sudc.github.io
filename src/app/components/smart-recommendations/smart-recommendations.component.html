@@ -1,5 +1,24 @@
 <section class="smart-recommendations-section">
   <div class="container">
+    <!-- 📱 MOBILE MENU TOGGLE (Show only on mobile) -->
+    <div class="mobile-menu-header">
+      <button 
+        class="hamburger-button"
+        (click)="toggleMobileMenu()"
+        [class.active]="mobileMenuOpen"
+        aria-label="Toggle menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+      <h3 class="mobile-title">🤖 Trip Finder</h3>
+    </div>
+
+    <!-- 📱 MOBILE MENU (Dropdown when opened) -->
+    <div class="mobile-menu" *ngIf="mobileMenuOpen" @.trigger="mobileMenuOpen">
+      <p class="mobile-menu-subtitle">Select your travel preferences</p>
+    </div>
+
     <!-- FILTER SECTION (Only show if showForm is true) -->
     <div class="filters" *ngIf="showForm">
       <h2>🤖 AI-Powered Destination Finder</h2>

@@ -61,6 +61,9 @@ export class SmartRecommendationsComponent implements OnInit {
   // ✅ Feature toggle for compact cards (set to true to use new compact layout)
   useCompactCards = false;
   
+  // 📱 Mobile menu state
+  mobileMenuOpen = false;
+  
   // Booking modal state
   isBookingModalOpen = false;
   selectedDestination: any = null;
@@ -486,5 +489,15 @@ export class SmartRecommendationsComponent implements OnInit {
   closeBookingModal(): void {
     this.isBookingModalOpen = false;
     this.selectedDestination = null;
+  }
+
+  // 📱 Toggle mobile menu
+  toggleMobileMenu(): void {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
+  // 📱 Close mobile menu
+  closeMobileMenu(): void {
+    this.mobileMenuOpen = false;
   }
 }

@@ -20,6 +20,100 @@ $text-muted: #6b7280;
   }
 }
 
+/* ========== MOBILE MENU (HAMBURGER) ========== */
+.mobile-menu-header {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.5rem;
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid $border;
+
+  @media (max-width: 640px) {
+    display: flex;
+  }
+}
+
+.mobile-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: $text-main;
+  flex: 1;
+}
+
+.hamburger-button {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #f3f4f6;
+  }
+
+  &.active {
+    .hamburger-line:nth-child(1) {
+      transform: rotate(45deg) translateY(13px);
+    }
+
+    .hamburger-line:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger-line:nth-child(3) {
+      transform: rotate(-45deg) translateY(-13px);
+    }
+  }
+}
+
+.hamburger-line {
+  width: 24px;
+  height: 3px;
+  background: $text-main;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.mobile-menu {
+  display: none;
+  background: linear-gradient(135deg, #f0f8ff 0%, #e6f2ff 100%);
+  border: 1px solid $border;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 1.5rem;
+  animation: slideDown 0.3s ease;
+
+  @media (max-width: 640px) {
+    display: block;
+  }
+
+  .mobile-menu-subtitle {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: $text-muted;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* ========== FILTER SECTION ========== */
 .filters {
   background: white;
