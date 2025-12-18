@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Title, Meta } from '@angular/platform-browser';
 
+import { TripStepperComponent } from '../../components/trip-stepper/trip-stepper.component';
 import { SmartRecommendationsComponent } from '../../components/smart-recommendations/smart-recommendations.component';
 import { TrustConfigService } from '../../core/services/trust-config.service';
 
@@ -30,6 +31,7 @@ interface UserRequirements {
     RouterLink,
     RouterLinkActive,
     FormsModule,
+    TripStepperComponent,
     SmartRecommendationsComponent
   ],
   templateUrl: './home.component.html',

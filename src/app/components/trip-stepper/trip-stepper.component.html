@@ -1,0 +1,267 @@
+<section class="trip-stepper-section">
+  <div class="container">
+    <!-- Progress Indicator -->
+    <div class="progress-container" *ngIf="currentStep <= totalSteps">
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width]="(currentStep / totalSteps * 100) + '%'"></div>
+      </div>
+      <div class="progress-text">
+        Step {{ currentStep }} of {{ totalSteps }}
+      </div>
+    </div>
+
+    <!-- Sticky Summary Panel -->
+    <div class="sticky-summary" *ngIf="currentStep <= totalSteps && currentStep > 1">
+      <h4>Your Preferences</h4>
+      <div class="summary-items">
+        <span *ngIf="preferences.interests.length > 0" class="summary-item">
+          {{ preferences.interests.join(' • ') }}
+        </span>
+        <span class="summary-item">₹{{ budgetOptions.find(b => b.value === preferences.budget)?.label }}</span>
+        <span class="summary-item">{{ months[preferences.month - 1] }}</span>
+        <span *ngIf="preferences.climate !== 'doesnt-matter'" class="summary-item">
+          {{ climateOptions.find(c => c.value === preferences.climate)?.label }}
+        </span>
+      </div>
+    </div>
+
+    <!-- STEP 1: Travel Interests -->
+    <div class="stepper-content" *ngIf="currentStep === 1">
+      <div class="step-header">
+        <h2>👉 What kind of trip are you planning?</h2>
+        <p class="step-description">Choose all that apply</p>
+      </div>
+
+      <div class="step-body">
+        <div class="interests-grid">
+          <div *ngFor="let interest of interestOptions" 
+               class="interest-card"
+               [class.selected]="isInterestSelected(interest.label)"
+               (click)="toggleInterest(interest.label)">
+            <span class="interest-icon">{{ interest.icon }}</span>
+            <span class="interest-label">{{ interest.label }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-actions">
+        <button class="btn-next" (click)="nextStep()" [disabled]="!isStep1Valid()">
+          Continue →
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Budget & Duration -->
+    <div class="stepper-content" *ngIf="currentStep === 2">
+      <div class="step-header">
+        <h2>👉 What's your budget & trip length?</h2>
+      </div>
+
+      <div class="step-body">
+        <!-- Budget Selection -->
+        <div class="form-group">
+          <label class="form-label">Budget Range</label>
+          <div class="budget-grid">
+            <div *ngFor="let option of budgetOptions"
+                 class="budget-card"
+                 [class.selected]="preferences.budget === option.value"
+                 (click)="preferences.budget = option.value as any">
+              <span class="budget-label">{{ option.label }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Duration Selection -->
+        <div class="form-group">
+          <label class="form-label">Trip Duration</label>
+          <div class="duration-grid">
+            <div *ngFor="let option of durationOptions"
+                 class="duration-chip"
+                 [class.selected]="preferences.duration === option.value"
+                 (click)="preferences.duration = option.value as any">
+              {{ option.label }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Trust Text -->
+        <div class="trust-text">
+          🔒 We don't show sponsored results — budget helps us find realistic options.
+        </div>
+      </div>
+
+      <div class="step-actions">
+        <button class="btn-back" (click)="prevStep()">← Back</button>
+        <button class="btn-next" (click)="nextStep()" [disabled]="!isStep2Valid()">
+          Continue →
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Timing & Climate -->
+    <div class="stepper-content" *ngIf="currentStep === 3">
+      <div class="step-header">
+        <h2>👉 When are you planning to travel?</h2>
+      </div>
+
+      <div class="step-body">
+        <!-- Month Selection -->
+        <div class="form-group">
+          <label class="form-label">Month</label>
+          <div class="months-grid">
+            <div *ngFor="let month of months; let i = index"
+                 class="month-chip"
+                 [class.selected]="preferences.month === (i + 1)"
+                 (click)="preferences.month = i + 1">
+              {{ month.substring(0, 3) }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Climate Preference -->
+        <div class="form-group">
+          <label class="form-label">Climate Preference</label>
+          <div class="climate-grid">
+            <div *ngFor="let climate of climateOptions"
+                 class="climate-card"
+                 [class.selected]="preferences.climate === climate.value"
+                 (click)="preferences.climate = climate.value as any">
+              <span class="climate-emoji">{{ climate.icon }}</span>
+              <span class="climate-label">{{ climate.label }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tooltip -->
+        <div class="tooltip">
+          ℹ️ Best season matters a lot for experience quality
+        </div>
+      </div>
+
+      <div class="step-actions">
+        <button class="btn-back" (click)="prevStep()">← Back</button>
+        <button class="btn-next" (click)="nextStep()" [disabled]="!isStep3Valid()">
+          Continue →
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 4: Readiness Check -->
+    <div class="stepper-content" *ngIf="currentStep === 4">
+      <div class="step-header">
+        <h2>👉 How ready are you to travel?</h2>
+        <p class="step-description">This helps us avoid suggesting trips you can't take right now.</p>
+      </div>
+
+      <div class="step-body">
+        <div class="readiness-checklist">
+          <!-- Budget Ready -->
+          <div class="readiness-item">
+            <div class="readiness-toggle"
+                 [class.active]="preferences.budgetReady"
+                 (click)="toggleReadiness('budgetReady')">
+              <span class="toggle-icon" *ngIf="preferences.budgetReady">✅</span>
+              <span class="toggle-icon" *ngIf="!preferences.budgetReady">❌</span>
+            </div>
+            <span class="readiness-label">Budget ready?</span>
+          </div>
+
+          <!-- Docs Ready -->
+          <div class="readiness-item">
+            <div class="readiness-toggle"
+                 [class.active]="preferences.docsReady"
+                 (click)="toggleReadiness('docsReady')">
+              <span class="toggle-icon" *ngIf="preferences.docsReady">✅</span>
+              <span class="toggle-icon" *ngIf="!preferences.docsReady">❌</span>
+            </div>
+            <span class="readiness-label">Documents ready? (ID / Passport)</span>
+          </div>
+
+          <!-- Flexible Dates -->
+          <div class="readiness-item">
+            <div class="readiness-toggle"
+                 [class.active]="preferences.flexibleDates"
+                 (click)="toggleReadiness('flexibleDates')">
+              <span class="toggle-icon" *ngIf="preferences.flexibleDates">✅</span>
+              <span class="toggle-icon" *ngIf="!preferences.flexibleDates">❌</span>
+            </div>
+            <span class="readiness-label">Flexible dates?</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-actions">
+        <button class="btn-back" (click)="prevStep()">← Back</button>
+        <button class="btn-submit" 
+                (click)="submitPreferences()"
+                [disabled]="uiState.loading">
+          <span *ngIf="!uiState.loading">🔍 Find My Best Destinations</span>
+          <span *ngIf="uiState.loading">⏳ Finding destinations...</span>
+        </button>
+      </div>
+
+      <p class="submit-subtext">Powered by TripSaver's intelligent scoring engine</p>
+    </div>
+
+    <!-- RESULTS VIEW -->
+    <div class="results-container" *ngIf="currentStep > totalSteps && uiState.hasResults">
+      <div class="results-header">
+        <h2>✨ Smart Recommendations</h2>
+        <p class="results-subtitle">Based on your preferences, here are our top recommendations</p>
+      </div>
+
+      <!-- Results Grid -->
+      <div class="recommendations-grid">
+        <div *ngFor="let rec of recommendations" class="recommendation-card">
+          <!-- Card Header -->
+          <div class="card-header">
+            <div class="destination-info">
+              <h3>{{ rec.destination.state }}</h3>
+              <span [class]="'score-badge ' + getScoreBadgeClass(rec.overallRecommendationScore)">
+                {{ getScoreBadgeText(rec.overallRecommendationScore) }}
+              </span>
+            </div>
+            <div class="score">{{ rec.overallRecommendationScore }}/100</div>
+          </div>
+
+          <!-- Tags -->
+          <div class="tags">
+            <span *ngFor="let reason of rec.reasons.slice(0, 3)" class="tag">
+              {{ reason }}
+            </span>
+          </div>
+
+          <!-- Description -->
+          <div class="card-description">
+            <p>{{ rec.destination.description }}</p>
+          </div>
+
+          <!-- CTA -->
+          <button class="btn-explore" (click)="openBookingModal(rec)">
+            Explore & Book → 
+          </button>
+        </div>
+      </div>
+
+      <!-- Restart Button -->
+      <div class="results-footer">
+        <button class="btn-restart" (click)="restartStepper()">
+          ↻ Start Over with Different Preferences
+        </button>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="error-state" *ngIf="uiState.error">
+      <p class="error-message">{{ uiState.error }}</p>
+      <button class="btn-retry" (click)="prevStep()">← Try Again</button>
+    </div>
+  </div>
+
+  <!-- Booking Modal -->
+  <app-booking-modal 
+    *ngIf="isBookingModalOpen && selectedDestination"
+    [destination]="selectedDestination"
+    (close)="closeBookingModal()">
+  </app-booking-modal>
+</section>

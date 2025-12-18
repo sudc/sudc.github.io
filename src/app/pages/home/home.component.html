@@ -19,83 +19,15 @@
   </div>
 </header>
 
-<!-- HERO / FINDER -->
+<!-- HERO / FINDER - 4-Step Stepper -->
 <section class="finder-section">
   <div class="finder-container">
-
-    <!-- LEFT -->
-    <div class="finder-content">
-      <span class="finder-badge">✨ AI Powered</span>
-      <h1>Find Your <span>Perfect Destination</span></h1>
-      <p>{{ heroSubtitle }}</p>
-    </div>
-
-    <!-- RIGHT FORM -->
-    <div class="finder-card">
-      <form (ngSubmit)="submitDestinationPreferences()" novalidate>
-
-        <!-- Month -->
-        <div class="finder-field">
-          <label>📅 Travel Month</label>
-          <select [(ngModel)]="travelMonth" name="travelMonth" required>
-            <option value="" disabled>Pick a month</option>
-            <option *ngFor="let m of monthOptions" [value]="m">{{ m }}</option>
-          </select>
-        </div>
-
-        <!-- Budget -->
-        <div class="finder-field">
-          <label>💰 Budget</label>
-          <select [(ngModel)]="budgetRange" name="budgetRange" required>
-            <option value="" disabled>Select budget</option>
-            <option *ngFor="let b of budgetOptions" [value]="b.value">
-              {{ b.label }}
-            </option>
-          </select>
-        </div>
-
-        <!-- Interests -->
-        <div class="finder-field">
-          <label>🎯 Interests</label>
-
-          <div class="finder-interests-grid">
-            <button
-              *ngFor="let interest of interestOptions"
-              type="button"
-              class="interest-card"
-              [class.selected]="isInterestSelected(interest.value)"
-              (click)="toggleInterest(interest.value)"
-            >
-              <span class="interest-icon">{{ interest.icon }}</span>
-              <span>{{ interest.label }}</span>
-              <span class="interest-check">✓</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Climate -->
-        <div class="finder-field">
-          <label>🌤️ Climate</label>
-          <select [(ngModel)]="climatePreference" name="climatePreference" required>
-            <option value="" disabled>Select climate</option>
-            <option *ngFor="let c of climateOptions" [value]="c.value">
-              {{ c.label }}
-            </option>
-          </select>
-        </div>
-
-        <!-- CTA -->
-        <button class="btn-primary" type="submit">
-          Get Recommendation →
-        </button>
-
-      </form>
-    </div>
-
+    <!-- Trip Stepper Component -->
+    <app-trip-stepper></app-trip-stepper>
   </div>
 </section>
 
-<!-- AI RECOMMENDATIONS - Shown after form submission -->
+<!-- Legacy Smart Recommendations (for backward compatibility) -->
 <div class="smart-recommendations-section" *ngIf="showSmartRecommendations">
   <app-smart-recommendations
     [userPreferences]="userPreferences"
