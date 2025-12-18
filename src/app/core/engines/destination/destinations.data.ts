@@ -50,17 +50,17 @@ export interface Destination {
   id: string;
   name: string;
   state: string;
-  country?: string;
+  country: string;
   type: DestinationType;
-  categories?: DestinationCategory[];
-  tags?: string[];
-  bestMonths?: number[] | string[];
-  avoidMonths?: number[];
-  climate?: ClimateType;
-  budget?: BudgetType;
+  categories: DestinationCategory[];
+  tags: string[];
+  bestMonths: number[];
+  avoidMonths: number[];
+  climate: ClimateType;
+  budget: BudgetType;
   scores: ExperienceScores;
   agoda?: string;
-  idealTripDays?: number;
+  idealTripDays: number;
 }
 
 // ⚠️ EMPTY - All data now in MongoDB Atlas
