@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { getActivePartners } from '../../core/config/partners.config';
 
 export interface BookingPlatform {
   name: string;
@@ -268,22 +269,44 @@ export class BookingModalComponent {
   @Output() closed = new EventEmitter<void>();
 
   get platforms(): BookingPlatform[] {
-    return [
-      {
-        name: 'Agoda',
-        badge: 'Best Price Today',
-        icon: '🏨',
-        deepLink: `https://www.agoda.com/city/${this.agodaCode}.html?cid=1844104`,
-        description: 'Strong seasonal deals & largest inventory in Asia'
-      },
-      {
-        name: 'Booking.com',
-        badge: 'Free Cancellation',
-        icon: '🌐',
-        deepLink: `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(this.destinationName)}&aid=YOUR_AID`,
-        description: 'Flexible cancellation options & verified reviews'
+    const activePartners = getActivePartners();
+    
+    return activePartners.map(partner => {
+      let deepLink = '';
+      let badge = '';
+      let icon = '🏨';
+      let description = '';
+      
+      if (partner.id === 'agoda') {
+        deepLink = partner.urls.hotels({ 
+          city: this.agodaCode || this.destinationName 
+        });
+        badge = 'Best Price Today';
+        description = 'Strong seasonal deals & largest inventory in Asia';
+      } else if (partner.id === 'makemytrip') {
+        deepLink = partner.urls.hotels({ 
+          destination: this.destinationName 
+        });
+        badge = 'Domestic Expert';
+        description = 'Best rates for India travel & exclusive offers';
+        icon = '🇮🇳';
+      } else if (partner.id === 'bookingcom') {
+        deepLink = partner.urls.hotels({ 
+          destination: this.destinationName 
+        });
+        badge = 'Free Cancellation';
+        description = 'Flexible cancellation options & verified reviews';
+        icon = '🌐';
       }
-    ];
+      
+      return {
+        name: partner.displayName,
+        badge,
+        icon,
+        deepLink,
+        description
+      };
+    });
   }
 
   close(): void {
