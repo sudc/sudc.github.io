@@ -66,7 +66,7 @@ export class MethodologyComponent implements OnInit {
       'Data-driven decisions based on objective criteria'
     ],
     dataSources: [
-      'MongoDB database with 45+ Indian destinations',
+      'MongoDB database with 61+ Indian destinations',
       'Seasonal weather patterns and best visit times',
       'Budget ranges based on real travel costs',
       'Category classifications from official tourism data'
