@@ -75,12 +75,12 @@
 .stepper-content {
   background: white;
   border-radius: 12px;
-  padding: 24px;
+  padding: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   animation: fadeIn 0.3s ease;
 
   @media (max-width: 768px) {
-    padding: 16px;
+    padding: 12px;
   }
 }
 
@@ -96,11 +96,11 @@
 }
 
 .step-header {
-  margin-bottom: 18px;
+  margin-bottom: 12px;
 
   h2 {
-    margin: 0 0 4px 0;
-    font-size: 20px;
+    margin: 0 0 2px 0;
+    font-size: 18px;
     font-weight: 700;
     color: #1a1a1a;
   }
@@ -109,11 +109,11 @@
 .step-description {
   margin: 0;
   color: #666;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .step-body {
-  margin-bottom: 18px;
+  margin-bottom: 12px;
 }
 
 /* ========== STEP 1: INTERESTS ========== */
@@ -211,13 +211,13 @@
 
 /* ========== STEP 2: BUDGET & DURATION ========== */
 .form-group {
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .form-label {
   display: block;
-  margin-bottom: 12px;
-  font-size: 15px;
+  margin-bottom: 8px;
+  font-size: 14px;
   font-weight: 600;
   color: #333;
 }
@@ -233,7 +233,7 @@
 }
 
 .budget-card {
-  padding: 16px;
+  padding: 12px;
   background: #f3f4f6;
   border: 2px solid #d1d5db;
   border-radius: 8px;
@@ -242,7 +242,7 @@
   transition: all 0.2s ease;
   font-weight: 700;
   color: #111827;
-  min-height: 60px;
+  min-height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -282,14 +282,14 @@
 }
 
 .duration-chip {
-  padding: 12px 16px;
+  padding: 10px 14px;
   background: #f3f4f6;
   border: 2px solid #d1d5db;
   border-radius: 20px;
   cursor: pointer;
   text-align: center;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13px;
   color: #111827;
   transition: all 0.2s ease;
 
@@ -371,14 +371,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 16px;
+  padding: 12px;
   background: #f3f4f6;
   border: 2px solid #d1d5db;
   border-radius: 8px;
   cursor: pointer;
   color: #111827;
   transition: all 0.2s ease;
-  min-height: 100px;
+  min-height: 85px;
   justify-content: center;
   position: relative;
 
@@ -446,7 +446,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 14px;
+  padding: 10px;
   background: #f9fafb;
   border-radius: 8px;
   cursor: pointer;
