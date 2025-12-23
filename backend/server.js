@@ -93,9 +93,39 @@ async function connectToMongo() {
     await client.connect();
     db = client.db(DB_NAME);
     console.log('✅ Connected to MongoDB Atlas');
+    
+    // Initialize collections on startup
+    await initializeCollections();
   } catch (err) {
     console.error('❌ MongoDB connection failed:', err.message);
     process.exit(1);
+  }
+}
+
+// Initialize collections and indexes on startup
+async function initializeCollections() {
+  try {
+    console.log('🔧 Initializing database collections...');
+    
+    // Create contact-submissions collection with indexes
+    const contactCollection = db.collection('contact-submissions');
+    
+    // Create compound index for email and date
+    await contactCollection.createIndex({ email: 1, submittedAt: -1 });
+    console.log('  ✓ Index created: email, submittedAt');
+    
+    // Create text index for searching
+    await contactCollection.createIndex({ name: 'text', subject: 'text', message: 'text' });
+    console.log('  ✓ Text index created: name, subject, message');
+    
+    console.log('✅ Database initialization complete');
+  } catch (err) {
+    // Indexes might already exist - this is not an error
+    if (err.code === 85) {
+      console.log('ℹ️  Indexes already exist (expected on subsequent runs)');
+    } else {
+      console.warn('⚠️  Issue during collection initialization:', err.message);
+    }
   }
 }
 
@@ -452,25 +482,15 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Initialize collections endpoint (run once)
+// Initialize collections endpoint (optional - for manual re-initialization)
 app.post('/api/init', async (req, res) => {
   try {
-    console.log('🔧 Initializing database collections...');
-    
-    // Create contact-submissions collection with indexes
-    const contactCollection = db.collection('contact-submissions');
-    
-    // Create compound index for email and date
-    await contactCollection.createIndex({ email: 1, submittedAt: -1 });
-    
-    // Create text index for searching
-    await contactCollection.createIndex({ name: 'text', subject: 'text', message: 'text' });
-    
-    console.log('✅ Database initialized successfully');
+    console.log('🔧 Manual database initialization requested...');
+    await initializeCollections();
     
     res.json({
       success: true,
-      message: 'Database initialized',
+      message: 'Database re-initialized successfully',
       collections: {
         'contact-submissions': 'ready with indexes'
       }
