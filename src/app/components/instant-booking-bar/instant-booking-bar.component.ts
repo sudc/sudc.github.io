@@ -1,23 +1,21 @@
-import { Component, inject } from '@angular/core';
+import { Component, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BookingModalComponent } from '../booking-modal/booking-modal.component';
+import { BookingService } from '../../core/services/booking.service';
 
 declare const gtag: Function;
 
 @Component({
   selector: 'app-instant-booking-bar',
   standalone: true,
-  imports: [CommonModule, BookingModalComponent],
+  imports: [CommonModule],
   templateUrl: './instant-booking-bar.component.html',
   styleUrls: ['./instant-booking-bar.component.scss']
 })
 export class InstantBookingBarComponent {
-  isHotelModalOpen = false;
-  isBusModalOpen = false;
-  isEssentialsModalOpen = false;
+  private bookingService = inject(BookingService);
 
   /**
-   * Open hotel booking modal
+   * Trigger hotel booking on parent page
    * For "Intent Users" who already know destination
    */
   openHotelBooking(): void {
@@ -28,15 +26,11 @@ export class InstantBookingBarComponent {
         source: 'global_action_bar'
       });
     }
-    this.isHotelModalOpen = true;
-  }
-
-  closeHotelModal(): void {
-    this.isHotelModalOpen = false;
+    this.bookingService.triggerHotelBooking();
   }
 
   /**
-   * Open bus booking in new tab
+   * Trigger bus booking on parent page
    * AbhiBus affiliate link
    */
   openBusBooking(): void {
@@ -47,28 +41,11 @@ export class InstantBookingBarComponent {
         source: 'global_action_bar'
       });
     }
-    // Show confirmation first
-    this.isBusModalOpen = true;
-  }
-
-  closeBusModal(): void {
-    this.isBusModalOpen = false;
-  }
-
-  confirmBusBooking(): void {
-    if (typeof gtag !== 'undefined') {
-      (window as any).gtag('event', 'abhibus_redirect', {
-        event_category: 'Affiliate',
-        event_label: 'Bus Tickets - AbhiBus',
-        source: 'sticky_bar'
-      });
-    }
-    window.open('https://inr.deals/kQK6mx', '_blank', 'noopener');
-    this.closeBusModal();
+    this.bookingService.triggerBusBooking();
   }
 
   /**
-   * Open essentials shopping
+   * Trigger essentials shopping on parent page
    * Amazon affiliate link
    */
   openEssentialsShopping(): void {
@@ -79,36 +56,6 @@ export class InstantBookingBarComponent {
         source: 'global_action_bar'
       });
     }
-    // Show categories selection
-    this.isEssentialsModalOpen = true;
-  }
-
-  closeEssentialsModal(): void {
-    this.isEssentialsModalOpen = false;
-  }
-
-  /**
-   * Navigate to Amazon essentials
-   */
-  goToEssentials(category: string): void {
-    if (typeof gtag !== 'undefined') {
-      (window as any).gtag('event', 'essentials_category_click', {
-        event_category: 'Shopping',
-        event_label: category,
-        source: 'sticky_bar'
-      });
-    }
-
-    const categoryMap: Record<string, string> = {
-      luggage: 'luggage',
-      toiletries: 'travel toiletries',
-      electronics: 'travel electronics',
-      clothing: 'travel clothing'
-    };
-
-    const query = categoryMap[category] || category;
-    const url = `https://www.amazon.in/s?k=${encodeURIComponent(query)}&tag=tripsaver21-21`;
-    window.open(url, '_blank', 'noopener');
-    this.closeEssentialsModal();
+    this.bookingService.triggerEssentials();
   }
 }

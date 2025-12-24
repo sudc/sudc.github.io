@@ -1,14 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Title, Meta } from '@angular/platform-browser';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { TripStepperComponent } from '../../components/trip-stepper/trip-stepper.component';
 import { SmartRecommendationsComponent } from '../../components/smart-recommendations/smart-recommendations.component';
 import { BookingModalComponent } from '../../components/booking-modal/booking-modal.component';
 import { TrustConfigService } from '../../core/services/trust-config.service';
+import { BookingService } from '../../core/services/booking.service';
 
 declare const gtag: Function;
 
@@ -33,7 +36,12 @@ interface UserRequirements {
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
+
+  /* =======================
+     LIFECYCLE MANAGEMENT
+  ======================== */
+  private destroy$ = new Subject<void>();
 
   /* =======================
      UI STATE
@@ -94,7 +102,8 @@ export class HomeComponent implements OnInit {
     private http: HttpClient,
     private titleService: Title,
     private metaService: Meta,
-    private trustConfigService: TrustConfigService
+    private trustConfigService: TrustConfigService,
+    private bookingService: BookingService
   ) {
     // Fetch trust config on init (non-blocking)
     this.trustConfigService.getConfig().subscribe(config => {
@@ -107,6 +116,42 @@ export class HomeComponent implements OnInit {
   ======================== */
   ngOnInit(): void {
     this.setSeoTags();
+    this.setupBookingServiceListeners();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  /**
+   * Listen to booking service events from sticky bar
+   * When sticky bar is clicked, open corresponding modal in this page
+   */
+  private setupBookingServiceListeners(): void {
+    this.bookingService.hotelBooking$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(shouldOpen => {
+        if (shouldOpen) {
+          this.openHotelBooking();
+        }
+      });
+
+    this.bookingService.busBooking$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(shouldOpen => {
+        if (shouldOpen) {
+          this.openBusBooking();
+        }
+      });
+
+    this.bookingService.essentials$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(shouldOpen => {
+        if (shouldOpen) {
+          this.openEssentialsShopping();
+        }
+      });
   }
 
   /* =======================
@@ -257,6 +302,7 @@ export class HomeComponent implements OnInit {
 
   closeHotelModal(): void {
     this.isHotelModalOpen = false;
+    this.bookingService.closeHotelBooking();
   }
 
   /**
@@ -275,6 +321,7 @@ export class HomeComponent implements OnInit {
 
   closeBusModal(): void {
     this.isBusModalOpen = false;
+    this.bookingService.closeBusBooking();
   }
 
   confirmBusBooking(): void {
@@ -305,6 +352,7 @@ export class HomeComponent implements OnInit {
 
   closeEssentialsModal(): void {
     this.isEssentialsModalOpen = false;
+    this.bookingService.closeEssentials();
   }
 
   goToEssentials(category: string): void {
