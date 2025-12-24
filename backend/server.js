@@ -531,28 +531,6 @@ app.get('/api/affiliate-config/init', async (req, res) => {
           active: true,
           description: 'Bus tickets across India',
           type: 'bus'
-        },
-        booking: {
-          id: 'booking',
-          name: 'Booking.com',
-          logo: '🏩',
-          baseUrl: 'https://www.booking.com',
-          affiliateId: process.env.BOOKING_AFFILIATE_ID || 'YOUR_BOOKING_ID',
-          commission: 10,
-          active: false,
-          description: 'Global hotel network',
-          type: 'hotel'
-        },
-        expedia: {
-          id: 'expedia',
-          name: 'Expedia',
-          logo: '✈️',
-          baseUrl: 'https://www.expedia.co.in',
-          affiliateId: process.env.EXPEDIA_AFFILIATE_ID || 'YOUR_EXPEDIA_ID',
-          commission: 8,
-          active: false,
-          description: 'Flights, hotels, and packages',
-          type: 'both'
         }
       },
       lastUpdated: new Date(),
@@ -632,28 +610,6 @@ app.get('/api/affiliate-config', async (req, res) => {
             active: true,
             description: 'Bus tickets across India',
             type: 'bus'
-          },
-          booking: {
-            id: 'booking',
-            name: 'Booking.com',
-            logo: '🏩',
-            baseUrl: 'https://www.booking.com',
-            affiliateId: process.env.BOOKING_AFFILIATE_ID || 'YOUR_BOOKING_ID',
-            commission: 10,
-            active: false,
-            description: 'Global hotel network',
-            type: 'hotel'
-          },
-          expedia: {
-            id: 'expedia',
-            name: 'Expedia',
-            logo: '✈️',
-            baseUrl: 'https://www.expedia.co.in',
-            affiliateId: process.env.EXPEDIA_AFFILIATE_ID || 'YOUR_EXPEDIA_ID',
-            commission: 8,
-            active: false,
-            description: 'Flights, hotels, and packages',
-            type: 'both'
           }
         },
         lastUpdated: new Date(),
@@ -789,28 +745,6 @@ async function initializeAffiliateConfig() {
             active: true,
             description: 'Bus tickets across India',
             type: 'bus'
-          },
-          booking: {
-            id: 'booking',
-            name: 'Booking.com',
-            logo: '🏩',
-            baseUrl: 'https://www.booking.com',
-            affiliateId: process.env.BOOKING_AFFILIATE_ID || 'YOUR_BOOKING_ID',
-            commission: 10,
-            active: false,
-            description: 'Global hotel network',
-            type: 'hotel'
-          },
-          expedia: {
-            id: 'expedia',
-            name: 'Expedia',
-            logo: '✈️',
-            baseUrl: 'https://www.expedia.co.in',
-            affiliateId: process.env.EXPEDIA_AFFILIATE_ID || 'YOUR_EXPEDIA_ID',
-            commission: 8,
-            active: false,
-            description: 'Flights, hotels, and packages',
-            type: 'both'
           }
         },
         lastUpdated: new Date(),
@@ -826,6 +760,70 @@ async function initializeAffiliateConfig() {
     console.error('❌ Error initializing affiliate config:', err);
   }
 }
+
+// Force reinitialize affiliate config (deletes old data and creates fresh)
+app.post('/api/affiliate-config/reinitialize', async (req, res) => {
+  try {
+    // Delete existing config
+    await db.collection('affiliate-config').deleteOne({ _id: 'active' });
+    console.log('🗑️  Deleted old affiliate config');
+
+    // Reinitialize with fresh data
+    const defaultConfig = {
+      _id: 'active',
+      activePartner: 'agoda',
+      partners: {
+        agoda: {
+          id: 'agoda',
+          name: 'Agoda',
+          logo: '🏨',
+          baseUrl: 'https://www.agoda.com',
+          affiliateId: process.env.AGODA_AFFILIATE_ID || '1955073',
+          commission: 12,
+          active: true,
+          description: 'Best hotel deals in Asia',
+          type: 'hotel'
+        },
+        amazon: {
+          id: 'amazon',
+          name: 'Amazon',
+          logo: '🛍️',
+          baseUrl: 'https://www.amazon.in',
+          affiliateId: process.env.AMAZON_AFFILIATE_ID || 'tripsaver21-21',
+          commission: 5,
+          active: true,
+          description: 'Travel essentials and gear',
+          type: 'shopping'
+        },
+        abhibus: {
+          id: 'abhibus',
+          name: 'AbhiBus',
+          logo: '🚌',
+          baseUrl: 'https://inr.deals/kQK6mx',
+          affiliateId: 'kQK6mx',
+          commission: 8,
+          active: true,
+          description: 'Bus tickets across India',
+          type: 'bus'
+        }
+      },
+      lastUpdated: new Date(),
+      updatedBy: 'manual-reinit'
+    };
+
+    await db.collection('affiliate-config').insertOne(defaultConfig);
+    console.log('✅ Affiliate config reinitialized with fresh data');
+
+    res.json({
+      status: 'reinitialized',
+      message: 'Affiliate config cleared and reinitialized with active partners only (agoda, amazon, abhibus)',
+      config: defaultConfig
+    });
+  } catch (err) {
+    console.error('❌ Error reinitializing affiliate config:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // 404
 app.use((req, res) => {

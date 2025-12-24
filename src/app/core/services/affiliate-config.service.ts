@@ -136,7 +136,7 @@ export class AffiliateConfigService {
    * Get affiliate ID for partner
    */
   getAffiliateId(partnerId: string): string | null {
-    return this.configSubject.value?.affiliateIds[partnerId] || null;
+    return this.configSubject.value?.partners[partnerId]?.affiliateId || null;
   }
 
   /**
