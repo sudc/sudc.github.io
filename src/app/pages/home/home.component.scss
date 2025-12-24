@@ -1205,3 +1205,69 @@ footer > div {
     box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
   }
 }
+
+/* ===== HOTEL PLATFORM CARDS ===== */
+.platforms-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+}
+
+.platform-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: #f9fafb;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #1f2937;
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    background: #f3f4f6;
+    border-color: #8b5cf6;
+    transform: translateX(4px);
+  }
+
+  &:active {
+    transform: translateX(2px);
+  }
+
+  .platform-icon {
+    font-size: 32px;
+    min-width: 40px;
+    text-align: center;
+  }
+
+  .platform-info {
+    flex: 1;
+
+    h4 {
+      margin: 0 0 4px 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #1f2937;
+    }
+
+    p {
+      margin: 0;
+      font-size: 13px;
+      color: #6b7280;
+    }
+  }
+
+  .platform-badge {
+    background: #eef2ff;
+    color: #4f46e5;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+}

@@ -9,7 +9,6 @@ import { takeUntil } from 'rxjs/operators';
 
 import { TripStepperComponent } from '../../components/trip-stepper/trip-stepper.component';
 import { SmartRecommendationsComponent } from '../../components/smart-recommendations/smart-recommendations.component';
-import { BookingModalComponent } from '../../components/booking-modal/booking-modal.component';
 import { TrustConfigService } from '../../core/services/trust-config.service';
 import { BookingService } from '../../core/services/booking.service';
 
@@ -30,8 +29,7 @@ interface UserRequirements {
     RouterLinkActive,
     FormsModule,
     TripStepperComponent,
-    SmartRecommendationsComponent,
-    BookingModalComponent
+    SmartRecommendationsComponent
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
@@ -375,5 +373,18 @@ export class HomeComponent implements OnInit, OnDestroy {
     const url = `https://www.amazon.in/s?k=${encodeURIComponent(query)}&tag=tripsaver21-21`;
     window.open(url, '_blank', 'noopener');
     this.closeEssentialsModal();
+  }
+
+  /**
+   * Track hotel platform click
+   */
+  trackHotelClick(platform: string): void {
+    if (typeof gtag !== 'undefined') {
+      (window as any).gtag('event', 'hotel_platform_click', {
+        event_category: 'Hotel Booking',
+        event_label: platform,
+        source: 'homepage_modal'
+      });
+    }
   }
 }
