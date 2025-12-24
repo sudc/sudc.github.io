@@ -588,6 +588,9 @@
   border-radius: 0 0 12px 12px;
   border-left: 4px solid #4f46e5;
   animation: slideDown 0.3s ease-out;
+  max-height: 1000px;
+  transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+  overflow: hidden;
 }
 
 .explore-header {
@@ -627,6 +630,15 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes rotateChevron {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(180deg);
   }
 }
 
@@ -930,7 +942,12 @@
   .explore-chevron {
     margin-left: 8px;
     font-size: 12px;
-    transition: transform 0.2s ease;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-block;
+  }
+
+  &.expanded .explore-chevron {
+    transform: scaleY(-1);  // Flip ▶ to ▼ visually
   }
 }
 
