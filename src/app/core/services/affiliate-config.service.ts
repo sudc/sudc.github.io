@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, firstValueFrom } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
+import { tap, catchError, filter } from 'rxjs/operators';
 
 export interface AffiliateConfigData {
   activePartner: string;
@@ -71,7 +71,11 @@ export class AffiliateConfigService {
     if (current) {
       return current;
     }
-    return firstValueFrom(this.config$);
+    return firstValueFrom(
+      this.config$.pipe(
+        filter((config): config is AffiliateConfigData => config !== null)
+      )
+    );
   }
 
   /**
