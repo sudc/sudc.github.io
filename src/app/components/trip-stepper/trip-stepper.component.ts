@@ -27,8 +27,8 @@ export class TripStepperComponent implements OnInit {
   private affiliateLinkBuilder = inject(AffiliateLinkBuilderService);
   private affiliateConfigService = inject(AffiliateConfigService);
 
-  // ✅ Affiliate Shopping Partners (Agoda, Amazon, etc)
-  availableShoppingPartners = getShoppingPartners();
+  // ✅ Affiliate Shopping Partners (loaded from MongoDB)
+  availableShoppingPartners: any[] = [];
   selectedShoppingPartner: string = 'amazon'; // Default to Amazon for product exploration
 
   // ✅ Stepper State
@@ -111,6 +111,13 @@ export class TripStepperComponent implements OnInit {
     this.affiliateConfigService.loadConfig().subscribe(
       (config) => {
         console.log('✅ Affiliate config loaded in component:', config);
+        // Extract shopping partners from config
+        if (config && config.partners) {
+          this.availableShoppingPartners = Object.values(config.partners).filter((p: any) => 
+            p.type === 'shopping' || p.type === 'both'
+          );
+          console.log('✅ Shopping partners loaded:', this.availableShoppingPartners);
+        }
         this.cdr.markForCheck();
       },
       (error) => {

@@ -1,9 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { AffiliateConfigService } from '../affiliate-config.service';
 
 export interface PriceEntry { provider: string; price: number; currency?: string; url?: string }
 
 @Injectable({ providedIn: 'root' })
 export class AffiliateService {
+  private affiliateConfigService = inject(AffiliateConfigService);
   // Get all active hotel partners from config
   private hotelPartners: any[] = [];
 
@@ -27,12 +29,19 @@ export class AffiliateService {
 
   /**
    * Build affiliate link for a given provider and hotel
-   * @param providerId Provider ID (agoda, amazon, booking, etc)
+   * @param providerId Provider ID (agoda, amazon, abhibus, etc)
    * @param hotelId Hotel identifier
    * @returns Formatted affiliate URL
    */
   buildAffiliateLink(providerId: string, hotelId: string): string {
-    const partner = AFFILIATE_CONFIG[providerId];
+    // Get partner from current config (loaded from MongoDB)
+    const config = this.affiliateConfigService.getConfig();
+    if (!config || !config.partners) {
+      console.warn('Affiliate config not loaded');
+      return '';
+    }
+
+    const partner = config.partners[providerId];
 
     if (!partner || !partner.active) {
       console.warn(`Partner ${providerId} not found or inactive`);
@@ -54,15 +63,9 @@ export class AffiliateService {
         params = `?affid=${partner.affiliateId}&hotel=${encodeURIComponent(hotelId)}`;
         break;
 
-      case 'booking':
-        // Booking.com format
-        params = `?affiliate_id=${partner.affiliateId}&ss=${encodeURIComponent(hotelId)}`;
-        break;
-
-      case 'expedia':
-        // Expedia format
-        params = `?pwaLandingTest=UNSET&rfrr=${partner.affiliateId}`;
-        break;
+      case 'abhibus':
+        // AbhiBus format - uses direct link
+        return partner.baseUrl;
 
       default:
         // Generic format
