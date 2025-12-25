@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { TripStepperComponent } from './trip-stepper.component';
 import { AffiliateConfigService, AffiliateConfigData } from '../../core/services/affiliate-config.service';
@@ -64,14 +65,14 @@ describe('TripStepperComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      declarations: [TripStepperComponent],
-      imports: [CommonModule, FormsModule],
+      imports: [TripStepperComponent, CommonModule, FormsModule],
       providers: [
         { provide: AffiliateConfigService, useValue: configServiceMock },
         { provide: AffiliateLinkBuilderService, useValue: {} },
         { provide: RecommendationEngine, useValue: {} },
         { provide: DestinationScoringEngine, useValue: {} },
-        { provide: TripReadinessEngine, useValue: {} }
+        { provide: TripReadinessEngine, useValue: {} },
+        provideRouter([])
       ]
     }).compileComponents();
 

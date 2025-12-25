@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CommonModule } from '@angular/common';
+import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { HomeComponent } from './home.component';
 import { AffiliateConfigService, AffiliateConfigData } from '../../core/services/affiliate-config.service';
@@ -62,7 +63,10 @@ describe('HomeComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [CommonModule, HomeComponent],
-      providers: [{ provide: AffiliateConfigService, useValue: configServiceMock }]
+      providers: [
+        { provide: AffiliateConfigService, useValue: configServiceMock },
+        provideRouter([])
+      ]
     }).compileComponents();
 
     affiliateConfigService = TestBed.inject(AffiliateConfigService);
