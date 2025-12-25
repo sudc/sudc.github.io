@@ -112,8 +112,8 @@ export class AgodaHotelsComponent implements OnInit, OnDestroy {
 
     // Get Agoda affiliate ID from MongoDB config
     let agodaAffiliateId = '1955073'; // Fallback to known ID if config not loaded
-    if (this.affiliateConfig && this.affiliateConfig.partners && this.affiliateConfig.partners.agoda) {
-      agodaAffiliateId = this.affiliateConfig.partners.agoda.affiliateId;
+    if (this.affiliateConfig && this.affiliateConfig.partners && this.affiliateConfig.partners['agoda']) {
+      agodaAffiliateId = this.affiliateConfig.partners['agoda'].affiliateId;
     } else {
       console.warn('⚠️ Agoda affiliate config not loaded, using default');
     }
