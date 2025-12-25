@@ -1,4 +1,3 @@
-import 'jasmine';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -13,7 +12,7 @@ import { TripReadinessEngine } from '../../core/engines/trip-readiness/trip-read
 describe('TripStepperComponent', () => {
   let component: TripStepperComponent;
   let fixture: ComponentFixture<TripStepperComponent>;
-  let affiliateConfigService: jasmine.SpyObj<AffiliateConfigService>;
+  let affiliateConfigService: any;
 
   const mockConfig: AffiliateConfigData = {
     _id: 'active',
@@ -76,7 +75,7 @@ describe('TripStepperComponent', () => {
       ]
     }).compileComponents();
 
-    affiliateConfigService = TestBed.inject(AffiliateConfigService) as jasmine.SpyObj<AffiliateConfigService>;
+    affiliateConfigService = TestBed.inject(AffiliateConfigService);
   });
 
   beforeEach(() => {

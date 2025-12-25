@@ -1,4 +1,3 @@
-import 'jasmine';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CommonModule } from '@angular/common';
 import { of } from 'rxjs';
@@ -8,7 +7,7 @@ import { AffiliateConfigService, AffiliateConfigData } from '../../core/services
 describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
-  let affiliateConfigService: jasmine.SpyObj<AffiliateConfigService>;
+  let affiliateConfigService: any;
 
   const mockConfig: AffiliateConfigData = {
     _id: 'active',
@@ -69,7 +68,7 @@ describe('HomeComponent', () => {
       providers: [{ provide: AffiliateConfigService, useValue: configServiceSpy }]
     }).compileComponents();
 
-    affiliateConfigService = TestBed.inject(AffiliateConfigService) as jasmine.SpyObj<AffiliateConfigService>;
+    affiliateConfigService = TestBed.inject(AffiliateConfigService);
   });
 
   beforeEach(() => {
