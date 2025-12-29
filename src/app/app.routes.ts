@@ -11,9 +11,11 @@ import { ResultsComponent } from './pages/results/results.component';
 import { PrivacyPolicyComponent } from './pages/privacy-policy/privacy-policy.component';
 import { AffiliateDisclosureComponent } from './pages/affiliate-disclosure/affiliate-disclosure.component';
 import { TermsComponent } from './pages/terms/terms.component';
+import { TripPlannerComponent } from './pages/trip-planner/trip-planner.component';
 
 export const routes: Routes = [
 	{ path: '', component: HomeComponent },
+	{ path: 'planner', component: TripPlannerComponent },
 	{ path: 'results', component: ResultsComponent },
 	{ path: 'hotels', component: HotelsComponent },
 	{ path: 'flights', component: FlightsComponent },

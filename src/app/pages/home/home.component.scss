@@ -1324,3 +1324,22 @@ footer > div {
     opacity: 0.8;
   }
 }
+
+/* TRIP PLANNER CARD SECTION */
+.trip-planner-card-section {
+  background: linear-gradient(135deg, #f5f7fa 0%, #f0f4ff 100%);
+  padding: 40px 16px;
+  margin: 40px 0;
+}
+
+.card-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .trip-planner-card-section {
+    padding: 24px 16px;
+    margin: 24px 0;
+  }
+}

@@ -119,6 +119,13 @@
   </div>
 </section>
 
+<!-- TRIP PLANNER CARD SECTION -->
+<section class="trip-planner-card-section">
+  <div class="card-container">
+    <app-plan-my-trip-card></app-plan-my-trip-card>
+  </div>
+</section>
+
 <!-- HOTEL BOOKING MODAL (Home Page) -->
 <div class="booking-modal-overlay" *ngIf="isHotelModalOpen" (click)="closeHotelModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">

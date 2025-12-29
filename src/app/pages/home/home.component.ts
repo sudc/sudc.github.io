@@ -9,6 +9,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { TripStepperComponent } from '../../components/trip-stepper/trip-stepper.component';
 import { SmartRecommendationsComponent } from '../../components/smart-recommendations/smart-recommendations.component';
+import { PlanMyTripCardComponent } from '../../components/plan-my-trip-card/plan-my-trip-card.component';
 import { TrustConfigService } from '../../core/services/trust-config.service';
 import { BookingService } from '../../core/services/booking.service';
 import { AffiliateConfigService } from '../../core/services/affiliate-config.service';
@@ -30,7 +31,8 @@ interface UserRequirements {
     RouterLinkActive,
     FormsModule,
     TripStepperComponent,
-    SmartRecommendationsComponent
+    SmartRecommendationsComponent,
+    PlanMyTripCardComponent
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
