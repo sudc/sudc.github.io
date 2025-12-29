@@ -1,5 +1,6 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { EnhancedRecommendation } from '../../core/engines/recommendation/recommendation.engine';
 
 @Component({
@@ -12,6 +13,13 @@ import { EnhancedRecommendation } from '../../core/engines/recommendation/recomm
 export class DestinationCardCompactComponent {
   @Input() recommendation!: EnhancedRecommendation;
   @Output() bookingClicked = new EventEmitter<EnhancedRecommendation>();
+
+  private router = inject(Router);
+
+  // Expansion state
+  isExpanded = false;
+  selectedDays: number | null = null;
+  readonly dayOptions = [2, 3, 4, 5];
 
   /**
    * Get top 2 categories from destination
@@ -52,9 +60,73 @@ export class DestinationCardCompactComponent {
   }
 
   /**
-   * Handle booking button click
+   * Toggle expanded view
    */
-  onBookingClick(): void {
+  toggleExpanded(): void {
+    this.isExpanded = !this.isExpanded;
+    // Reset days selection when collapsing
+    if (!this.isExpanded) {
+      this.selectedDays = null;
+    } else {
+      // Auto-select 3 days when expanding
+      this.selectedDays = 3;
+    }
+  }
+
+  /**
+   * Select number of days
+   */
+  selectDays(days: number): void {
+    this.selectedDays = this.selectedDays === days ? null : days;
+  }
+
+  /**
+   * Get CTA button label based on expansion state
+   */
+  getCtaLabel(): string {
+    if (!this.isExpanded) {
+      return 'Plan This Trip';
+    }
+    if (!this.selectedDays) {
+      return 'Select Days Above';
+    }
+    return `View ${this.selectedDays}-Day Itinerary →`;
+  }
+
+  /**
+   * Check if CTA button should be disabled
+   */
+  isCtaDisabled(): boolean {
+    if (!this.isExpanded) {
+      return false;
+    }
+    return !this.selectedDays;
+  }
+
+  /**
+   * Handle CTA button click - navigates to planner with context
+   */
+  onCtaClick(): void {
+    if (!this.isExpanded) {
+      // First click: expand the card
+      this.toggleExpanded();
+    } else if (this.selectedDays) {
+      // Second click: navigate to planner with destination and days
+      const destination = this.recommendation.destination.state.toLowerCase();
+      this.router.navigate(['/planner'], {
+        queryParams: {
+          destination: destination,
+          days: this.selectedDays,
+          source: 'smart'
+        }
+      });
+    }
+  }
+
+  /**
+   * Handle booking button click (Essentials modal)
+   */
+  onEssentialsClick(): void {
     this.bookingClicked.emit(this.recommendation);
   }
 }

@@ -1,6 +1,6 @@
-<div class="compact-card">
+<div class="compact-card" [class.expanded]="isExpanded">
   <!-- Header: Name + Score -->
-  <div class="card-header">
+  <div class="card-header" (click)="toggleExpanded()" [class.clickable]="!isExpanded">
     <div class="name-section">
       <h3 class="destination-name">{{ recommendation.destination.state }}</h3>
       <p class="destination-location">{{ recommendation.destination.country }}</p>
@@ -11,15 +11,49 @@
     </div>
   </div>
 
-  <!-- Badges: Max 2 categories -->
-  <div class="badges-section" *ngIf="topBadges.length > 0">
+  <!-- Badges: Max 2 categories (hidden when expanded) -->
+  <div class="badges-section" *ngIf="topBadges.length > 0 && !isExpanded">
     <span *ngFor="let badge of topBadges" [ngClass]="['badge', getBadgeClass(badge)]">
       {{ badge }}
     </span>
   </div>
 
+  <!-- EXPANSION SECTION: Planning UI -->
+  <div class="expansion-content" *ngIf="isExpanded">
+    <!-- Step Header -->
+    <div class="expansion-header">
+      <h4>🧭 Start Planning Your {{ recommendation.destination.state }} Trip</h4>
+      <p class="expansion-subtitle">How many days are you thinking?</p>
+    </div>
+
+    <!-- Days Selector -->
+    <div class="days-selector">
+      <button
+        *ngFor="let days of dayOptions"
+        [class.selected]="selectedDays === days"
+        (click)="selectDays(days)"
+        class="day-option"
+      >
+        {{ days }}<span class="day-label">days</span>
+      </button>
+    </div>
+
+    <!-- Quick Prep Section -->
+    <div class="quick-prep" *ngIf="selectedDays">
+      <h5>📦 Quick Prep</h5>
+      <button class="essentials-link" (click)="onEssentialsClick()">
+        🧳 Travel Essentials (Amazon)
+      </button>
+    </div>
+  </div>
+
   <!-- CTA Button -->
-  <button class="cta-button" (click)="onBookingClick()">
-    Explore →
+  <button 
+    class="cta-button" 
+    [class.expanded-cta]="isExpanded"
+    [class.disabled]="isCtaDisabled()"
+    (click)="onCtaClick()"
+    [disabled]="isCtaDisabled()">
+    {{ getCtaLabel() }}
   </button>
 </div>
