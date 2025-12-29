@@ -15,7 +15,8 @@ import { TripPlannerComponent } from './pages/trip-planner/trip-planner.componen
 
 export const routes: Routes = [
 	{ path: '', component: HomeComponent },
-	{ path: 'planner', component: TripPlannerComponent },
+	{ path: 'smart-planner', component: TripPlannerComponent },
+	{ path: 'planner', redirectTo: 'smart-planner' }, // Legacy route - redirects to smart-planner
 	{ path: 'results', component: ResultsComponent },
 	{ path: 'hotels', component: HotelsComponent },
 	{ path: 'flights', component: FlightsComponent },

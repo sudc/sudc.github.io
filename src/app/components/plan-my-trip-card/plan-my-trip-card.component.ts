@@ -10,16 +10,16 @@ import { RouterLink } from '@angular/router';
     <div class="plan-card">
       <div class="card-content">
         <div class="card-icon">✨</div>
-        <h3>Plan Your Trip in Days</h3>
-        <p>Tell us where & how many days — we'll plan it for you</p>
+        <h3>Smart Trip Planner</h3>
+        <p>From inspiration to itinerary — discover destinations that match you</p>
         <div class="features">
-          <div class="feature">📍 Destination selection</div>
-          <div class="feature">⏰ Day-wise itinerary</div>
-          <div class="feature">💡 Best hotels & activities</div>
+          <div class="feature">🎯 Preference-based discovery</div>
+          <div class="feature">📍 Destination suggestions</div>
+          <div class="feature">📅 Day-wise itinerary</div>
         </div>
       </div>
-      <a routerLink="/planner" class="cta-button">
-        Plan My Trip
+      <a routerLink="/smart-planner" class="cta-button">
+        Start Planning
         <span class="arrow">→</span>
       </a>
     </div>

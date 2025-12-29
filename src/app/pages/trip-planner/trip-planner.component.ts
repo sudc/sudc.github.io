@@ -20,23 +20,113 @@ import { ItineraryDayCardComponent } from './itinerary-day-card.component';
         <!-- Left: Input Section -->
         <div class="input-section">
           <div class="input-card">
-            <h2>Plan Your Trip</h2>
+            <h2>✨ Smart Trip Planner</h2>
+            <p class="subtitle">From inspiration to itinerary</p>
 
-            <!-- Destination Input -->
-            <div class="form-group">
-              <label for="destination">Where are you going?</label>
-              <select
-                id="destination"
-                [(ngModel)]="selectedDestination"
-                (change)="onDestinationChange()"
-                class="form-control"
-              >
-                <option value="">Select a destination</option>
-                <option *ngFor="let dest of destinations" [value]="dest.value">
-                  {{ dest.name }}
-                </option>
-              </select>
+            <!-- PHASE 1: Preference Discovery -->
+            <div class="discovery-phase" *ngIf="!selectedDestination || !currentPlan">
+              <h3>Let's find your perfect destination</h3>
+              
+              <!-- Pace Selector -->
+              <div class="discovery-group">
+                <label>How do you like to travel?</label>
+                <div class="preference-buttons">
+                  <button
+                    *ngFor="let option of [
+                      {value: 'relaxed', emoji: '🌴', label: 'Relaxed'},
+                      {value: 'moderate', emoji: '🚶', label: 'Moderate'},
+                      {value: 'fast', emoji: '⚡', label: 'Fast-Paced'}
+                    ]"
+                    [class.active]="discoveryPreferences.pace === option.value"
+                    (click)="onDiscoveryPreferenceChange('pace', option.value)"
+                    class="pref-btn"
+                  >
+                    <span class="emoji">{{ option.emoji }}</span>
+                    <span class="label">{{ option.label }}</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Budget Selector -->
+              <div class="discovery-group">
+                <label>What's your budget?</label>
+                <div class="preference-buttons">
+                  <button
+                    *ngFor="let option of [
+                      {value: 'budget', emoji: '💸', label: 'Budget'},
+                      {value: 'moderate', emoji: '💰', label: 'Moderate'},
+                      {value: 'luxury', emoji: '💎', label: 'Luxury'}
+                    ]"
+                    [class.active]="discoveryPreferences.budget === option.value"
+                    (click)="onDiscoveryPreferenceChange('budget', option.value)"
+                    class="pref-btn"
+                  >
+                    <span class="emoji">{{ option.emoji }}</span>
+                    <span class="label">{{ option.label }}</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Travel Style Selector -->
+              <div class="discovery-group">
+                <label>What's your travel style?</label>
+                <div class="preference-buttons">
+                  <button
+                    *ngFor="let option of [
+                      {value: 'beach', emoji: '🏖️', label: 'Beach'},
+                      {value: 'culture', emoji: '🏛️', label: 'Culture'},
+                      {value: 'adventure', emoji: '🏔️', label: 'Adventure'},
+                      {value: 'family', emoji: '👨‍👩‍👧‍👦', label: 'Family'}
+                    ]"
+                    [class.active]="discoveryPreferences.style === option.value"
+                    (click)="onDiscoveryPreferenceChange('style', option.value)"
+                    class="pref-btn"
+                  >
+                    <span class="emoji">{{ option.emoji }}</span>
+                    <span class="label">{{ option.label }}</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Destination Suggestions -->
+              <div class="suggestions-panel" *ngIf="showDiscoverySuggestions">
+                <h4>Destinations for you:</h4>
+                <div class="suggestions-grid">
+                  <button
+                    *ngFor="let dest of suggestedDestinations"
+                    (click)="selectSuggestedDestination(dest.value)"
+                    class="suggestion-card"
+                    [style.opacity]="dest.matchScore"
+                  >
+                    <div class="suggestion-emoji">{{ dest.emoji }}</div>
+                    <div class="suggestion-name">{{ dest.name }}</div>
+                    <div class="suggestion-desc">{{ dest.description }}</div>
+                    <div class="match-score">{{ Math.round(dest.matchScore * 100) }}% match</div>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Manual Selection Fallback -->
+              <div class="divider">OR</div>
             </div>
+
+            <!-- PHASE 2: Destination & Days Selection -->
+            <div class="selection-phase">
+              <!-- Destination Input -->
+              <div class="form-group">
+                <label for="destination">Choose a destination</label>
+                <select
+                  id="destination"
+                  [(ngModel)]="selectedDestination"
+                  (change)="onDestinationChange()"
+                  class="form-control"
+                >
+                  <option value="">Select a destination</option>
+                  <option *ngFor="let dest of destinations" [value]="dest.value">
+                    {{ dest.name }}
+                  </option>
+                </select>
+              </div>
 
             <!-- Days Input -->
             <div class="form-group">
@@ -399,9 +489,173 @@ import { ItineraryDayCardComponent } from './itinerary-day-card.component';
     }
 
     .input-card h2 {
-      margin: 0 0 20px 0;
+      margin: 0 0 8px 0;
       font-size: 20px;
       color: #333;
+    }
+
+    .input-card .subtitle {
+      margin: 0 0 24px 0;
+      font-size: 13px;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+    }
+
+    /* Discovery Phase Styles */
+    .discovery-phase {
+      background: linear-gradient(135deg, #f5f7ff 0%, #fafbff 100%);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+      border: 1px solid #e8ecf1;
+    }
+
+    .discovery-phase h3 {
+      margin: 0 0 20px 0;
+      font-size: 16px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .discovery-group {
+      margin-bottom: 20px;
+    }
+
+    .discovery-group label {
+      display: block;
+      margin-bottom: 12px;
+      font-weight: 600;
+      color: #333;
+      font-size: 13px;
+    }
+
+    .preference-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .pref-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 14px;
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex: 1;
+      min-width: 70px;
+    }
+
+    .pref-btn:hover {
+      border-color: #667eea;
+      color: #667eea;
+      background: #f8f8ff;
+    }
+
+    .pref-btn.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-color: transparent;
+      color: white;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .pref-btn .emoji {
+      font-size: 20px;
+    }
+
+    .pref-btn .label {
+      font-size: 11px;
+      text-align: center;
+    }
+
+    .suggestions-panel {
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 16px;
+      border: 1px solid #e8ecf1;
+    }
+
+    .suggestions-panel h4 {
+      margin: 0 0 12px 0;
+      font-size: 13px;
+      color: #555;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .suggestions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+      gap: 10px;
+    }
+
+    .suggestion-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 12px;
+      background: #f8f9fa;
+      border: 2px solid #e8ecf1;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .suggestion-card:hover {
+      border-color: #667eea;
+      background: #f0f2ff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(102, 126, 234, 0.15);
+    }
+
+    .suggestion-emoji {
+      font-size: 24px;
+    }
+
+    .suggestion-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: #333;
+      text-align: center;
+    }
+
+    .suggestion-desc {
+      font-size: 10px;
+      color: #999;
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .match-score {
+      font-size: 10px;
+      color: #667eea;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .divider {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 12px;
+      color: #ccc;
+      font-weight: 600;
+    }
+
+    .selection-phase {
+      border-top: 1px solid #e0e0e0;
+      padding-top: 20px;
     }
 
     .form-group {
@@ -894,12 +1148,24 @@ export class TripPlannerComponent implements OnInit, OnDestroy {
     travelType: ''
   };
 
+  // Smart Planner Discovery Phase (User preferences for destination suggestions)
+  discoveryPreferences = {
+    pace: '', // 'relaxed', 'moderate', 'fast'
+    budget: '', // 'budget', 'moderate', 'luxury'
+    style: '' // 'beach', 'culture', 'adventure', 'family'
+  };
+  suggestedDestinations: Array<{ name: string; value: string; emoji: string; description: string; matchScore: number }> = [];
+  showDiscoverySuggestions = false;
+
   // Recommendation widget state (Phase 1: Smart Recommendations)
   recommendationMode: 'none' | 'hotels' | 'activities' | 'transport' | 'essentials' = 'none';
   activeRecommendationDay: number | null = null;
 
   // Make window accessible in template
   window = window;
+
+  // Make Math accessible in template
+  Math = Math;
 
   // Typed recommendation options for template
   readonly recommendationOptions: Array<{ mode: 'hotels' | 'activities' | 'transport' | 'essentials'; label: string; emoji: string }> = [
@@ -957,6 +1223,77 @@ export class TripPlannerComponent implements OnInit, OnDestroy {
       // Regenerate plan with filters
       this.generatePlan();
     }
+  }
+
+  // Discovery Phase Methods - Smart Planner Widget
+  onDiscoveryPreferenceChange(type: 'pace' | 'budget' | 'style', value: string): void {
+    this.discoveryPreferences[type] = this.discoveryPreferences[type] === value ? '' : value;
+    this.updateDestinationSuggestions();
+  }
+
+  updateDestinationSuggestions(): void {
+    const { pace, budget, style } = this.discoveryPreferences;
+    const hasPreferences = pace || budget || style;
+
+    if (!hasPreferences) {
+      this.suggestedDestinations = [];
+      this.showDiscoverySuggestions = false;
+      return;
+    }
+
+    // Rank destinations based on user preferences
+    this.suggestedDestinations = this.rankDestinationsByPreferences(pace, budget, style);
+    this.showDiscoverySuggestions = this.suggestedDestinations.length > 0;
+  }
+
+  rankDestinationsByPreferences(
+    pace: string,
+    budget: string,
+    style: string
+  ): Array<{ name: string; value: string; emoji: string; description: string; matchScore: number }> {
+    // Destination profiles: { name, pace, budget, style[], distance }
+    const destinationProfiles: Record<string, any> = {
+      goa: { pace: 'relaxed', budget: 'budget', styles: ['beach', 'adventure'], emoji: '🏖️', description: 'Beaches & nightlife' },
+      delhi: { pace: 'moderate', budget: 'budget', styles: ['culture', 'family'], emoji: '🏛️', description: 'History & heritage' },
+      mumbai: { pace: 'fast', budget: 'luxury', styles: ['culture', 'family'], emoji: '🌃', description: 'Urban exploration' },
+      jaipur: { pace: 'moderate', budget: 'moderate', styles: ['culture', 'family'], emoji: '🏰', description: 'Pink city & palaces' },
+      manali: { pace: 'adventure', budget: 'moderate', styles: ['adventure', 'nature'], emoji: '⛰️', description: 'Mountains & trekking' },
+      bangalore: { pace: 'moderate', budget: 'moderate', styles: ['family', 'adventure'], emoji: '🌳', description: 'Garden city & tech hub' }
+    };
+
+    const scored = Object.entries(destinationProfiles).map(([key, profile]) => {
+      let score = 0;
+      const maxScore = 3;
+
+      // Pace match (0-1)
+      if (pace === profile.pace) score += 1;
+
+      // Budget match (0-1)
+      if (budget === profile.budget) score += 1;
+
+      // Style match (0-1)
+      if (style && profile.styles.includes(style)) score += 1;
+
+      return {
+        name: key.charAt(0).toUpperCase() + key.slice(1),
+        value: key,
+        emoji: profile.emoji,
+        description: profile.description,
+        matchScore: score / maxScore // 0-1 normalized score
+      };
+    });
+
+    // Sort by match score (descending) and return top suggestions
+    return scored
+      .filter(d => d.matchScore > 0) // Only show destinations with at least 1 match
+      .sort((a, b) => b.matchScore - a.matchScore)
+      .slice(0, 4); // Show top 4 suggestions
+  }
+
+  selectSuggestedDestination(destinationValue: string): void {
+    this.selectedDestination = destinationValue;
+    this.showDiscoverySuggestions = false;
+    this.onDestinationChange();
   }
 
   onDestinationChange(): void {
