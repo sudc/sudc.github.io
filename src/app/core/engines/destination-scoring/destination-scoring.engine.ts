@@ -74,14 +74,12 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
     let destinations: Destination[] = [];
     
     try {
-      console.log('📡 Fetching destinations from MongoDB backend...');
       const response = await this.http.get<Destination[]>(
         `${environment.apiBaseUrl}/api/destinations`
       ).toPromise();
       
       if (response && response.length > 0) {
         destinations = response;
-        console.log(`✅ Loaded ${destinations.length} destinations from MongoDB`);
       } else {
         throw new Error('Empty response from backend - no destinations available');
       }
@@ -101,8 +99,6 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
     
     // � SOFT MATCHING: Score ALL destinations, let scoring determine relevance
     const userCategories = (input.userPreferences.categories || []).map(cat => cat.toLowerCase());
-    console.log(`\n🎯 USER INTERESTS: ${input.userPreferences.categories.join(', ')}`);
-    console.log(`🎯 SCORING: ${destinations.length} destinations...`);
     
     for (const destination of destinations) {
       const { score, displayScore, reasons, badges, interestMatchScore, interestMatchMessage } = this.scoreDestination(destination, input.userPreferences);
@@ -126,7 +122,6 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
     scored.sort((a, b) => b.score - a.score);
 
     this.log(`Scored ${scored.length} destinations (showing top 10)`);
-    console.log(`📋 Top destinations:`, scored.slice(0, 10).map(s => `${s.destination.name}, ${s.destination.state} (${s.displayScore}/100)`));
 
     return {
       engineName: this.config.name,
@@ -152,9 +147,7 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
     const reasons: string[] = [];
     const badges: string[] = [];
     
-    console.log(`\n📍 SCORING: ${dest.name} (${dest.state})`);
-    console.log(`   User interests: ${prefs.categories.join(', ') || 'NONE'}`);
-    console.log(`   Destination type: ${dest.type}`);
+    // Destination scoring in progress
     
     // 1. EXPERIENCE SCORE (40 points max) - ✅ PRIMARY SCORING
     // Match user interests against destination's experience scores
@@ -165,8 +158,6 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
       for (const category of prefs.categories) {
         const categoryKey = category.toLowerCase();
         const destScore = (dest.scores as any)[categoryKey] || 0;
-        
-        console.log(`   - ${category}: ${destScore}/100`);
         
         if (destScore > 0) {
           totalExperienceScore += destScore;
@@ -188,10 +179,6 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
           interestMatchMessage = 'secondary';
           reasons.push(`✓ ${matchCount}/${prefs.categories.length} interests match (avg: ${Math.round(avgScore)}/100)`);
         }
-        
-        console.log(`   ✅ Experience score: ${interestMatchScore}/40 (${interestMatchMessage})`);
-      } else {
-        console.log(`   ⚠️ No experience scores found`);
       }
     }
     
@@ -246,8 +233,6 @@ export class DestinationScoringEngine extends BaseEngine<DestinationScoringInput
     // Ensure score is within bounds (0-100)
     score = Math.max(0, Math.min(100, score));
     const displayScore = Math.round(score);
-    
-    console.log(`   🎯 Final Score: ${displayScore}/100\n`);
     
     return { score, displayScore, reasons, badges, interestMatchScore, interestMatchMessage };
   }

@@ -119,6 +119,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     console.log('🏠 [Home] Component initialized');
     console.log('🏠 [Home] showSmartRecommendations:', this.showSmartRecommendations);
+    console.log('🏠 [Home] Template rendering with smart-recommendations-section visible');
+    console.log('🏠 [Home] User should see: TripStepper → SmartRecommendations → Hero → Divider → BookInstantly');
     this.setSeoTags();
     this.setupBookingServiceListeners();
     this.loadAffiliateConfig();

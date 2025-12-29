@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { EnhancedRecommendation } from '../../core/engines/recommendation/recommendation.engine';
@@ -10,7 +10,7 @@ import { EnhancedRecommendation } from '../../core/engines/recommendation/recomm
   templateUrl: './destination-card-compact.component.html',
   styleUrls: ['./destination-card-compact.component.scss']
 })
-export class DestinationCardCompactComponent {
+export class DestinationCardCompactComponent implements OnInit {
   @Input() recommendation!: EnhancedRecommendation;
   @Output() bookingClicked = new EventEmitter<EnhancedRecommendation>();
 
@@ -20,6 +20,11 @@ export class DestinationCardCompactComponent {
   isExpanded = false;
   selectedDays: number | null = null;
   readonly dayOptions = [2, 3, 4, 5];
+
+  ngOnInit(): void {
+    console.log(`🎴 [DestinationCard] Card rendered for: ${this.recommendation?.destination?.state}`);
+    console.log(`🎴 [DestinationCard] Ready for user interaction (click to expand)`);
+  }
 
   /**
    * Get top 2 categories from destination

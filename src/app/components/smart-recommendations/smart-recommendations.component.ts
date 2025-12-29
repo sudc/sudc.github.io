@@ -79,6 +79,7 @@ export class SmartRecommendationsComponent implements OnInit {
     console.log('🎯 [SmartRecommendations] Component initialized');
     console.log('🎯 [SmartRecommendations] showForm:', this.showForm);
     console.log('🎯 [SmartRecommendations] userPreferences:', this.userPreferences);
+    console.log('🎯 [SmartRecommendations] Template should be rendering now...');
     
     // Fetch trust config from MongoDB (non-blocking)
     this.trustConfigService.getConfig().subscribe(config => {
@@ -98,6 +99,7 @@ export class SmartRecommendationsComponent implements OnInit {
       this.getRecommendations();
     } else {
       console.log('🎯 [SmartRecommendations] No parent preferences, waiting for user input');
+      console.log('🎯 [SmartRecommendations] User should see the form now');
     }
     // Otherwise user will see empty state and click button manually
   }
@@ -359,6 +361,8 @@ export class SmartRecommendationsComponent implements OnInit {
             this.recommendations = validRecommendations.slice(0, 6); // Top 6
             this.uiState.hasResults = true;
             console.log('✅ [LOADER] Showing', this.recommendations.length, 'recommendations');
+            console.log('✅ [LOADER] Recommendation cards should now be visible on page');
+            console.log('✅ [LOADER] Cards ready for user interaction (click to expand)');
           } else {
             // All recommendations filtered out
             console.log('⚠️ [LOADER] All recommendations filtered (interest match = 0)');
