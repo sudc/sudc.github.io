@@ -222,12 +222,7 @@ import { ItineraryDayCardComponent } from './itinerary-day-card.component';
                 <span class="filter-label">Show recommendations for:</span>
                 <div class="filter-buttons">
                   <button
-                    *ngFor="let option of [
-                      {mode: 'hotels', label: 'Hotels', emoji: '🏨'},
-                      {mode: 'activities', label: 'Activities', emoji: '🎫'},
-                      {mode: 'transport', label: 'Transport', emoji: '🚕'},
-                      {mode: 'essentials', label: 'Essentials', emoji: '🧳'}
-                    ]"
+                    *ngFor="let option of recommendationOptions"
                     [class.active]="recommendationMode === option.mode"
                     (click)="onRecommendationModeChange(option.mode)"
                     class="filter-btn"
@@ -905,6 +900,14 @@ export class TripPlannerComponent implements OnInit, OnDestroy {
 
   // Make window accessible in template
   window = window;
+
+  // Typed recommendation options for template
+  readonly recommendationOptions: Array<{ mode: 'hotels' | 'activities' | 'transport' | 'essentials'; label: string; emoji: string }> = [
+    { mode: 'hotels', label: 'Hotels', emoji: '🏨' },
+    { mode: 'activities', label: 'Activities', emoji: '🎫' },
+    { mode: 'transport', label: 'Transport', emoji: '🚕' },
+    { mode: 'essentials', label: 'Essentials', emoji: '🧳' }
+  ];
 
   destinations: any[] = [];
   availableDurations: number[] = [];

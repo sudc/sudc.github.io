@@ -281,7 +281,7 @@ import { ItineraryDay } from '../../core/models/itinerary.model';
 })
 export class ItineraryDayCardComponent {
   @Input() day!: ItineraryDay;
-  @Output() ctaClick = new EventEmitter<'hotel' | 'activity' | 'essential' | 'transport' | 'food'>();
+  @Output() ctaClick = new EventEmitter<'hotel' | 'activity' | 'essential' | 'transport'>();
 
   isExpanded = false;
 
@@ -290,6 +290,9 @@ export class ItineraryDayCardComponent {
   }
 
   onCtaClick(ctaType: 'hotel' | 'activity' | 'essential' | 'transport' | 'food'): void {
-    this.ctaClick.emit(ctaType);
+    // Only emit if it's one of the recommendation modes
+    if (ctaType !== 'food') {
+      this.ctaClick.emit(ctaType as 'hotel' | 'activity' | 'essential' | 'transport');
+    }
   }
 }
