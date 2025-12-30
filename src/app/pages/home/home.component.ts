@@ -7,7 +7,6 @@ import { Title, Meta } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { TripStepperComponent } from '../../components/trip-stepper/trip-stepper.component';
 import { SmartRecommendationsComponent } from '../../components/smart-recommendations/smart-recommendations.component';
 import { PlanMyTripCardComponent } from '../../components/plan-my-trip-card/plan-my-trip-card.component';
 import { TrustConfigService } from '../../core/services/trust-config.service';
@@ -30,7 +29,6 @@ interface UserRequirements {
     RouterLink,
     RouterLinkActive,
     FormsModule,
-    TripStepperComponent,
     SmartRecommendationsComponent,
     PlanMyTripCardComponent
   ],
