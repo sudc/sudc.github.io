@@ -137,9 +137,19 @@
                   <span class="day-title">{{day.title}}</span>
                 </div>
                 <div class="day-content">
-                  <p class="period"><strong>Morning:</strong> {{day.morning}}</p>
-                  <p class="period"><strong>Afternoon:</strong> {{day.afternoon}}</p>
-                  <p class="period"><strong>Evening:</strong> {{day.evening}}</p>
+                  <p class="day-description">{{day.description}}</p>
+                  <div *ngIf="day.places && day.places.length > 0" class="places">
+                    <h5>Places to visit:</h5>
+                    <ul>
+                      <li *ngFor="let place of day.places">{{place}}</li>
+                    </ul>
+                  </div>
+                  <div *ngIf="day.activities && day.activities.length > 0" class="activities">
+                    <h5>Activities:</h5>
+                    <ul>
+                      <li *ngFor="let activity of day.activities">{{activity}}</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
