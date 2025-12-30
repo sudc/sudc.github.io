@@ -638,13 +638,20 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
       {
         destinationId: 'goa',
         destination: {
+          id: 'goa',
+          name: 'Goa',
           state: 'Goa',
-          region: 'West Coast',
+          country: 'India',
+          type: 'beach',
           budget: 'budget',
           bestMonths: [10, 11, 12, 1, 2],
+          avoidMonths: [5, 6, 7, 8],
           categories: ['Beach', 'Party', 'Coastal'],
+          tags: ['beach', 'relaxation', 'nightlife'],
           climate: 'tropical',
-          agoda: 'goa'
+          scores: { beach: 95, relaxation: 85, nightlife: 90 },
+          agoda: 'goa',
+          idealTripDays: 3
         },
         score: 82,
         displayScore: 75,
@@ -657,13 +664,20 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
       {
         destinationId: 'manali',
         destination: {
-          state: 'Manali',
-          region: 'Himalayas',
+          id: 'manali',
+          name: 'Manali',
+          state: 'Himachal Pradesh',
+          country: 'India',
+          type: 'adventure',
           budget: 'moderate',
           bestMonths: [3, 4, 5, 9, 10],
+          avoidMonths: [11, 12, 1, 2],
           categories: ['Mountain', 'Adventure', 'Nature'],
+          tags: ['mountain', 'adventure', 'nature'],
           climate: 'cool',
-          agoda: 'manali'
+          scores: { adventure: 90, nature: 85 },
+          agoda: 'manali',
+          idealTripDays: 3
         },
         score: 79,
         displayScore: 72,
@@ -676,13 +690,20 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
       {
         destinationId: 'jaipur',
         destination: {
-          state: 'Jaipur',
-          region: 'Rajasthan',
+          id: 'jaipur',
+          name: 'Jaipur',
+          state: 'Rajasthan',
+          country: 'India',
+          type: 'heritage',
           budget: 'moderate',
           bestMonths: [10, 11, 12, 1, 2, 3],
+          avoidMonths: [5, 6, 7, 8],
           categories: ['Heritage', 'Culture', 'Colonial'],
+          tags: ['heritage', 'culture', 'history'],
           climate: 'hot',
-          agoda: 'jaipur'
+          scores: { cultural: 90, heritage: 95 },
+          agoda: 'jaipur',
+          idealTripDays: 2
         },
         score: 77,
         displayScore: 70,
@@ -695,13 +716,20 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
       {
         destinationId: 'kerala',
         destination: {
+          id: 'kerala',
+          name: 'Kerala',
           state: 'Kerala',
-          region: 'South India',
+          country: 'India',
+          type: 'beach',
           budget: 'moderate',
           bestMonths: [6, 7, 8, 9, 10, 11],
+          avoidMonths: [3, 4, 5],
           categories: ['Backwaters', 'Nature', 'Lake'],
+          tags: ['backwaters', 'nature', 'relaxation'],
           climate: 'tropical',
-          agoda: 'kerala'
+          scores: { nature: 90, relaxation: 85 },
+          agoda: 'kerala',
+          idealTripDays: 4
         },
         score: 75,
         displayScore: 68,
@@ -714,13 +742,20 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
       {
         destinationId: 'ladakh',
         destination: {
+          id: 'ladakh',
+          name: 'Ladakh',
           state: 'Ladakh',
-          region: 'Himalayas',
+          country: 'India',
+          type: 'adventure',
           budget: 'premium',
           bestMonths: [6, 7, 8, 9],
+          avoidMonths: [10, 11, 12, 1, 2, 3, 4, 5],
           categories: ['Adventure', 'Mountain', 'Spiritual'],
+          tags: ['adventure', 'mountain', 'spiritual'],
           climate: 'extreme',
-          agoda: 'ladakh'
+          scores: { adventure: 95, spiritual: 80 },
+          agoda: 'ladakh',
+          idealTripDays: 5
         },
         score: 72,
         displayScore: 65,
@@ -733,13 +768,20 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
       {
         destinationId: 'andaman',
         destination: {
-          state: 'Andaman',
-          region: 'Islands',
+          id: 'andaman',
+          name: 'Andaman',
+          state: 'Andaman and Nicobar Islands',
+          country: 'India',
+          type: 'island',
           budget: 'premium',
           bestMonths: [11, 12, 1, 2, 3],
+          avoidMonths: [5, 6, 7, 8, 9],
           categories: ['Beach', 'Island', 'Wildlife'],
+          tags: ['beach', 'island', 'wildlife'],
           climate: 'tropical',
-          agoda: 'andaman'
+          scores: { beach: 95, wildlife: 85 },
+          agoda: 'andaman',
+          idealTripDays: 4
         },
         score: 68,
         displayScore: 62,
