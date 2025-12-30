@@ -634,102 +634,120 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
 
   // 🎯 Get sample destinations as fallback when engine returns 0 results
   private getSampleDestinations(): EnhancedRecommendation[] {
-    const sampleDestinations = [
+    const sampleDestinations: EnhancedRecommendation[] = [
       {
+        destinationId: 'goa',
         destination: {
           state: 'Goa',
           region: 'West Coast',
           budget: 'budget',
-          bestMonths: ['Oct', 'Nov', 'Dec', 'Jan', 'Feb'],
+          bestMonths: [10, 11, 12, 1, 2],
           categories: ['Beach', 'Relaxation', 'Nightlife'],
           climate: 'Tropical',
           agoda: 'goa'
         },
+        score: 82,
         displayScore: 75,
+        reasons: ['Best for beach lovers', 'Budget friendly', 'Perfect timing for travel month'],
+        badges: ['Beach', 'Budget', 'Relaxation'],
         overallRecommendationScore: 75,
         recommendationType: 'recommended' as const,
-        warnings: [],
-        destinationId: 'goa'
+        warnings: []
       },
       {
+        destinationId: 'manali',
         destination: {
           state: 'Manali',
           region: 'Himalayas',
           budget: 'moderate',
-          bestMonths: ['Mar', 'Apr', 'May', 'Sep', 'Oct'],
+          bestMonths: [3, 4, 5, 9, 10],
           categories: ['Mountain', 'Adventure', 'Nature'],
           climate: 'Temperate',
           agoda: 'manali'
         },
+        score: 79,
         displayScore: 72,
+        reasons: ['Great for adventure seekers', 'Beautiful mountain scenery', 'Ideal season approaching'],
+        badges: ['Mountain', 'Adventure', 'Nature'],
         overallRecommendationScore: 72,
         recommendationType: 'recommended' as const,
-        warnings: [],
-        destinationId: 'manali'
+        warnings: []
       },
       {
+        destinationId: 'jaipur',
         destination: {
           state: 'Jaipur',
           region: 'Rajasthan',
           budget: 'moderate',
-          bestMonths: ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'],
+          bestMonths: [10, 11, 12, 1, 2, 3],
           categories: ['Heritage', 'Culture', 'History'],
           climate: 'Desert',
           agoda: 'jaipur'
         },
+        score: 77,
         displayScore: 70,
+        reasons: ['Rich cultural heritage', 'Perfect weather coming', 'Excellent value for money'],
+        badges: ['Heritage', 'Culture', 'History'],
         overallRecommendationScore: 70,
         recommendationType: 'recommended' as const,
-        warnings: [],
-        destinationId: 'jaipur'
+        warnings: []
       },
       {
+        destinationId: 'kerala',
         destination: {
           state: 'Kerala',
           region: 'South India',
           budget: 'moderate',
-          bestMonths: ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+          bestMonths: [6, 7, 8, 9, 10, 11],
           categories: ['Backwaters', 'Nature', 'Relaxation'],
           climate: 'Tropical',
           agoda: 'kerala'
         },
+        score: 75,
         displayScore: 68,
+        reasons: ['Beautiful backwaters and nature', 'Monsoon season ending', 'Moderate budget friendly'],
+        badges: ['Backwaters', 'Nature', 'Relaxation'],
         overallRecommendationScore: 68,
         recommendationType: 'consider' as const,
-        warnings: [],
-        destinationId: 'kerala'
+        warnings: []
       },
       {
+        destinationId: 'ladakh',
         destination: {
           state: 'Ladakh',
           region: 'Himalayas',
           budget: 'premium',
-          bestMonths: ['Jun', 'Jul', 'Aug', 'Sep'],
+          bestMonths: [6, 7, 8, 9],
           categories: ['Adventure', 'Mountain', 'Spiritual'],
           climate: 'Alpine',
           agoda: 'ladakh'
         },
+        score: 72,
         displayScore: 65,
+        reasons: ['Pristine mountain landscape', 'Spiritual experiences', 'Extreme adventure opportunities'],
+        badges: ['Adventure', 'Mountain', 'Spiritual'],
         overallRecommendationScore: 65,
         recommendationType: 'consider' as const,
-        warnings: [],
-        destinationId: 'ladakh'
+        warnings: []
       },
       {
+        destinationId: 'andaman',
         destination: {
           state: 'Andaman',
           region: 'Islands',
           budget: 'premium',
-          bestMonths: ['Nov', 'Dec', 'Jan', 'Feb', 'Mar'],
+          bestMonths: [11, 12, 1, 2, 3],
           categories: ['Beach', 'Island', 'Wildlife'],
           climate: 'Tropical',
           agoda: 'andaman'
         },
+        score: 68,
         displayScore: 62,
+        reasons: ['Pristine beaches and island charm', 'Unique wildlife experiences', 'Premium tropical paradise'],
+        badges: ['Beach', 'Island', 'Wildlife'],
         overallRecommendationScore: 62,
         recommendationType: 'consider' as const,
-        warnings: [],
-        destinationId: 'andaman'
+        warnings: []
       }
     ];
 
