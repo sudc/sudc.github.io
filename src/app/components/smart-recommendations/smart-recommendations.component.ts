@@ -557,6 +557,8 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
   // 📋 Open itinerary panel for destination
   openItinerary(rec: EnhancedRecommendation): void {
     const destId = (rec.destination as any)._id || rec.destinationId;
+    const destName = rec.destination.state;
+    const defaultDays = 3; // Default to 3 days
     
     // If already open for this destination, just close
     if (this.activeDestinationId === destId && this.itineraryPanelOpen) {
@@ -568,18 +570,17 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
     this.itineraryLoading = true;
     this.activeDestinationId = destId;
     
-    this.itineraryService.generateItinerary({
-      destination: rec.destination,
-      pace: 'moderate',
-      interests: this.preferences.categories
+    this.itineraryService.generatePlan(destName, defaultDays, {
+      travelType: this.preferences.categories as any,
+      pace: 'moderate'
     }).subscribe({
-      next: (itinerary) => {
+      next: (itinerary: any) => {
         this.activeItinerary = itinerary;
         this.itineraryPanelOpen = true;
         this.itineraryLoading = false;
         this.cdr.markForCheck();
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error loading itinerary:', err);
         this.itineraryLoading = false;
         this.cdr.markForCheck();

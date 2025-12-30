@@ -578,13 +578,10 @@ $text-muted: #6b7280;
       text-align: center;
       border: 1px solid $border;
 
-      .activity-emoji {
-        font-size: 20px;
-      }
-
       .activity-name {
         color: $text-muted;
         font-weight: 500;
+        line-height: 1.3;
       }
     }
   }

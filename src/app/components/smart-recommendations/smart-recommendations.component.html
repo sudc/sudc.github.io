@@ -148,8 +148,7 @@
                 <p class="day-description">{{ day.description }}</p>
                 <div *ngIf="day.activities && day.activities.length > 0" class="activities">
                   <div *ngFor="let activity of day.activities" class="activity">
-                    <span class="activity-emoji">{{ activity.emoji }}</span>
-                    <span class="activity-name">{{ activity.name }}</span>
+                    <span class="activity-name">{{ activity }}</span>
                   </div>
                 </div>
               </div>
