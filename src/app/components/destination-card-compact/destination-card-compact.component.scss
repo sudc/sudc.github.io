@@ -116,8 +116,9 @@
   font-weight: 700;
   color: #1f2937;
   line-height: 1.3;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .destination-location {
