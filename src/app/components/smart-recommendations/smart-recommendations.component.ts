@@ -375,19 +375,33 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
       // Run UI updates in Angular zone to ensure change detection
       this.ngZone.run(() => {
         if (result.success && result.recommendations.length > 0) {
+          console.log(`\n🔄 [DEDUP] ================================`);
+          console.log(`🔄 [Dedup] Raw results from engine: ${result.recommendations.length} items`);
+          
           // ✅ DEDUPLICATE by destination name to prevent showing same place twice
           const uniqueDestinations = new Map<string, typeof result.recommendations[0]>();
+          const removedDuplicates: string[] = [];
+          
           for (const rec of result.recommendations) {
             const key = rec.destination.name.toLowerCase();
             if (!uniqueDestinations.has(key)) {
               uniqueDestinations.set(key, rec);
+              console.log(`   ✅ Keeping: ${rec.destination.name} (score: ${(rec.matchScore * 100).toFixed(1)}%)`);
+            } else {
+              removedDuplicates.push(rec.destination.name);
+              console.log(`   ❌ Removing duplicate: ${rec.destination.name}`);
             }
           }
           
           // Convert back to array and take top 6
           this.recommendations = Array.from(uniqueDestinations.values()).slice(0, 6);
           this.uiState.hasResults = true;
-          console.log('✅ [LOADER] Showing', this.recommendations.length, 'unique recommendations (deduped)');
+          
+          console.log(`✅ [Dedup] Final unique destinations: ${this.recommendations.length}`);
+          console.log(`📋 [Dedup] Showing: ${this.recommendations.map(r => r.destination.name).join(', ')}`);
+          if (removedDuplicates.length > 0) {
+            console.log(`❌ [Dedup] Removed ${removedDuplicates.length} duplicates: ${removedDuplicates.join(', ')}`);
+          }
           console.log('✅ [LOADER] Recommendation cards should now be visible on page');
           console.log('✅ [LOADER] Cards ready for user interaction (click to expand)');
         } else {
@@ -569,7 +583,13 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
     // ✅ TRY BY DESTINATION NAME FIRST (not state)
     // e.g., "Bangalore", "Coorg", "Goa" - actual cities with itineraries
     let destName = rec.destination.name;
-    console.log(`📍 [Itinerary] Trying to load itinerary for: ${destName}`);
+    console.log(`\n📍 [DRAWER OPEN] ================================`);
+    console.log(`📍 [Itinerary] Opening drawer for recommendation:`);
+    console.log(`  - Destination Name: ${destName}`);
+    console.log(`  - Destination State: ${rec.destination.state}`);
+    console.log(`  - Country: ${rec.destination.country}`);
+    console.log(`  - Match Score: ${rec.overallRecommendationScore}%`);
+    console.log(`  - Trying to load itinerary for: "${destName}"`);
     
     // ✅ Discover available days for this destination
     this.discoverAvailableDays(destName);
@@ -582,7 +602,9 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
       next: (itinerary: any) => {
         if (itinerary) {
           // ✅ Itinerary exists - show it
-          console.log(`✅ [Itinerary] Found itinerary for ${destName}`);
+          console.log(`✅ [Itinerary] Successfully loaded for ${destName}`);
+          console.log(`   - Days: ${itinerary.days}`);
+          console.log(`   - Title: ${itinerary.title}`);
           this.drawerMode = 'itinerary';
           this.activeItinerary = itinerary;
           this.itineraryLoading = false;
@@ -607,13 +629,15 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
 
   // 📋 Handle day selection change - reload itinerary with new duration
   onDaySelected(days: number): void {
-    console.log(`📅 [Day Selection] Changed to ${days} days`);
+    console.log(`\n📅 [DAY CHANGE] ================================`);
+    console.log(`📅 [Day Selection] User selected: ${days} days`);
     
     if (!this.drawerDestination) {
-      console.warn('No destination selected');
+      console.warn('❌ [Day Selection] No destination selected - cannot reload');
       return;
     }
 
+    console.log(`📅 [Day Selection] Reloading itinerary for: ${this.drawerDestination.destination.name}`);
     this.selectedDays = days;
     this.itineraryLoading = true;
     this.activeItinerary = null;
@@ -627,13 +651,15 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
       pace: 'moderate'
     }).subscribe({
       next: (itinerary: any) => {
-        console.log(`✅ [Day Selection] Itinerary loaded for ${days} days`, itinerary);
+        console.log(`✅ [Day Selection] Itinerary loaded successfully`);
+        console.log(`   - Days: ${itinerary?.days || 'unknown'}`);
+        console.log(`   - Title: ${itinerary?.title || 'unknown'}`);
         this.activeItinerary = itinerary;
         this.itineraryLoading = false;
         this.cdr.markForCheck();
       },
       error: (err: any) => {
-        console.error(`❌ [Day Selection] Error loading ${days}-day itinerary:`, err);
+        console.error(`❌ [Day Selection] Error loading ${days}-day itinerary for ${destName}:`, err.message);
         this.itineraryLoading = false;
         this.cdr.markForCheck();
       }
