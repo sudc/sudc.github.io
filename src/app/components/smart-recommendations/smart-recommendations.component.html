@@ -132,7 +132,7 @@
       <!-- Drawer Header (Content below image) -->
       <div class="drawer-header" *ngIf="drawerDestination">
         <div class="header-content">
-          <h2>{{drawerDestination.destination.state}}</h2>
+          <h2>{{drawerDestination.destination.name}}</h2>
           <p class="trip-duration" *ngIf="drawerMode === 'itinerary'">{{selectedDays}}-Day Itinerary</p>
           <p class="trip-duration" *ngIf="drawerMode === 'explore'">Explore Region</p>
         </div>

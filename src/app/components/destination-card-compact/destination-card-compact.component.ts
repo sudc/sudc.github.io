@@ -25,7 +25,8 @@ export class DestinationCardCompactComponent implements OnInit {
   readonly dayOptions = [2, 3, 4, 5];
 
   ngOnInit(): void {
-    console.log(`🎴 [DestinationCard] Card rendered for: ${this.recommendation?.destination?.state}`);
+    console.log(`🎴 [DestinationCard] Card rendered for: ${this.recommendation?.destination?.name}`);
+    console.log(`🎴 [DestinationCard] State: ${this.recommendation?.destination?.state}`);
     console.log(`🎴 [DestinationCard] Ready for user interaction (click to expand)`);
   }
 

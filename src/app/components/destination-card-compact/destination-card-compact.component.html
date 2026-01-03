@@ -11,8 +11,8 @@
   <!-- Header: Name + Score -->
   <div class="card-header" (click)="toggleExpanded()" [class.clickable]="!isExpanded">
     <div class="name-section">
-      <h3 class="destination-name">{{ recommendation.destination.state }}</h3>
-      <p class="destination-location">{{ recommendation.destination.country }}</p>
+      <h3 class="destination-name">{{ recommendation.destination.name }}</h3>
+      <p class="destination-location">{{ recommendation.destination.state }}</p>
     </div>
   </div>
 
@@ -27,7 +27,7 @@
   <div class="expansion-content" *ngIf="isExpanded">
     <!-- Step Header -->
     <div class="expansion-header">
-      <h4>✨ Why Visit {{ recommendation.destination.state }}?</h4>
+      <h4>✨ Why Visit {{ recommendation.destination.name }}?</h4>
       <p class="expansion-subtitle">Perfect for: {{ topBadges.length > 0 ? topBadges.join(', ') : 'exploration' }}</p>
     </div>
 

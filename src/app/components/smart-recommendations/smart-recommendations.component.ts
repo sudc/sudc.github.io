@@ -644,6 +644,8 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
     }
 
     console.log(`📅 [Day Selection] Reloading itinerary for: ${this.drawerDestination.destination.name}`);
+    console.log(`📅 [Day Selection] Destination state: ${this.drawerDestination.destination.state}`);
+    console.log(`📅 [Day Selection] Destination type: ${this.drawerDestination.destination.type}`);
     this.selectedDays = days;
     this.itineraryLoading = true;
     this.activeItinerary = null;
@@ -659,8 +661,13 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
     }).subscribe({
       next: (itinerary: any) => {
         console.log(`✅ [Day Selection] Itinerary loaded successfully`);
-        console.log(`   - Days: ${itinerary?.days || 'unknown'}`);
-        console.log(`   - Title: ${itinerary?.title || 'unknown'}`);
+        if (itinerary) {
+          console.log(`   - Days: ${itinerary.days || 'unknown'}`);
+          console.log(`   - Title: ${itinerary.title || 'unknown'}`);
+          console.log(`   - Destination: ${itinerary.destination || 'unknown'}`);
+        } else {
+          console.warn(`⚠️ [Day Selection] Itinerary object is null/empty`);
+        }
         this.activeItinerary = itinerary;
         this.itineraryLoading = false;
         this.cdr.markForCheck();
@@ -703,15 +710,19 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
       }).subscribe({
         next: (itinerary: any) => {
           checkedCount++;
-          if (itinerary) {
+          if (itinerary && itinerary.title) {
             found.push(days);
             console.log(`✅ [AvailableDays] ${days} days available for ${destName}`);
+            console.log(`     Title: "${itinerary.title}"`);
+          } else {
+            console.log(`⚠️ [AvailableDays] ${days} days returned null/empty for ${destName}`);
           }
           
           // Update availableDays once we've checked all
           if (checkedCount === potentialDays.length) {
             this.availableDays = found.length > 0 ? found : [3];
             console.log(`📌 [AvailableDays] Final available days: ${this.availableDays.join(', ')}`);
+            console.log(`📌 [AvailableDays] Only these day buttons will be enabled`);
             this.cdr.markForCheck();
           }
         },
@@ -723,6 +734,7 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
           if (checkedCount === potentialDays.length) {
             this.availableDays = found.length > 0 ? found : [3];
             console.log(`📌 [AvailableDays] Final available days: ${this.availableDays.join(', ')}`);
+            console.log(`📌 [AvailableDays] Only these day buttons will be enabled`);
             this.cdr.markForCheck();
           }
         }

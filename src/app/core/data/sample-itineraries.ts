@@ -1343,10 +1343,28 @@ const STATE_TO_CITY_MAP: Record<string, string> = {
  */
 export function getItinerary(destination: string, days: number, destinationData?: any) {
   const dest = destination.toLowerCase().trim();
+  const daysStr = String(days);
   
-  // Try direct match first (for major cities)
-  if (SAMPLE_ITINERARIES[dest] && SAMPLE_ITINERARIES[dest][days]) {
-    return SAMPLE_ITINERARIES[dest][days];
+  console.log(`\n🗺️ [ITINERARY MAPPING] ================================`);
+  console.log(`🗺️ [Mapping] Destination: "${destination}" (${dest})`);
+  console.log(`🗺️ [Mapping] Days: ${days}`);
+  
+  if (destinationData) {
+    console.log(`🗺️ [Mapping] Destination Data Available:`);
+    console.log(`   Name: ${destinationData.name}`);
+    console.log(`   Type: ${destinationData.type}`);
+    console.log(`   State: ${destinationData.state}`);
+  } else {
+    console.log(`⚠️ [Mapping] No destination data provided`);
+  }
+  
+  // Try direct match first (for major cities like Goa, Delhi, etc.)
+  console.log(`\n  Step 1: Try direct match "${dest}"`);
+  if (SAMPLE_ITINERARIES[dest] && SAMPLE_ITINERARIES[dest][daysStr]) {
+    console.log(`  ✅ FOUND: Direct match for ${dest}[${daysStr}]`);
+    return SAMPLE_ITINERARIES[dest][daysStr];
+  } else {
+    console.log(`  ❌ Not found: ${dest} has no ${daysStr}-day itinerary`);
   }
   
   // If destination data provided, use it for smart mapping
@@ -1355,47 +1373,82 @@ export function getItinerary(destination: string, days: number, destinationData?
     const destState = destinationData.state?.toLowerCase();
     
     // Try type-based mapping first
+    console.log(`\n  Step 2: Try TYPE mapping (${destType})`);
     if (destType && TYPE_TO_CITY_MAP[destType]) {
       const mappedCity = TYPE_TO_CITY_MAP[destType];
-      if (SAMPLE_ITINERARIES[mappedCity] && SAMPLE_ITINERARIES[mappedCity][days]) {
-        return SAMPLE_ITINERARIES[mappedCity][days];
+      console.log(`  🔍 TYPE_TO_CITY_MAP["${destType}"] = "${mappedCity}"`);
+      
+      if (SAMPLE_ITINERARIES[mappedCity] && SAMPLE_ITINERARIES[mappedCity][daysStr]) {
+        console.log(`  ✅ FOUND: Mapped to ${mappedCity}[${daysStr}]`);
+        console.log(`✅ [ITINERARY] Loading: ${SAMPLE_ITINERARIES[mappedCity][daysStr].title}`);
+        return SAMPLE_ITINERARIES[mappedCity][daysStr];
+      } else {
+        console.log(`  ❌ Mapped city "${mappedCity}" has no ${daysStr}-day itinerary`);
       }
+    } else {
+      console.log(`  ❌ Type "${destType}" not in TYPE_TO_CITY_MAP`);
     }
     
     // Try state-based mapping
+    console.log(`\n  Step 3: Try STATE mapping (${destState})`);
     if (destState && STATE_TO_CITY_MAP[destState]) {
       const mappedCity = STATE_TO_CITY_MAP[destState];
-      if (SAMPLE_ITINERARIES[mappedCity] && SAMPLE_ITINERARIES[mappedCity][days]) {
-        return SAMPLE_ITINERARIES[mappedCity][days];
+      console.log(`  🔍 STATE_TO_CITY_MAP["${destState}"] = "${mappedCity}"`);
+      
+      if (SAMPLE_ITINERARIES[mappedCity] && SAMPLE_ITINERARIES[mappedCity][daysStr]) {
+        console.log(`  ✅ FOUND: Mapped to ${mappedCity}[${daysStr}]`);
+        console.log(`✅ [ITINERARY] Loading: ${SAMPLE_ITINERARIES[mappedCity][daysStr].title}`);
+        return SAMPLE_ITINERARIES[mappedCity][daysStr];
+      } else {
+        console.log(`  ❌ Mapped city "${mappedCity}" has no ${daysStr}-day itinerary`);
       }
+    } else {
+      console.log(`  ❌ State "${destState}" not in STATE_TO_CITY_MAP`);
     }
   }
   
   // Fallback: Try state mapping by looking up state from destination name
+  console.log(`\n  Step 4: Try STATE lookup by destination name`);
   const mappedCity = STATE_TO_CITY_MAP[dest];
-  if (mappedCity && SAMPLE_ITINERARIES[mappedCity] && SAMPLE_ITINERARIES[mappedCity][days]) {
-    return SAMPLE_ITINERARIES[mappedCity][days];
+  if (mappedCity) {
+    console.log(`  🔍 STATE_TO_CITY_MAP["${dest}"] = "${mappedCity}"`);
+    if (SAMPLE_ITINERARIES[mappedCity] && SAMPLE_ITINERARIES[mappedCity][daysStr]) {
+      console.log(`  ✅ FOUND: Mapped to ${mappedCity}[${daysStr}]`);
+      console.log(`✅ [ITINERARY] Loading: ${SAMPLE_ITINERARIES[mappedCity][daysStr].title}`);
+      return SAMPLE_ITINERARIES[mappedCity][daysStr];
+    } else {
+      console.log(`  ❌ Mapped city "${mappedCity}" has no ${daysStr}-day itinerary`);
+    }
+  } else {
+    console.log(`  ❌ Destination "${dest}" not in STATE_TO_CITY_MAP`);
   }
   
   // If specific days duration not available, try default (3 days)
+  console.log(`\n  Step 5: Try to fallback to 3-day itinerary`);
   if (SAMPLE_ITINERARIES[dest] && SAMPLE_ITINERARIES[dest]['3']) {
+    console.log(`  ✅ FOUND: ${dest} has 3-day itinerary (fallback from ${daysStr} days)`);
+    console.log(`⚠️ [ITINERARY] Loading 3-day instead of ${daysStr}-day: ${SAMPLE_ITINERARIES[dest]['3'].title}`);
     return SAMPLE_ITINERARIES[dest]['3'];
   }
   
   if (mappedCity && SAMPLE_ITINERARIES[mappedCity] && SAMPLE_ITINERARIES[mappedCity]['3']) {
+    console.log(`  ✅ FOUND: Mapped city "${mappedCity}" has 3-day itinerary (fallback from ${daysStr} days)`);
+    console.log(`⚠️ [ITINERARY] Loading 3-day instead of ${daysStr}-day: ${SAMPLE_ITINERARIES[mappedCity]['3'].title}`);
     return SAMPLE_ITINERARIES[mappedCity]['3'];
   }
   
   // Last resort: return first available destination (should not happen in production)
+  console.log(`\n  Step 6: Emergency fallback to first available`);
   const firstKey = Object.keys(SAMPLE_ITINERARIES)[0];
   if (firstKey) {
     const firstDuration = Object.keys(SAMPLE_ITINERARIES[firstKey])[0];
     if (firstDuration) {
-      console.warn(`⚠️ No itinerary found for "${destination}" with ${days} days. Returning fallback.`);
+      console.error(`❌ [ITINERARY] No itinerary found for "${destination}" with ${days} days. Using emergency fallback: ${SAMPLE_ITINERARIES[firstKey][firstDuration].title}`);
       return SAMPLE_ITINERARIES[firstKey][firstDuration];
     }
   }
   
+  console.error(`❌ [ITINERARY] CRITICAL: No itinerary available at all!`);
   return null;
 }
 
