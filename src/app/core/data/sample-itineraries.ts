@@ -1297,8 +1297,22 @@ export const SAMPLE_ITINERARIES: ItineraryDatabase = {
 };
 
 /**
- * Map of state/region names to cities with itinerary data
+ * Smart mapping of destination types and states to cities with itinerary data
+ * Uses MongoDB destination data to intelligently map any destination to an available itinerary
  */
+const CITY_ITINERARY_KEYS = ['goa', 'delhi', 'mumbai', 'bangalore', 'jaipur', 'manali', 'agra', 'rishikesh', 'udaipur', 'kochi', 'jodhpur', 'varanasi', 'mysore', 'pushkar', 'shimla', 'darjeeling', 'guwahati', 'leh'];
+
+const TYPE_TO_CITY_MAP: Record<string, string> = {
+  'beach': 'goa',           // Beach destinations → Goa (most popular beach)
+  'island': 'kochi',        // Island destinations → Kochi (coastal city)
+  'hill': 'manali',         // Hill destinations → Manali (popular hill station)
+  'heritage': 'jaipur',     // Heritage destinations → Jaipur (heritage hub)
+  'city': 'delhi',          // City destinations → Delhi (major city)
+  'spiritual': 'varanasi',  // Spiritual destinations → Varanasi (spiritual hub)
+  'adventure': 'leh',       // Adventure destinations → Leh (adventure hub)
+  'wildlife': 'kochi'       // Wildlife destinations → Kochi (coastal wildlife)
+};
+
 const STATE_TO_CITY_MAP: Record<string, string> = {
   'karnataka': 'bangalore',
   'goa': 'goa',
@@ -1308,22 +1322,56 @@ const STATE_TO_CITY_MAP: Record<string, string> = {
   'himachal pradesh': 'manali',
   'uttar pradesh': 'agra',
   'uttarakhand': 'rishikesh',
-  'kerala': 'kochi'
+  'kerala': 'kochi',
+  'andaman & nicobar': 'kochi',
+  'puducherry': 'kochi',
+  'tamil nadu': 'bangalore',
+  'west bengal': 'darjeeling',
+  'sikkim': 'darjeeling',
+  'meghalaya': 'darjeeling',
+  'ladakh': 'leh',
+  'jammu & kashmir': 'leh',
+  'punjab': 'delhi',
+  'assam': 'darjeeling',
+  'madhya pradesh': 'jaipur',
+  'telangana': 'bangalore'
 };
 
 /**
  * Get itinerary for a destination and duration
- * Falls back to state mapping if exact match not found
+ * Intelligently maps destinations to available city itineraries based on type and state
  */
-export function getItinerary(destination: string, days: number) {
+export function getItinerary(destination: string, days: number, destinationData?: any) {
   const dest = destination.toLowerCase().trim();
   
-  // Try direct match first
+  // Try direct match first (for major cities)
   if (SAMPLE_ITINERARIES[dest] && SAMPLE_ITINERARIES[dest][days]) {
     return SAMPLE_ITINERARIES[dest][days];
   }
   
-  // Try fallback to state-to-city mapping
+  // If destination data provided, use it for smart mapping
+  if (destinationData) {
+    const destType = destinationData.type?.toLowerCase();
+    const destState = destinationData.state?.toLowerCase();
+    
+    // Try type-based mapping first
+    if (destType && TYPE_TO_CITY_MAP[destType]) {
+      const mappedCity = TYPE_TO_CITY_MAP[destType];
+      if (SAMPLE_ITINERARIES[mappedCity] && SAMPLE_ITINERARIES[mappedCity][days]) {
+        return SAMPLE_ITINERARIES[mappedCity][days];
+      }
+    }
+    
+    // Try state-based mapping
+    if (destState && STATE_TO_CITY_MAP[destState]) {
+      const mappedCity = STATE_TO_CITY_MAP[destState];
+      if (SAMPLE_ITINERARIES[mappedCity] && SAMPLE_ITINERARIES[mappedCity][days]) {
+        return SAMPLE_ITINERARIES[mappedCity][days];
+      }
+    }
+  }
+  
+  // Fallback: Try state mapping by looking up state from destination name
   const mappedCity = STATE_TO_CITY_MAP[dest];
   if (mappedCity && SAMPLE_ITINERARIES[mappedCity] && SAMPLE_ITINERARIES[mappedCity][days]) {
     return SAMPLE_ITINERARIES[mappedCity][days];

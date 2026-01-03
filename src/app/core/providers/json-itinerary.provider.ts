@@ -24,14 +24,18 @@ import {
 export class JsonItineraryProvider implements ItineraryProvider {
   /**
    * Get itinerary from static JSON
+   * Now supports destination data for smart mapping
    */
   getItinerary(
     destination: string,
     days: number,
-    preferences?: PlannerPreferences,
-    filters?: AdvancedFilters
+    preferences?: PlannerPreferences | any,
+    filters?: AdvancedFilters | any
   ): Observable<ItineraryPlan | null> {
-    let itinerary = getItinerary(destination, days);
+    // Extract destination data if passed in preferences
+    const destinationData = preferences?.destinationData || preferences;
+    
+    let itinerary = getItinerary(destination, days, destinationData);
 
     if (itinerary && filters) {
       itinerary = this.applyFilters(itinerary, filters);

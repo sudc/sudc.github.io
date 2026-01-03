@@ -15,6 +15,7 @@ import { TrustConfigService } from '../../core/services/trust-config.service';
 import { ItineraryService } from '../../core/services/itinerary/itinerary.service';
 import { DestinationHeroService } from '../../core/services/destination-hero.service'; // ✅ NEW
 import { ItineraryPlan } from '../../core/models/itinerary.model';
+import { FALLBACK_DESTINATIONS } from '../../core/data/fallback-destinations'; // ✅ NEW: Use actual fallback data instead of hardcoded
 
 @Component({
   selector: 'app-smart-recommendations',
@@ -350,7 +351,8 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
     console.log('🚀 [LOADER] "Get Recommendations" button clicked!');
     console.log(`🚀 [LOADER] Month: ${this.preferences.month}, Budget: ${this.preferences.budget}`);
     console.log(`🚀 [LOADER] Interests: ${this.preferences.categories.join(', ') || 'NONE'}`);
-    console.log('🚀 [LOADER] Getting recommendations...');
+    console.log('🚀 [LOADER] Getting recommendations from engine...');
+    
     this.uiState.loading = true;
     this.uiState.error = null;
     this.recommendations = [];
@@ -370,7 +372,8 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
       // ✅ No timeout needed - using instant static fallback (MongoDB service disabled for now)
       const result = await this.recommendationEngine.process(input);
       
-      console.log('✅ [LOADER] Engine result:', result.recommendations.length, 'recommendations');
+      console.log(`✅ [LOADER] Engine returned: ${result.recommendations.length} recommendations`);
+      console.log(`✅ [LOADER] Success flag: ${result.success}`);
       
       // Run UI updates in Angular zone to ensure change detection
       this.ngZone.run(() => {
@@ -406,12 +409,13 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
           console.log('✅ [LOADER] Cards ready for user interaction (click to expand)');
         } else {
           // Engine returned empty results - fallback to showing all available destinations
-          console.log('⚠️ [LOADER] No recommendations found - showing sample destinations');
+          console.log('⚠️ [LOADER] No recommendations found from engine (empty or failed)');
+          console.log('⚠️ [LOADER] Falling back to sample destinations from FALLBACK_DESTINATIONS');
           // Fallback: Show popular destinations when engine returns no results
           this.recommendations = this.getSampleDestinations();
           this.uiState.hasResults = true;
           if (this.recommendations.length > 0) {
-            console.log('✅ [LOADER] Showing', this.recommendations.length, 'sample destinations as fallback');
+            console.log(`✅ [LOADER] Showing ${this.recommendations.length} fallback destinations`);
           }
         }
         this.cdr.markForCheck();
@@ -429,7 +433,7 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
       this.ngZone.run(() => {
         this.uiState.loading = false;
         this.cdr.markForCheck();
-        console.log('✅ [LOADER STOP] Complete!');
+        console.log('✅ [LOADER STOP] Recommendation loading complete!');
       });
     }
   }
@@ -592,12 +596,13 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
     console.log(`  - Trying to load itinerary for: "${destName}"`);
     
     // ✅ Discover available days for this destination
-    this.discoverAvailableDays(destName);
+    this.discoverAvailableDays(destName, rec.destination);
     
-    // Load itinerary for this destination
+    // Load itinerary for this destination (pass destination data for smart mapping)
     this.itineraryService.generatePlan(destName, this.selectedDays, {
       travelType: this.preferences.categories as any,
-      pace: 'moderate'
+      pace: 'moderate',
+      destinationData: rec.destination
     }).subscribe({
       next: (itinerary: any) => {
         if (itinerary) {
@@ -646,10 +651,11 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
     // ✅ Use destination name (not state) for itinerary lookup
     const destName = this.drawerDestination.destination.name;
     
-    // Load itinerary with new duration
+    // Load itinerary with new duration - pass destination data for smart mapping
     this.itineraryService.generatePlan(destName, days, {
       travelType: this.preferences.categories as any,
-      pace: 'moderate'
+      pace: 'moderate',
+      destinationData: this.drawerDestination.destination
     }).subscribe({
       next: (itinerary: any) => {
         console.log(`✅ [Day Selection] Itinerary loaded successfully`);
@@ -670,8 +676,10 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
   /**
    * Discover which day durations are actually available for current destination
    * Tests 2, 3, 4, 5, 7 days and only enables buttons for durations that have data
+   * @param destName Name of the destination
+   * @param destination Optional destination object with type/state for smart mapping
    */
-  private discoverAvailableDays(destName: string): void {
+  private discoverAvailableDays(destName: string, destination?: any): void {
     if (!destName) {
       this.availableDays = [3]; // Default to 3 if no destination
       return;
@@ -682,12 +690,16 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
     let checkedCount = 0;
 
     console.log(`🔍 [AvailableDays] Discovering available days for ${destName}...`);
+    if (destination) {
+      console.log(`   Type: ${destination.type}, State: ${destination.state}`);
+    }
 
     // Test each duration to see if itinerary data exists
     for (const days of potentialDays) {
       this.itineraryService.generatePlan(destName, days, {
         travelType: this.preferences.categories as any,
-        pace: 'moderate'
+        pace: 'moderate',
+        destinationData: destination
       }).subscribe({
         next: (itinerary: any) => {
           checkedCount++;
@@ -773,165 +785,38 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
 
   // 🎯 Get sample destinations as fallback when engine returns 0 results
   private getSampleDestinations(): EnhancedRecommendation[] {
-    const sampleDestinations: EnhancedRecommendation[] = [
-      {
-        destinationId: 'goa',
-        destination: {
-          id: 'goa',
-          name: 'Goa',
-          state: 'Goa',
-          country: 'India',
-          type: 'beach',
-          budget: 'budget',
-          bestMonths: [10, 11, 12, 1, 2],
-          avoidMonths: [5, 6, 7, 8],
-          categories: ['Beach', 'Party', 'Coastal'],
-          tags: ['beach', 'relaxation', 'nightlife'],
-          climate: 'tropical',
-          scores: { beach: 95, relaxation: 85, nightlife: 90 },
-          agoda: 'goa',
-          idealTripDays: 3
-        },
-        score: 82,
-        displayScore: 75,
-        reasons: ['Best for beach lovers', 'Budget friendly', 'Perfect timing for travel month'],
-        badges: ['Beach', 'Budget', 'Party'],
-        overallRecommendationScore: 75,
-        recommendationType: 'recommended' as const,
-        warnings: []
-      },
-      {
-        destinationId: 'manali',
-        destination: {
-          id: 'manali',
-          name: 'Manali',
-          state: 'Himachal Pradesh',
-          country: 'India',
-          type: 'adventure',
-          budget: 'moderate',
-          bestMonths: [3, 4, 5, 9, 10],
-          avoidMonths: [11, 12, 1, 2],
-          categories: ['Mountain', 'Adventure', 'Nature'],
-          tags: ['mountain', 'adventure', 'nature'],
-          climate: 'cool',
-          scores: { adventure: 90, nature: 85 },
-          agoda: 'manali',
-          idealTripDays: 3
-        },
-        score: 79,
-        displayScore: 72,
-        reasons: ['Great for adventure seekers', 'Beautiful mountain scenery', 'Ideal season approaching'],
-        badges: ['Mountain', 'Adventure', 'Nature'],
-        overallRecommendationScore: 72,
-        recommendationType: 'recommended' as const,
-        warnings: []
-      },
-      {
-        destinationId: 'jaipur',
-        destination: {
-          id: 'jaipur',
-          name: 'Jaipur',
-          state: 'Rajasthan',
-          country: 'India',
-          type: 'heritage',
-          budget: 'moderate',
-          bestMonths: [10, 11, 12, 1, 2, 3],
-          avoidMonths: [5, 6, 7, 8],
-          categories: ['Heritage', 'Culture', 'Colonial'],
-          tags: ['heritage', 'culture', 'history'],
-          climate: 'hot',
-          scores: { cultural: 90, heritage: 95 },
-          agoda: 'jaipur',
-          idealTripDays: 2
-        },
-        score: 77,
-        displayScore: 70,
-        reasons: ['Rich cultural heritage', 'Perfect weather coming', 'Excellent value for money'],
-        badges: ['Heritage', 'Culture', 'Colonial'],
-        overallRecommendationScore: 70,
-        recommendationType: 'recommended' as const,
-        warnings: []
-      },
-      {
-        destinationId: 'kerala',
-        destination: {
-          id: 'kerala',
-          name: 'Kerala',
-          state: 'Kerala',
-          country: 'India',
-          type: 'beach',
-          budget: 'moderate',
-          bestMonths: [6, 7, 8, 9, 10, 11],
-          avoidMonths: [3, 4, 5],
-          categories: ['Backwaters', 'Nature', 'Lake'],
-          tags: ['backwaters', 'nature', 'relaxation'],
-          climate: 'tropical',
-          scores: { nature: 90, relaxation: 85 },
-          agoda: 'kerala',
-          idealTripDays: 4
-        },
-        score: 75,
-        displayScore: 68,
-        reasons: ['Beautiful backwaters and nature', 'Monsoon season ending', 'Moderate budget friendly'],
-        badges: ['Backwaters', 'Nature', 'Lake'],
-        overallRecommendationScore: 68,
-        recommendationType: 'consider' as const,
-        warnings: []
-      },
-      {
-        destinationId: 'ladakh',
-        destination: {
-          id: 'ladakh',
-          name: 'Ladakh',
-          state: 'Ladakh',
-          country: 'India',
-          type: 'adventure',
-          budget: 'premium',
-          bestMonths: [6, 7, 8, 9],
-          avoidMonths: [10, 11, 12, 1, 2, 3, 4, 5],
-          categories: ['Adventure', 'Mountain', 'Spiritual'],
-          tags: ['adventure', 'mountain', 'spiritual'],
-          climate: 'extreme',
-          scores: { adventure: 95, spiritual: 80 },
-          agoda: 'ladakh',
-          idealTripDays: 5
-        },
-        score: 72,
+    console.log('\n🎯 [FALLBACK] ================================');
+    console.log('🎯 [Fallback] Using FALLBACK_DESTINATIONS (61 pre-curated destinations)');
+    console.log(`🎯 [Fallback] Total available: ${FALLBACK_DESTINATIONS.length} destinations`);
+    
+    if (!FALLBACK_DESTINATIONS || FALLBACK_DESTINATIONS.length === 0) {
+      console.warn('⚠️ [Fallback] No fallback destinations available!');
+      return [];
+    }
+
+    // Convert FALLBACK_DESTINATIONS to EnhancedRecommendation format
+    const enhanced = FALLBACK_DESTINATIONS.map((dest, index) => {
+      console.log(`  ${index + 1}. ${dest.name} (${dest.type}, ${dest.state}) - Budget: ${dest.budget}`);
+      
+      return {
+        destinationId: dest.id,
+        destination: dest,
+        score: 65, // Neutral score for fallback
         displayScore: 65,
-        reasons: ['Pristine mountain landscape', 'Spiritual experiences', 'Extreme adventure opportunities'],
-        badges: ['Adventure', 'Mountain', 'Spiritual'],
+        reasons: [`${dest.type.charAt(0).toUpperCase() + dest.type.slice(1)} destination`, `Budget: ${dest.budget}`],
+        badges: [dest.type.toUpperCase(), dest.state],
         overallRecommendationScore: 65,
         recommendationType: 'consider' as const,
         warnings: []
-      },
-      {
-        destinationId: 'andaman',
-        destination: {
-          id: 'andaman',
-          name: 'Andaman',
-          state: 'Andaman and Nicobar Islands',
-          country: 'India',
-          type: 'island',
-          budget: 'premium',
-          bestMonths: [11, 12, 1, 2, 3],
-          avoidMonths: [5, 6, 7, 8, 9],
-          categories: ['Beach', 'Island', 'Wildlife'],
-          tags: ['beach', 'island', 'wildlife'],
-          climate: 'tropical',
-          scores: { beach: 95, wildlife: 85 },
-          agoda: 'andaman',
-          idealTripDays: 4
-        },
-        score: 68,
-        displayScore: 62,
-        reasons: ['Pristine beaches and island charm', 'Unique wildlife experiences', 'Premium tropical paradise'],
-        badges: ['Beach', 'Island', 'Wildlife'],
-        overallRecommendationScore: 62,
-        recommendationType: 'consider' as const,
-        warnings: []
-      }
-    ];
+      };
+    });
 
-    return sampleDestinations.slice(0, 6);
+    // Take top 6 destinations
+    const selected = enhanced.slice(0, 6);
+    console.log(`✅ [Fallback] Selected ${selected.length} for display: ${selected.map(r => r.destination.name).join(', ')}`);
+    console.log('✅ [Fallback] These are popular destinations to get started');
+    console.log('✅ [Fallback] User can refine by setting preferences for personalized recommendations');
+    
+    return selected;
   }
 }
