@@ -375,11 +375,19 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
       // Run UI updates in Angular zone to ensure change detection
       this.ngZone.run(() => {
         if (result.success && result.recommendations.length > 0) {
-          // ✅ ALWAYS SHOW TOP DESTINATIONS - Never filter out, always show matches
-          // Even low-match destinations (55/100+) are valuable as fallbacks
-          this.recommendations = result.recommendations.slice(0, 6); // Top 6
+          // ✅ DEDUPLICATE by destination name to prevent showing same place twice
+          const uniqueDestinations = new Map<string, typeof result.recommendations[0]>();
+          for (const rec of result.recommendations) {
+            const key = rec.destination.name.toLowerCase();
+            if (!uniqueDestinations.has(key)) {
+              uniqueDestinations.set(key, rec);
+            }
+          }
+          
+          // Convert back to array and take top 6
+          this.recommendations = Array.from(uniqueDestinations.values()).slice(0, 6);
           this.uiState.hasResults = true;
-          console.log('✅ [LOADER] Showing', this.recommendations.length, 'recommendations');
+          console.log('✅ [LOADER] Showing', this.recommendations.length, 'unique recommendations (deduped)');
           console.log('✅ [LOADER] Recommendation cards should now be visible on page');
           console.log('✅ [LOADER] Cards ready for user interaction (click to expand)');
         } else {

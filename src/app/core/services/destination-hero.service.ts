@@ -87,14 +87,19 @@ export class DestinationHeroService {
     const heroImage = this.getHeroImage(destination);
     
     if (heroImage) {
+      // Log successful image mapping
+      console.log(`✅ [Hero] Image found for ${destination.name}: ${heroImage.substring(0, 50)}...`);
       return {
         'background-image': `linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0.1)), url('${heroImage}')`,
         'background-size': 'cover',
         'background-position': 'center'
       };
     } else {
+      // Fallback to gradient
+      const gradient = this.getFallbackGradient(destination);
+      console.log(`⚠️ [Hero] No image for ${destination.name}, using gradient: ${destination.type}`);
       return {
-        'background': this.getFallbackGradient(destination)
+        'background': gradient
       };
     }
   }
