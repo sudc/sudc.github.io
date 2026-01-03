@@ -141,7 +141,7 @@
       <!-- Day Selector Pills (Only show in itinerary mode) -->
       <div class="day-selector" *ngIf="!itineraryLoading && drawerMode === 'itinerary'">
         <button 
-          *ngFor="let days of [3, 4, 5, 7]"
+          *ngFor="let days of availableDays"
           class="day-pill"
           [class.active]="selectedDays === days"
           (click)="onDaySelected(days)">

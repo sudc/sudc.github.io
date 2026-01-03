@@ -88,6 +88,9 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
   // 📊 Grid layout state
   showAllResults = false;
 
+  // ✅ Days available for current itinerary (dynamic, not hardcoded)
+  availableDays: number[] = [3, 4, 5, 7]; // Default, will be updated based on loaded itinerary
+
   ngOnInit(): void {
     console.log('🎯 [SmartRecommendations] Component initialized');
     console.log('🎯 [SmartRecommendations] showForm:', this.showForm);
@@ -560,6 +563,9 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
     let destName = rec.destination.name;
     console.log(`📍 [Itinerary] Trying to load itinerary for: ${destName}`);
     
+    // ✅ Discover available days for this destination
+    this.discoverAvailableDays(destName);
+    
     // Load itinerary for this destination
     this.itineraryService.generatePlan(destName, this.selectedDays, {
       travelType: this.preferences.categories as any,
@@ -624,6 +630,57 @@ export class SmartRecommendationsComponent implements OnInit, AfterViewInit {
         this.cdr.markForCheck();
       }
     });
+  }
+
+  /**
+   * Discover which day durations are actually available for current destination
+   * Tests 2, 3, 4, 5, 7 days and only enables buttons for durations that have data
+   */
+  private discoverAvailableDays(destName: string): void {
+    if (!destName) {
+      this.availableDays = [3]; // Default to 3 if no destination
+      return;
+    }
+
+    const potentialDays = [2, 3, 4, 5, 7];
+    const found: number[] = [];
+    let checkedCount = 0;
+
+    console.log(`🔍 [AvailableDays] Discovering available days for ${destName}...`);
+
+    // Test each duration to see if itinerary data exists
+    for (const days of potentialDays) {
+      this.itineraryService.generatePlan(destName, days, {
+        travelType: this.preferences.categories as any,
+        pace: 'moderate'
+      }).subscribe({
+        next: (itinerary: any) => {
+          checkedCount++;
+          if (itinerary) {
+            found.push(days);
+            console.log(`✅ [AvailableDays] ${days} days available for ${destName}`);
+          }
+          
+          // Update availableDays once we've checked all
+          if (checkedCount === potentialDays.length) {
+            this.availableDays = found.length > 0 ? found : [3];
+            console.log(`📌 [AvailableDays] Final available days: ${this.availableDays.join(', ')}`);
+            this.cdr.markForCheck();
+          }
+        },
+        error: (err) => {
+          checkedCount++;
+          console.log(`⚠️ [AvailableDays] ${days} days not available for ${destName}`);
+          
+          // Update availableDays once we've checked all
+          if (checkedCount === potentialDays.length) {
+            this.availableDays = found.length > 0 ? found : [3];
+            console.log(`📌 [AvailableDays] Final available days: ${this.availableDays.join(', ')}`);
+            this.cdr.markForCheck();
+          }
+        }
+      });
+    }
   }
 
   // ✅ NEW: Get drawer header background style (hero image)
