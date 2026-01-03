@@ -28,7 +28,7 @@
     <!-- Step Header -->
     <div class="expansion-header">
       <h4>✨ Why Visit {{ recommendation.destination.state }}?</h4>
-      <p class="expansion-subtitle">Perfect for: {{ (topBadges | join: ', ') || 'exploration' }}</p>
+      <p class="expansion-subtitle">Perfect for: {{ topBadges.length > 0 ? topBadges.join(', ') : 'exploration' }}</p>
     </div>
 
     <!-- Day Selection Note -->
