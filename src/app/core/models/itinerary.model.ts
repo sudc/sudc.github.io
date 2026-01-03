@@ -45,4 +45,5 @@ export interface PlannerPreferences {
   travelType: ('relaxed' | 'family' | 'adventure' | 'budget')[];
   accommodation?: 'budget' | 'mid-range' | 'luxury';
   pace?: 'slow' | 'moderate' | 'fast';
+  destinationData?: any; // ✅ Destination object from MongoDB API (for smart itinerary mapping)
 }
